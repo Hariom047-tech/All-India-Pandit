@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { HeroAstrotalk } from "../components/hero/HeroAstrotalk";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { Icon } from "../lib/icons";
-import { Reveal, RevealStagger, revealItem } from "../components/ui/Reveal";
+import { Reveal } from "../components/ui/Reveal";
 import { PanditCard } from "../components/ui/PanditCard";
 import { TempleCard } from "../components/ui/TempleCard";
 import { StarRow } from "../components/ui/StarRating";
@@ -11,11 +11,7 @@ import { pandits, temples, reviews, festivals } from "../data/content";
 import { motion } from "framer-motion";
 import "../styles/home-sections.css";
 
-const STEPS = [
-  { icon: "search", h: "Search a temple or service", p: "Browse 200+ temples by city, or start from the ritual you need. Filter by language, rating and experience." },
-  { icon: "users", h: "Compare pandit profiles", p: "Read verified reviews, watch the 60-second video intro, check Vedic qualifications and gotra tradition." },
-  { icon: "whatsapp", h: "Contact directly — no middleman", p: "Call or WhatsApp pandit ji yourself. You settle the date, vidhi and dakshina together. We take nothing." },
-];
+
 
 export default function Home() {
   const topPandits = [...pandits].sort((a, b) => b.rating - a.rating || b.reviews - a.reviews).slice(0, 8);
