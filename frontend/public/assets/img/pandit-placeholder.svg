@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Pandit ji">
+  <defs>
+    <linearGradient id="ppBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF8E7"/>
+      <stop offset="100%" stop-color="#F0DCB4"/>
+    </linearGradient>
+    <linearGradient id="ppSaffron" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623"/>
+      <stop offset="100%" stop-color="#D2760F"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" fill="url(#ppBg)"/>
+  <circle cx="120" cy="98" r="42" fill="#E3B489"/>
+  <path d="M78 92a42 42 0 0184 0c0-30-19-44-42-44S78 62 78 92z" fill="#5B4636"/>
+  <path d="M116 62h8l-4 16z" fill="#C0392B"/>
+  <path d="M120 140c-42 0-72 24-78 62h156c-6-38-36-62-78-62z" fill="url(#ppSaffron)"/>
+  <path d="M120 140l-22 62h44z" fill="#FFF3DA" opacity=".85"/>
+  <path d="M96 146c-8 22-8 40-4 56h-14c-4-22 0-42 8-58z" fill="#E4E4E4" opacity=".5"/>
+</svg>

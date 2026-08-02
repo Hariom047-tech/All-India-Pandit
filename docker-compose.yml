@@ -1,0 +1,83 @@
+services:
+  db:
+    # postgis/postgis ships Postgres 16 + the PostGIS extension baked in
+    # (needed for the geospatial indexes in backend/src/db/01-schema.sql).
+    # Same docker-entrypoint-initdb.d mechanism as plain postgres:16-alpine.
+    image: postgis/postgis:16-3.4-alpine
+    container_name: panditconnect-db
+    restart: unless-stopped
+    environment:
+      # Bootstrap superuser — owns the schema and runs 01-schema.sql /
+      # 02-seed.sql on init. The backend does NOT connect as this role (see
+      # `backend` service below); 01-schema.sql creates a separate
+      # panditconnect_app role with only the grants it needs, because Row-
+      # Level Security policies don't apply to a table's owner.
+      POSTGRES_DB: panditconnect
+      POSTGRES_USER: panditconnect
+      POSTGRES_PASSWORD: panditconnect
+    ports:
+      - "5433:5432" # host 5433 → avoids clashing with any local Postgres already on 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # runs once, in filename order, ONLY against an empty data directory —
+      # see backend/src/db/01-schema.sql for how to re-apply by hand otherwise
+      - ./backend/src/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U panditconnect -d panditconnect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: panditconnect-backend
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      CORS_ORIGIN: http://localhost:8080
+      # panditconnect_app, not the bootstrap superuser — see 01-schema.sql's
+      # "APPLICATION ROLE" section for why (RLS enforcement).
+      DATABASE_URL: postgresql://panditconnect_app:panditconnect_app_dev@db:5432/panditconnect
+      SESSION_TTL_HOURS: 720
+      # Placeholders — no real payment gateway account is wired up yet (see
+      # README "Known placeholders"). Subscription/payment endpoints work
+      # end-to-end against Razorpay's test mode once real test keys are set.
+      RAZORPAY_KEY_ID: ""
+      RAZORPAY_KEY_SECRET: ""
+      # Dev-only key (32 random bytes, hex) for AES-256-GCM encryption of the
+      # one field that needs it — an admin's TOTP secret at rest (see
+      # backend/src/utils/crypto.js, docs/ADMIN.md). Same posture as
+      # POSTGRES_PASSWORD above: a committed placeholder, not a production
+      # secret. Changing it invalidates every admin's existing TOTP secret.
+      ENCRYPTION_KEY: "1001480ac2400463a4eadd40a3f49b4f68534e13470a319e0f2a071f0327405a"
+      # Obscurity only, not real access control — see docs/ADMIN.md. Actual
+      # admin auth is TOTP + Row-Level Security, same as everywhere else.
+      ADMIN_SECRET_PATH: "ambitious-person"
+    ports:
+      - "4000:4000" # exposed directly too, handy for `curl`/Postman while developing
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: panditconnect-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  db_data:

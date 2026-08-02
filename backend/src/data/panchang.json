@@ -1,0 +1,60 @@
+{
+  "tithi": "Shukla Paksha Dwadashi",
+  "nakshatra": "Anuradha",
+  "yoga": "Siddhi",
+  "karana": "Balava",
+  "paksha": "Shukla",
+  "vaar": "Guruvar (Thursday)",
+  "sunrise": "05:58 AM",
+  "sunset": "07:04 PM",
+  "moonrise": "04:12 PM",
+  "moonset": "03:26 AM",
+  "vikram": "2083 Rakshas",
+  "shaka": "1948 Vishvavasu",
+  "masa": "Shravan",
+  "ritu": "Varsha",
+  "auspicious": [
+    {
+      "k": "Brahma Muhurat",
+      "v": "04:24 AM – 05:11 AM"
+    },
+    {
+      "k": "Abhijit Muhurat",
+      "v": "11:58 AM – 12:52 PM"
+    },
+    {
+      "k": "Vijaya Muhurat",
+      "v": "02:42 PM – 03:35 PM"
+    },
+    {
+      "k": "Godhuli Muhurat",
+      "v": "07:02 PM – 07:26 PM"
+    },
+    {
+      "k": "Amrit Kaal",
+      "v": "09:14 PM – 10:48 PM"
+    }
+  ],
+  "inauspicious": [
+    {
+      "k": "Rahu Kaal",
+      "v": "02:06 PM – 03:44 PM"
+    },
+    {
+      "k": "Yamaganda",
+      "v": "05:58 AM – 07:36 AM"
+    },
+    {
+      "k": "Gulika Kaal",
+      "v": "09:14 AM – 10:52 AM"
+    },
+    {
+      "k": "Dur Muhurat",
+      "v": "10:14 AM – 11:06 AM"
+    },
+    {
+      "k": "Varjyam",
+      "v": "06:38 PM – 08:12 PM"
+    }
+  ]
+}

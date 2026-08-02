@@ -1,0 +1,409 @@
+[
+  {
+    "id": "kashi-vishwanath",
+    "name": "Kashi Vishwanath Temple",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "deity": "Lord Shiva",
+    "rating": 4.8,
+    "reviews": 1204,
+    "pandits": 12,
+    "timings": "3:00 AM – 11:00 PM",
+    "est": "1780",
+    "lat": 25.3109,
+    "lng": 83.0107,
+    "services": [
+      "rudrabhishek",
+      "mahamrityunjay",
+      "havan-yagna",
+      "aarti-seva",
+      "pitru-dosh"
+    ],
+    "img": "assets/img/temples/kashi-vishwanath.jpg",
+    "about": "One of the twelve Jyotirlingas and the spiritual heart of Varanasi, standing on the western bank of the Ganga. The present structure was rebuilt by Maharani Ahilyabai Holkar in 1780. Rudrabhishek and Mahamrityunjay jaap here are considered especially potent.",
+    "highlights": [
+      "Jyotirlinga darshan",
+      "Ganga Aarti at Dashashwamedh",
+      "Mangala Aarti (3 AM)",
+      "Annakut in Kartik"
+    ]
+  },
+  {
+    "id": "mahakaleshwar",
+    "name": "Mahakaleshwar Jyotirlinga",
+    "city": "Ujjain",
+    "state": "Madhya Pradesh",
+    "deity": "Lord Mahakal",
+    "rating": 4.9,
+    "reviews": 1876,
+    "pandits": 18,
+    "timings": "4:00 AM – 11:00 PM",
+    "est": "Ancient",
+    "lat": 23.1828,
+    "lng": 75.7683,
+    "services": [
+      "rudrabhishek",
+      "kaal-sarp",
+      "navgrah-shanti",
+      "mahamrityunjay",
+      "havan-yagna"
+    ],
+    "img": "assets/img/temples/mahakaleshwar.jpg",
+    "about": "The only south-facing Jyotirlinga, famous for the Bhasma Aarti performed at dawn with sacred ash. Ujjain is the traditional seat for Kaal Sarp and Mangal dosh nivaran pujas.",
+    "highlights": [
+      "Bhasma Aarti (4 AM)",
+      "Kaal Sarp dosh puja",
+      "Nagchandreshwar darshan",
+      "Simhastha Kumbh"
+    ]
+  },
+  {
+    "id": "har-ki-pauri",
+    "name": "Har Ki Pauri & Daksheshwar",
+    "city": "Haridwar",
+    "state": "Uttarakhand",
+    "deity": "Ganga Mata",
+    "rating": 4.7,
+    "reviews": 942,
+    "pandits": 22,
+    "timings": "5:00 AM – 10:00 PM",
+    "est": "1810",
+    "lat": 29.9457,
+    "lng": 78.1642,
+    "services": [
+      "pitru-dosh",
+      "mundan",
+      "janeu",
+      "antim-sanskar",
+      "havan-yagna"
+    ],
+    "img": "assets/img/temples/haridwar.jpg",
+    "about": "The principal ghat of Haridwar where the Ganga enters the plains. The traditional destination for Shradh, Tarpan, Mundan and Asthi visarjan, with generations of pandit families maintaining vanshavali records.",
+    "highlights": [
+      "Evening Ganga Aarti",
+      "Pind daan & tarpan",
+      "Vanshavali records",
+      "Kanwar Yatra season"
+    ]
+  },
+  {
+    "id": "banke-bihari",
+    "name": "Shri Banke Bihari Mandir",
+    "city": "Mathura",
+    "state": "Uttar Pradesh",
+    "deity": "Lord Krishna",
+    "rating": 4.8,
+    "reviews": 1338,
+    "pandits": 14,
+    "timings": "7:45 AM – 9:30 PM",
+    "est": "1864",
+    "lat": 27.5826,
+    "lng": 77.7003,
+    "services": [
+      "katha-bhagwat",
+      "satyanarayan-katha",
+      "namkaran",
+      "annaprashan",
+      "gau-puja"
+    ],
+    "img": "assets/img/temples/banke-bihari.jpg",
+    "about": "The most beloved Krishna temple of Vrindavan, where the curtain is drawn every few minutes so devotees never meet Bihari ji's gaze for too long. Bhagwat Katha and Chhappan Bhog seva are arranged through temple pandits.",
+    "highlights": [
+      "Jhulan & Holi utsav",
+      "Chhappan Bhog seva",
+      "Mangla Aarti (Janmashtami)",
+      "Bhagwat Katha vachak"
+    ]
+  },
+  {
+    "id": "ram-mandir",
+    "name": "Shri Ram Janmabhoomi Mandir",
+    "city": "Ayodhya",
+    "state": "Uttar Pradesh",
+    "deity": "Lord Ram",
+    "rating": 4.9,
+    "reviews": 2410,
+    "pandits": 26,
+    "timings": "6:30 AM – 9:30 PM",
+    "est": "2024",
+    "lat": 26.7956,
+    "lng": 82.1943,
+    "services": [
+      "satyanarayan-akhand",
+      "sunderkand",
+      "havan-yagna",
+      "namkaran",
+      "aarti-seva"
+    ],
+    "img": "assets/img/temples/ram-mandir.jpg",
+    "about": "The grand Nagara-style temple at Ram Janmabhoomi, consecrated in January 2024. Akhand Ramayan Path and Sunderkand recitals are the most requested sevas, along with Saryu snan rituals.",
+    "highlights": [
+      "Ram Lalla darshan",
+      "Akhand Ramayan Path",
+      "Deepotsav (Diwali)",
+      "Saryu ghat rituals"
+    ]
+  },
+  {
+    "id": "tirumala",
+    "name": "Tirumala Venkateswara Temple",
+    "city": "Tirupati",
+    "state": "Andhra Pradesh",
+    "deity": "Lord Venkateswara",
+    "rating": 4.9,
+    "reviews": 3204,
+    "pandits": 20,
+    "timings": "2:30 AM – 1:30 AM",
+    "est": "300 CE",
+    "lat": 13.6833,
+    "lng": 79.3474,
+    "services": [
+      "mundan",
+      "annaprashan",
+      "namkaran",
+      "aarti-seva",
+      "wedding"
+    ],
+    "img": "assets/img/temples/tirumala.jpg",
+    "about": "The world's most-visited temple, on the seventh hill of Tirumala. Mundan (tonsure) and Annaprashan here are family traditions across South India; Kalyanotsavam is performed daily.",
+    "highlights": [
+      "Suprabhata Seva",
+      "Kalyanotsavam",
+      "Tonsure (mottai) ritual",
+      "Brahmotsavam"
+    ]
+  },
+  {
+    "id": "jagannath-puri",
+    "name": "Shri Jagannath Temple",
+    "city": "Puri",
+    "state": "Odisha",
+    "deity": "Lord Jagannath",
+    "rating": 4.8,
+    "reviews": 1654,
+    "pandits": 16,
+    "timings": "5:00 AM – 11:00 PM",
+    "est": "12th c.",
+    "lat": 19.805,
+    "lng": 85.818,
+    "services": [
+      "katha-bhagwat",
+      "pitru-dosh",
+      "havan-yagna",
+      "satyanarayan-katha",
+      "gau-puja"
+    ],
+    "img": "assets/img/temples/jagannath.jpg",
+    "about": "Home of the Char Dham deity Jagannath with brother Balabhadra and sister Subhadra. Famous for the Rath Yatra and the Mahaprasad cooked in the world's largest temple kitchen.",
+    "highlights": [
+      "Rath Yatra",
+      "Mahaprasad seva",
+      "Snana Purnima",
+      "Pind daan at Swargadwar"
+    ]
+  },
+  {
+    "id": "meenakshi",
+    "name": "Meenakshi Amman Temple",
+    "city": "Madurai",
+    "state": "Tamil Nadu",
+    "deity": "Goddess Meenakshi",
+    "rating": 4.8,
+    "reviews": 1420,
+    "pandits": 15,
+    "timings": "5:00 AM – 10:00 PM",
+    "est": "17th c.",
+    "lat": 9.9195,
+    "lng": 78.1193,
+    "services": [
+      "wedding",
+      "durga-path",
+      "navratri-sthapana",
+      "kundali",
+      "aarti-seva"
+    ],
+    "img": "assets/img/temples/meenakshi.jpg",
+    "about": "A Dravidian masterpiece with fourteen towering gopurams and the Hall of Thousand Pillars. Thirukalyanam — the divine wedding — makes it a favoured venue for marriage rituals.",
+    "highlights": [
+      "Thirukalyanam",
+      "Chithirai festival",
+      "Hall of 1000 Pillars",
+      "Night Palliarai seva"
+    ]
+  },
+  {
+    "id": "trimbakeshwar",
+    "name": "Trimbakeshwar Shiva Temple",
+    "city": "Nashik",
+    "state": "Maharashtra",
+    "deity": "Lord Shiva",
+    "rating": 4.7,
+    "reviews": 1108,
+    "pandits": 24,
+    "timings": "5:30 AM – 9:00 PM",
+    "est": "18th c.",
+    "lat": 19.9333,
+    "lng": 73.5297,
+    "services": [
+      "kaal-sarp",
+      "pitru-dosh",
+      "navgrah-shanti",
+      "rudrabhishek",
+      "satyanarayan-shanti"
+    ],
+    "img": "assets/img/temples/trimbakeshwar.jpg",
+    "about": "A Jyotirlinga at the source of the Godavari and the recognised centre for Kaal Sarp Yog, Narayan Nagbali and Tripindi Shradh — pujas that require specially trained pandits.",
+    "highlights": [
+      "Kaal Sarp Yog puja",
+      "Narayan Nagbali",
+      "Tripindi Shradh",
+      "Kushavarta Kund snan"
+    ]
+  },
+  {
+    "id": "dwarkadhish",
+    "name": "Dwarkadhish Temple",
+    "city": "Dwarka",
+    "state": "Gujarat",
+    "deity": "Lord Krishna",
+    "rating": 4.7,
+    "reviews": 876,
+    "pandits": 11,
+    "timings": "6:00 AM – 9:30 PM",
+    "est": "16th c.",
+    "lat": 22.2378,
+    "lng": 68.9685,
+    "services": [
+      "katha-bhagwat",
+      "wedding",
+      "satyanarayan-katha",
+      "namkaran",
+      "aarti-seva"
+    ],
+    "img": "assets/img/temples/dwarkadhish.jpg",
+    "about": "The Jagat Mandir of Char Dham fame, with a five-storey spire held by seventy-two pillars. Bhagwat Katha and Krishna-vivah style wedding rituals are performed by resident Gugli pandits.",
+    "highlights": [
+      "Dhwaja changing seva",
+      "Janmashtami utsav",
+      "Gomti snan",
+      "Bet Dwarka darshan"
+    ]
+  },
+  {
+    "id": "kamakhya",
+    "name": "Kamakhya Devi Temple",
+    "city": "Guwahati",
+    "state": "Assam",
+    "deity": "Goddess Kamakhya",
+    "rating": 4.8,
+    "reviews": 1042,
+    "pandits": 13,
+    "timings": "5:30 AM – 10:00 PM",
+    "est": "8th c.",
+    "lat": 26.1664,
+    "lng": 91.7055,
+    "services": [
+      "durga-path",
+      "navratri-sthapana",
+      "katha-jagran",
+      "navgrah-shanti",
+      "kundali"
+    ],
+    "img": "assets/img/temples/kamakhya.jpg",
+    "album": true,
+    "about": "The most revered Shakti Peeth on Nilachal Hill, centre of tantric worship. Durga Saptashati path and Devi anusthans here are conducted by hereditary tantric pandits.",
+    "highlights": [
+      "Ambubachi Mela",
+      "Durga Saptashati path",
+      "Panch Ratna darshan",
+      "Navratri anusthan"
+    ]
+  },
+  {
+    "id": "siddhivinayak",
+    "name": "Shree Siddhivinayak Temple",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "deity": "Lord Ganesh",
+    "rating": 4.8,
+    "reviews": 2140,
+    "pandits": 17,
+    "timings": "5:30 AM – 10:00 PM",
+    "est": "1801",
+    "lat": 19.017,
+    "lng": 72.8302,
+    "services": [
+      "ganesh-puja",
+      "ganesh-utsav",
+      "griha-pravesh",
+      "shop-opening",
+      "satyanarayan-katha"
+    ],
+    "img": "assets/img/temples/siddhivinayak.jpg",
+    "about": "Mumbai's most visited Ganesh temple, where Tuesday queues stretch for kilometres. The first stop for Griha Pravesh sankalp and new-business pujas across the city.",
+    "highlights": [
+      "Tuesday Ganesh darshan",
+      "Ganesh Utsav (10 days)",
+      "Angarki Chaturthi",
+      "Kakad Aarti (5:30 AM)"
+    ]
+  },
+  {
+    "id": "chhatarpur",
+    "name": "Shri Adya Katyayani Shakti Peeth",
+    "city": "Delhi",
+    "state": "Delhi",
+    "deity": "Goddess Katyayani",
+    "rating": 4.6,
+    "reviews": 728,
+    "pandits": 10,
+    "timings": "6:00 AM – 10:00 PM",
+    "est": "1974",
+    "lat": 28.501,
+    "lng": 77.178,
+    "services": [
+      "durga-path",
+      "navratri-sthapana",
+      "katha-jagran",
+      "mundan",
+      "griha-pravesh"
+    ],
+    "img": "assets/img/temples/chhatarpur.jpg",
+    "about": "Delhi's sprawling Chhatarpur temple complex in white marble, packed through both Navratris. Jagran, Durga path and Mundan ceremonies are arranged in its many mandaps.",
+    "highlights": [
+      "Navratri jagran",
+      "Marble mandap ceremonies",
+      "Shayan Aarti",
+      "Free bhandara"
+    ]
+  },
+  {
+    "id": "govind-devji",
+    "name": "Govind Dev Ji Temple",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "deity": "Lord Krishna",
+    "rating": 4.7,
+    "reviews": 964,
+    "pandits": 12,
+    "timings": "4:30 AM – 9:00 PM",
+    "est": "1735",
+    "lat": 26.926,
+    "lng": 75.8235,
+    "services": [
+      "katha-bhagwat",
+      "satyanarayan-katha",
+      "wedding",
+      "annaprashan",
+      "aarti-seva"
+    ],
+    "img": "assets/img/temples/govind-devji.jpg",
+    "about": "Jaipur's presiding deity inside the City Palace complex, with seven daily jhankis. Weddings and Bhagwat Katha here follow the Gaudiya Vaishnav tradition.",
+    "highlights": [
+      "Seven daily jhankis",
+      "Janmashtami jhulan",
+      "Annakut darshan",
+      "Gaudiya vidhi weddings"
+    ]
+  }
+]

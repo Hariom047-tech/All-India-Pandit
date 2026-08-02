@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PanditConnect temple mark">
+  <defs>
+    <linearGradient id="lgGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F4D678"/>
+      <stop offset="52%" stop-color="#D4A017"/>
+      <stop offset="100%" stop-color="#9C7210"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 3l3 9 3-7 3 10 9 30H14l9-30 3-10 3 7z" fill="url(#lgGold)"/>
+  <circle cx="32" cy="6" r="3.4" fill="url(#lgGold)"/>
+  <rect x="10" y="45" width="44" height="7" rx="2" fill="url(#lgGold)"/>
+  <g fill="url(#lgGold)">
+    <rect x="13" y="53" width="4" height="8" rx="1.4"/>
+    <rect x="23" y="53" width="4" height="8" rx="1.4"/>
+    <rect x="37" y="53" width="4" height="8" rx="1.4"/>
+    <rect x="47" y="53" width="4" height="8" rx="1.4"/>
+  </g>
+  <path d="M32 24a7 7 0 00-7 7v14h14V31a7 7 0 00-7-7z" fill="#FFF8E7" opacity=".55"/>
+</svg>

@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "user",
+    "num": "500+",
+    "label": "Registered Pandits"
+  },
+  {
+    "icon": "temple",
+    "num": "200+",
+    "label": "Associated Temples"
+  },
+  {
+    "icon": "kalash",
+    "num": "10,000+",
+    "label": "Ceremonies Conducted"
+  },
+  {
+    "icon": "map-pin",
+    "num": "60+",
+    "label": "Cities Covered"
+  }
+]

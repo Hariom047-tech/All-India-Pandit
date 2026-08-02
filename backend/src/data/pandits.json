@@ -1,0 +1,514 @@
+[
+  {
+    "id": "ramesh-sharma",
+    "name": "Pandit Ramesh Sharma",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "exp": 22,
+    "rating": 4.9,
+    "reviews": 186,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Hindi",
+      "Sanskrit",
+      "English"
+    ],
+    "services": [
+      "rudrabhishek",
+      "mahamrityunjay",
+      "havan-yagna",
+      "griha-pravesh",
+      "wedding"
+    ],
+    "temples": [
+      "kashi-vishwanath",
+      "har-ki-pauri"
+    ],
+    "phone": "+919000000101",
+    "edu": "Shastri (Veda), Sampurnanand Sanskrit University",
+    "gotra": "Bharadwaj",
+    "about": "Twenty-two years of performing Rudrabhishek and Mahamrityunjay anusthans at Kashi Vishwanath. Explains every step of the vidhi in Hindi and English so families understand what they are participating in.",
+    "img": "assets/img/pandits/ramesh-sharma.jpg"
+  },
+  {
+    "id": "devdatt-shastri",
+    "name": "Pandit Devdatt Shastri",
+    "city": "Ujjain",
+    "state": "Madhya Pradesh",
+    "exp": 28,
+    "rating": 4.9,
+    "reviews": 241,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Hindi",
+      "Sanskrit",
+      "Marathi"
+    ],
+    "services": [
+      "kaal-sarp",
+      "navgrah-shanti",
+      "rudrabhishek",
+      "satyanarayan-shanti",
+      "mahamrityunjay"
+    ],
+    "temples": [
+      "mahakaleshwar",
+      "trimbakeshwar"
+    ],
+    "phone": "+919000000102",
+    "edu": "Acharya (Jyotish), Maharishi Panini Sanskrit University",
+    "gotra": "Kashyap",
+    "about": "Ujjain's senior-most Kaal Sarp and Navgrah shanti specialist. Reads the kundali first and performs only the puja your chart actually calls for — never a package.",
+    "img": "assets/img/pandits/devdatt-shastri.jpg"
+  },
+  {
+    "id": "naman-tiwari",
+    "name": "Pandit Naman Tiwari",
+    "city": "Ayodhya",
+    "state": "Uttar Pradesh",
+    "exp": 14,
+    "rating": 4.8,
+    "reviews": 132,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Hindi",
+      "English",
+      "Bhojpuri"
+    ],
+    "services": [
+      "sunderkand",
+      "satyanarayan-akhand",
+      "havan-yagna",
+      "namkaran",
+      "satyanarayan-katha",
+      "chhath"
+    ],
+    "temples": [
+      "ram-mandir",
+      "banke-bihari"
+    ],
+    "phone": "+919000000103",
+    "edu": "Shastri (Ramcharitmanas), Ayodhya Sanskrit Mahavidyalaya",
+    "gotra": "Vatsa",
+    "about": "Leads a Sunderkand mandali of five with dholak and manjira. Known for a clear, singing recitation style that keeps children and elders engaged for the full three hours.",
+    "img": "assets/img/pandits/naman-tiwari.jpg"
+  },
+  {
+    "id": "suresh-joshi",
+    "name": "Pandit Suresh Joshi",
+    "city": "Nashik",
+    "state": "Maharashtra",
+    "exp": 19,
+    "rating": 4.8,
+    "reviews": 164,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Marathi",
+      "Hindi",
+      "Sanskrit"
+    ],
+    "services": [
+      "kaal-sarp",
+      "pitru-dosh",
+      "navgrah-shanti",
+      "satyanarayan-vrat",
+      "satyanarayan-shanti"
+    ],
+    "temples": [
+      "trimbakeshwar",
+      "siddhivinayak"
+    ],
+    "phone": "+919000000104",
+    "edu": "Ved Murti, Trimbakeshwar Vedshala",
+    "gotra": "Gautam",
+    "about": "Trained at Trimbakeshwar Vedshala in Narayan Nagbali and Tripindi Shradh — rituals that require exact procedure. Handles all samagri arrangement at the ghat himself.",
+    "img": "assets/img/pandits/suresh-joshi.jpg"
+  },
+  {
+    "id": "anand-iyer",
+    "name": "Pandit Anand Iyer",
+    "city": "Madurai",
+    "state": "Tamil Nadu",
+    "exp": 24,
+    "rating": 4.9,
+    "reviews": 208,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Tamil",
+      "Telugu",
+      "Sanskrit",
+      "English"
+    ],
+    "services": [
+      "wedding",
+      "namkaran",
+      "annaprashan",
+      "durga-path",
+      "kundali"
+    ],
+    "temples": [
+      "meenakshi",
+      "tirumala"
+    ],
+    "phone": "+919000000105",
+    "edu": "Ghanapaathi (Yajur Veda), Madurai Veda Patasala",
+    "gotra": "Srivatsa",
+    "about": "A Ghanapaathi who has conducted over 900 Tamil-tradition weddings at Meenakshi Amman. Provides the full muhurat sheet and guna-milan report before the ceremony.",
+    "img": "assets/img/pandits/anand-iyer.jpg"
+  },
+  {
+    "id": "mohan-das",
+    "name": "Pandit Mohan Das",
+    "city": "Puri",
+    "state": "Odisha",
+    "exp": 17,
+    "rating": 4.7,
+    "reviews": 118,
+    "verified": true,
+    "tier": "Silver",
+    "langs": [
+      "Odia",
+      "Hindi",
+      "Sanskrit",
+      "Bengali"
+    ],
+    "services": [
+      "pitru-dosh",
+      "katha-bhagwat",
+      "havan-yagna",
+      "gau-puja",
+      "satyanarayan-katha"
+    ],
+    "temples": [
+      "jagannath-puri"
+    ],
+    "phone": "+919000000106",
+    "edu": "Shastri (Puran), Puri Sanskrit College",
+    "gotra": "Vishwamitra",
+    "about": "Sevayat family of the Jagannath temple, fourth generation. Conducts Pind daan at Swargadwar and seven-day Bhagwat Katha in Odia, Hindi or Bengali.",
+    "img": "assets/img/pandits/mohan-das.jpg"
+  },
+  {
+    "id": "gopal-chaturvedi",
+    "name": "Pandit Gopal Chaturvedi",
+    "city": "Mathura",
+    "state": "Uttar Pradesh",
+    "exp": 21,
+    "rating": 4.8,
+    "reviews": 176,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Hindi",
+      "Braj",
+      "Sanskrit"
+    ],
+    "services": [
+      "katha-bhagwat",
+      "satyanarayan-katha",
+      "ganesh-puja",
+      "annaprashan",
+      "gau-puja"
+    ],
+    "temples": [
+      "banke-bihari",
+      "govind-devji"
+    ],
+    "phone": "+919000000107",
+    "edu": "Acharya (Bhagwat), Vrindavan Shodh Sansthan",
+    "gotra": "Garg",
+    "about": "Braj-tradition katha vachak. His seven-day Bhagwat Katha includes daily bhajan and a Chhappan Bhog on the final day, arranged with the temple kitchen.",
+    "img": "assets/img/pandits/gopal-chaturvedi.jpg"
+  },
+  {
+    "id": "vikas-upadhyay",
+    "name": "Pandit Vikas Upadhyay",
+    "city": "Haridwar",
+    "state": "Uttarakhand",
+    "exp": 12,
+    "rating": 4.7,
+    "reviews": 96,
+    "verified": true,
+    "tier": "Silver",
+    "langs": [
+      "Hindi",
+      "Garhwali",
+      "Sanskrit",
+      "English"
+    ],
+    "services": [
+      "mundan",
+      "janeu",
+      "pitru-dosh",
+      "antim-sanskar",
+      "havan-yagna"
+    ],
+    "temples": [
+      "har-ki-pauri"
+    ],
+    "phone": "+919000000108",
+    "edu": "Shastri (Karmakand), Gurukul Kangri",
+    "gotra": "Bhargav",
+    "about": "Handles Mundan, Janeu and Shradh at Har Ki Pauri with the family vanshavali register. Patient with first-time families and transparent about ghat charges upfront.",
+    "img": "assets/img/pandits/vikas-upadhyay.jpg"
+  },
+  {
+    "id": "srinivas-rao",
+    "name": "Pandit Srinivas Rao",
+    "city": "Tirupati",
+    "state": "Andhra Pradesh",
+    "exp": 26,
+    "rating": 4.9,
+    "reviews": 224,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Telugu",
+      "Tamil",
+      "Sanskrit",
+      "English"
+    ],
+    "services": [
+      "mundan",
+      "annaprashan",
+      "namkaran",
+      "wedding",
+      "kundali"
+    ],
+    "temples": [
+      "tirumala"
+    ],
+    "phone": "+919000000109",
+    "edu": "Vedanta Vidwan, Tirumala Veda Patasala",
+    "gotra": "Atreya",
+    "about": "Twenty-six years of Tirumala sevas. Coordinates tonsure, Annaprashan and Kalyanotsavam slots including the TTD booking formalities for out-of-state families.",
+    "img": "assets/img/pandits/srinivas-rao.jpg"
+  },
+  {
+    "id": "harish-bhatt",
+    "name": "Pandit Harish Bhatt",
+    "city": "Dwarka",
+    "state": "Gujarat",
+    "exp": 16,
+    "rating": 4.7,
+    "reviews": 104,
+    "verified": true,
+    "tier": "Silver",
+    "langs": [
+      "Gujarati",
+      "Hindi",
+      "Sanskrit"
+    ],
+    "services": [
+      "katha-bhagwat",
+      "wedding",
+      "griha-pravesh",
+      "shop-opening",
+      "satyanarayan-katha"
+    ],
+    "temples": [
+      "dwarkadhish"
+    ],
+    "phone": "+919000000110",
+    "edu": "Shastri (Veda), Dwarka Sharda Peeth",
+    "gotra": "Shandilya",
+    "about": "Gugli pandit of Dwarkadhish. Performs Gujarati-vidhi weddings and Griha Pravesh with the complete samagri list shared on WhatsApp a week in advance.",
+    "img": "assets/img/pandits/harish-bhatt.jpg"
+  },
+  {
+    "id": "bipul-goswami",
+    "name": "Pandit Bipul Goswami",
+    "city": "Guwahati",
+    "state": "Assam",
+    "exp": 15,
+    "rating": 4.8,
+    "reviews": 112,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Assamese",
+      "Bengali",
+      "Hindi",
+      "Sanskrit"
+    ],
+    "services": [
+      "durga-path",
+      "navratri-sthapana",
+      "katha-jagran",
+      "navgrah-shanti",
+      "kundali"
+    ],
+    "temples": [
+      "kamakhya"
+    ],
+    "phone": "+919000000111",
+    "edu": "Tantra Acharya, Kamakhya Peeth",
+    "gotra": "Kaushik",
+    "about": "Hereditary Kamakhya pandit for Devi anusthans. Performs the complete Durga Saptashati with Kavach-Argala-Keelak and explains each remedy in plain language.",
+    "img": "assets/img/pandits/bipul-goswami.jpg"
+  },
+  {
+    "id": "kailash-mishra",
+    "name": "Pandit Kailash Mishra",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "exp": 20,
+    "rating": 4.8,
+    "reviews": 198,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Hindi",
+      "Marathi",
+      "English",
+      "Sanskrit"
+    ],
+    "services": [
+      "ganesh-puja",
+      "ganesh-utsav",
+      "griha-pravesh",
+      "shop-opening",
+      "bhoomi-pujan"
+    ],
+    "temples": [
+      "siddhivinayak"
+    ],
+    "phone": "+919000000112",
+    "edu": "Ved Shastri, Mumbai Ved Vidyalaya",
+    "gotra": "Vashishtha",
+    "about": "Mumbai's go-to pandit for flat Griha Pravesh and office openings. Works around apartment society rules and finishes within the muhurat window without rushing the vidhi.",
+    "img": "assets/img/pandits/kailash-mishra.jpg"
+  },
+  {
+    "id": "satish-dubey",
+    "name": "Pandit Satish Dubey",
+    "city": "Delhi",
+    "state": "Delhi",
+    "exp": 18,
+    "rating": 4.7,
+    "reviews": 154,
+    "verified": true,
+    "tier": "Gold",
+    "langs": [
+      "Hindi",
+      "English",
+      "Punjabi",
+      "Sanskrit"
+    ],
+    "services": [
+      "griha-pravesh",
+      "durga-path",
+      "katha-jagran",
+      "mundan",
+      "satyanarayan-diwali",
+      "holika-dahan"
+    ],
+    "temples": [
+      "chhatarpur"
+    ],
+    "phone": "+919000000113",
+    "edu": "Shastri (Karmakand), Delhi Sanskrit Academy",
+    "gotra": "Parashar",
+    "about": "Delhi-NCR Griha Pravesh and Jagran specialist with his own bhajan mandali. Sends a printed vidhi card so the family knows the sequence in advance.",
+    "img": "assets/img/pandits/satish-dubey.jpg"
+  },
+  {
+    "id": "mahesh-vyas",
+    "name": "Pandit Mahesh Vyas",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "exp": 23,
+    "rating": 4.8,
+    "reviews": 182,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Hindi",
+      "Marwari",
+      "Sanskrit",
+      "English"
+    ],
+    "services": [
+      "wedding",
+      "kundali",
+      "katha-bhagwat",
+      "annaprashan",
+      "navgrah-shanti"
+    ],
+    "temples": [
+      "govind-devji"
+    ],
+    "phone": "+919000000114",
+    "edu": "Acharya (Jyotish), Jagatguru Ramanandacharya University",
+    "gotra": "Dadhich",
+    "about": "Marwari-tradition wedding vidhi with full jyotish backing — kundali milan, muhurat and dosh remedies handled by the same person who performs the ceremony.",
+    "img": "assets/img/pandits/mahesh-vyas.jpg"
+  },
+  {
+    "id": "raghav-pathak",
+    "name": "Pandit Raghav Pathak",
+    "city": "Varanasi",
+    "state": "Uttar Pradesh",
+    "exp": 9,
+    "rating": 4.6,
+    "reviews": 74,
+    "verified": true,
+    "tier": "Silver",
+    "langs": [
+      "Hindi",
+      "English",
+      "Sanskrit"
+    ],
+    "services": [
+      "sunderkand",
+      "ganesh-puja",
+      "satyanarayan-katha",
+      "namkaran",
+      "aarti-seva"
+    ],
+    "temples": [
+      "kashi-vishwanath"
+    ],
+    "phone": "+919000000115",
+    "edu": "Shastri (Veda), BHU",
+    "gotra": "Upamanyu",
+    "about": "Younger BHU-trained pandit who runs online Sunderkand and Satyanarayan katha for families abroad, with the samagri list couriered in advance.",
+    "img": "assets/img/pandits/raghav-pathak.jpg"
+  },
+  {
+    "id": "lakshman-acharya",
+    "name": "Pandit Lakshman Acharya",
+    "city": "Ujjain",
+    "state": "Madhya Pradesh",
+    "exp": 31,
+    "rating": 4.9,
+    "reviews": 268,
+    "verified": true,
+    "tier": "Diamond",
+    "langs": [
+      "Hindi",
+      "Sanskrit",
+      "Gujarati"
+    ],
+    "services": [
+      "mahamrityunjay",
+      "durga-path",
+      "havan-yagna",
+      "pitru-dosh",
+      "rudrabhishek"
+    ],
+    "temples": [
+      "mahakaleshwar"
+    ],
+    "phone": "+919000000116",
+    "edu": "Mahamahopadhyaya (Veda), Ujjain",
+    "gotra": "Angiras",
+    "about": "Thirty-one years at Mahakal. Conducts large-scale Mahamrityunjay jaap anusthans (1.25 lakh) with a team of eleven pandits and full sankalp documentation.",
+    "img": "assets/img/pandits/lakshman-acharya.jpg"
+  }
+]

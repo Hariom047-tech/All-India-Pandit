@@ -1,0 +1,144 @@
+/* Full-screen animated multi-photo banner for the temple detail page —
+   same scale and fade + Ken Burns treatment as the homepage hero, merged
+   with the existing .detail-banner / .banner-card design tokens from
+   base.css. */
+
+.detail-banner--slider {
+  background: #100c06;
+  height: min(88vh, 800px);
+}
+
+@media (max-width: 900px) {
+  .detail-banner--slider { height: min(72vh, 600px); }
+}
+
+.detail-banner__swiper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.detail-banner__swiper,
+.detail-banner__swiper .swiper-wrapper,
+.detail-banner__swiper .swiper-slide {
+  height: 100%;
+}
+
+.detail-banner__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  transform: scale(1.02);
+  cursor: zoom-in;
+}
+
+.detail-banner__img--active {
+  animation: detail-banner-kenburns 6600ms ease-out forwards;
+}
+
+@keyframes detail-banner-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail-banner__img--active { animation: none; }
+}
+
+/* .detail-banner::after and .detail-banner .shell (base.css) already
+   provide the legibility veil and shell stacking — no need to duplicate. */
+
+/* full-screen scale calls for a bigger title than the compact-strip default */
+.detail-banner--slider .banner-card {
+  bottom: 96px;
+  max-width: 680px;
+  padding: 32px 40px;
+}
+.detail-banner--slider .banner-card h1 {
+  font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+}
+
+.detail-banner__swiper .swiper-pagination {
+  bottom: 96px !important;
+  top: auto !important;
+  right: 24px !important;
+  left: auto !important;
+  width: auto !important;
+  display: flex;
+  gap: 7px;
+  z-index: 3;
+  padding: 7px 12px;
+  background: rgba(20, 15, 6, 0.4);
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(4px);
+}
+
+.detail-banner__swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 1;
+  margin: 0 !important;
+  transition: background 0.25s ease, width 0.25s ease;
+  border-radius: var(--r-pill);
+}
+
+.detail-banner__swiper .swiper-pagination-bullet-active {
+  width: 22px;
+  background: var(--gold-bright);
+}
+
+.banner-view-gallery { bottom: 46px; }
+
+@media (max-width: 760px) {
+  .detail-banner--slider .banner-card {
+    bottom: 88px;
+    left: 0;
+    right: 0;
+    max-width: none;
+    padding: 22px 20px;
+  }
+  .detail-banner__swiper .swiper-pagination { bottom: 44px !important; right: 16px !important; }
+  .banner-view-gallery { bottom: 12px; right: 16px; }
+}
+
+/* ── golden shimmer overlay ── */
+.banner-golden-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(212, 160, 23, 0.06) 60%,
+      rgba(26, 23, 20, 0.65) 100%
+    );
+}
+.banner-golden-shimmer::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold-bright, #f0c246), var(--gold, #d4a017), var(--gold-bright, #f0c246), transparent);
+  background-size: 200% 100%;
+  animation: banner-shimmer-line 4s ease-in-out infinite;
+}
+@keyframes banner-shimmer-line {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── banner card golden glow ── */
+.detail-banner--slider .banner-card {
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 60px rgba(212, 160, 23, 0.08);
+}
+

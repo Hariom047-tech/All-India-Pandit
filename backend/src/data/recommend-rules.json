@@ -1,0 +1,201 @@
+[
+  {
+    "keys": [
+      "new home",
+      "naya ghar",
+      "new house",
+      "flat",
+      "shifting",
+      "moving",
+      "griha"
+    ],
+    "svc": [
+      "griha-pravesh",
+      "satyanarayan-vrat",
+      "ganesh-puja"
+    ],
+    "why": "Moving into a new home calls for Vastu Shanti and Griha Pravesh before the first night is spent there."
+  },
+  {
+    "keys": [
+      "marriage",
+      "shaadi",
+      "wedding",
+      "vivah",
+      "engagement",
+      "sagai"
+    ],
+    "svc": [
+      "wedding",
+      "kundali",
+      "ganesh-puja"
+    ],
+    "why": "For a marriage, kundali milan and muhurat come first, then the Vivah Sanskar itself."
+  },
+  {
+    "keys": [
+      "health",
+      "illness",
+      "bimari",
+      "hospital",
+      "surgery",
+      "operation",
+      "recovery"
+    ],
+    "svc": [
+      "mahamrityunjay",
+      "rudrabhishek",
+      "durga-path"
+    ],
+    "why": "Mahamrityunjay jaap is the traditional anusthan for health and recovery, often paired with Rudrabhishek."
+  },
+  {
+    "keys": [
+      "money",
+      "paisa",
+      "loss",
+      "business",
+      "shop",
+      "office",
+      "job",
+      "career",
+      "promotion"
+    ],
+    "svc": [
+      "shop-opening",
+      "satyanarayan-diwali",
+      "satyanarayan-katha"
+    ],
+    "why": "For business and financial matters, Lakshmi-Kuber puja and Satyanarayan Katha are the usual recommendations."
+  },
+  {
+    "keys": [
+      "baby",
+      "child",
+      "bachcha",
+      "newborn",
+      "naming",
+      "mundan",
+      "annaprashan"
+    ],
+    "svc": [
+      "namkaran",
+      "mundan",
+      "annaprashan"
+    ],
+    "why": "The childhood sanskars follow a sequence — Namkaran, Annaprashan, then Mundan on a shubh muhurat."
+  },
+  {
+    "keys": [
+      "death",
+      "passed away",
+      "father",
+      "mother",
+      "shradh",
+      "pitru",
+      "ancestor",
+      "asthi"
+    ],
+    "svc": [
+      "pitru-dosh",
+      "antim-sanskar"
+    ],
+    "why": "Shradh, Tarpan and Pind daan bring peace to ancestors; Haridwar, Gaya and Puri are the traditional venues."
+  },
+  {
+    "keys": [
+      "planet",
+      "kundali",
+      "dosh",
+      "rahu",
+      "ketu",
+      "shani",
+      "sade sati",
+      "mangal",
+      "horoscope"
+    ],
+    "svc": [
+      "navgrah-shanti",
+      "kaal-sarp",
+      "satyanarayan-shanti",
+      "kundali"
+    ],
+    "why": "Planetary troubles need a kundali reading first, then only the specific graha shanti your chart calls for."
+  },
+  {
+    "keys": [
+      "fear",
+      "obstacle",
+      "rukavat",
+      "problem",
+      "tension",
+      "stress",
+      "peace",
+      "shanti"
+    ],
+    "svc": [
+      "sunderkand",
+      "havan-yagna",
+      "ganesh-puja"
+    ],
+    "why": "Sunderkand path and a Ganesh havan are the gentle, widely-recommended remedies for obstacles and unease."
+  },
+  {
+    "keys": [
+      "navratri",
+      "durga",
+      "devi",
+      "mata",
+      "jagran"
+    ],
+    "svc": [
+      "durga-path",
+      "navratri-sthapana",
+      "katha-jagran"
+    ],
+    "why": "For Devi upasana, Durga Saptashati path and Kalash Sthapana are the core rituals."
+  },
+  {
+    "keys": [
+      "construction",
+      "plot",
+      "land",
+      "building",
+      "foundation"
+    ],
+    "svc": [
+      "bhoomi-pujan",
+      "satyanarayan-vrat"
+    ],
+    "why": "Bhoomi Pujan and Shilanyas are performed before construction begins on a plot."
+  },
+  {
+    "keys": [
+      "diwali",
+      "lakshmi",
+      "ganesh chaturthi",
+      "holi",
+      "chhath",
+      "festival"
+    ],
+    "svc": [
+      "satyanarayan-diwali",
+      "ganesh-utsav",
+      "holika-dahan",
+      "chhath"
+    ],
+    "why": "Festival pujas are muhurat-sensitive — booking a pandit ji two weeks ahead is wise."
+  },
+  {
+    "keys": [
+      "thread",
+      "janeu",
+      "upanayan",
+      "yagyopavit"
+    ],
+    "svc": [
+      "janeu"
+    ],
+    "why": "Upanayan Sanskar marks the start of Vedic study and is performed with Gayatri diksha."
+  }
+]

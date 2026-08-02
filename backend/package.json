@@ -1,0 +1,26 @@
+{
+  "name": "panditconnect-backend",
+  "version": "1.0.0",
+  "description": "PanditConnect API — temple, pandit and service directory data (Postgres-backed), plus contact/enquiry/newsletter intake. Directory only: no booking or payment endpoints, by design.",
+  "private": true,
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/sync-seed-data.js && node scripts/generate-seed-sql.js",
+    "db:init": "node scripts/init-db.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.6.1",
+    "helmet": "^8.3.0",
+    "pg": "^8.12.0"
+  }
+}

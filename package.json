@@ -1,0 +1,19 @@
+{
+  "name": "panditconnect",
+  "version": "1.0.0",
+  "description": "PanditConnect — temple & Pandit directory. Monorepo root: dev tooling only, no runtime code.",
+  "private": true,
+  "scripts": {
+    "test": "npm run test:data && npm run test:smoke && npm run test:backend",
+    "test:data": "node tools/validate.js",
+    "test:smoke": "node tools/smoke.js",
+    "test:backend": "cd backend && npm test",
+    "seed": "node backend/scripts/sync-seed-data.js",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  }
+}

@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Hero slider — full-bleed animated temple carousel (React island)
+   Reuses design tokens (--gold, --shell, .btn, .eyebrow, .hero-title …)
+   defined globally in assets/css/style.css.
+   ========================================================================== */
+
+.hero-slider {
+  position: relative;
+  overflow: hidden;
+  min-height: min(92vh, 820px);
+  background: #100c06;
+  isolation: isolate;
+}
+
+.hero-slider__swiper,
+.hero-slider__swiper .swiper-wrapper,
+.hero-slider__swiper .swiper-slide {
+  height: min(92vh, 820px);
+}
+
+.hero-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-slide__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  transform: scale(1.02);
+  will-change: transform;
+}
+
+.hero-slide__img--active {
+  animation: hero-kenburns 6600ms ease-out forwards;
+}
+
+@keyframes hero-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide__img--active { animation: none; }
+}
+
+.hero-slide__caption {
+  position: absolute;
+  right: 20px;
+  bottom: 128px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #fff;
+  background: rgba(20, 15, 6, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(6px);
+}
+
+.hero-slide__dot { color: var(--gold-bright); }
+
+/* subtle bottom gradient — just enough for the caption badge */
+.hero-slider__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 60%, rgba(10, 8, 4, 0.35) 100%);
+}
+
+.hero-slider__content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  color: #fff;
+  pointer-events: none;
+}
+
+.hero-slider__content > * { pointer-events: auto; }
+
+.hero-slider .eyebrow { color: var(--gold-bright); }
+.hero-slider .eyebrow::before,
+.hero-slider .eyebrow::after { background: var(--gold-bright); }
+
+.hero-slider .hero-title {
+  color: #fff;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.45);
+  font-size: clamp(2.3rem, 4.6vw, 3.8rem);
+  max-width: 780px;
+}
+
+.hero-slider .hero-sub {
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+  max-width: 560px;
+}
+
+.hero-slider__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+/* pagination */
+.hero-slider__swiper .swiper-pagination {
+  bottom: 84px !important;
+  right: 20px !important;
+  left: auto !important;
+  width: auto !important;
+  display: flex;
+  gap: 8px;
+}
+
+.hero-slider__swiper .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 1;
+  margin: 0 !important;
+  transition: background 0.25s ease, width 0.25s ease;
+  border-radius: var(--r-pill);
+}
+
+.hero-slider__swiper .swiper-pagination-bullet-active {
+  width: 26px;
+  background: var(--gold-bright);
+}
+
+@media (max-width: 760px) {
+  .hero-slider,
+  .hero-slider__swiper,
+  .hero-slider__swiper .swiper-wrapper,
+  .hero-slider__swiper .swiper-slide {
+    height: min(78vh, 620px);
+  }
+  .hero-slide__caption { left: 20px; right: 20px; bottom: 92px; }
+  .hero-slider__swiper .swiper-pagination { bottom: 44px !important; }
+}

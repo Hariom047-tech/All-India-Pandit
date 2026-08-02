@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Ankit Verma",
+    "city": "Lucknow",
+    "rating": 5,
+    "text": "Pandit ji ke saath direct baat hui, koi middleman nahi. Griha Pravesh ke liye samagri list pehle hi WhatsApp par mil gayi — sab kuch time par ho gaya.",
+    "service": "Griha Pravesh"
+  },
+  {
+    "name": "Priya Nair",
+    "city": "Bengaluru",
+    "rating": 5,
+    "text": "We needed a Tamil-speaking pandit in Madurai for our wedding. Found three profiles with video intros, spoke to two on call, and booked the one we connected with. No commission, no pressure.",
+    "service": "Wedding Ceremony"
+  },
+  {
+    "name": "Rohit Deshmukh",
+    "city": "Pune",
+    "rating": 5,
+    "text": "Kaal Sarp dosh puja Trimbakeshwar mein karani thi. Platform par temple ke saath jude pandit ji mile — verification aur certificate dono dikhe. Bharosa ho gaya.",
+    "service": "Kaal Sarp Dosh Puja"
+  },
+  {
+    "name": "Sneha Agarwal",
+    "city": "Kolkata",
+    "rating": 4,
+    "text": "Durga Saptashati path ke liye Kamakhya ke pandit ji se seedha contact hua. Reviews padh ke decide kiya. Bas mobile app aa jaye toh aur asaan ho.",
+    "service": "Durga Saptashati Path"
+  },
+  {
+    "name": "Karthik Menon",
+    "city": "Dubai",
+    "rating": 5,
+    "text": "Living abroad, arranging my father's Shradh in Haridwar was my biggest worry. The pandit ji did a video call during the tarpan so we could all participate. Deeply grateful.",
+    "service": "Pitru Dosh / Shradh"
+  },
+  {
+    "name": "Manish Jain",
+    "city": "Indore",
+    "rating": 5,
+    "text": "Shop opening ka muhurat aur puja dono same pandit ji ne kiya. Kundali dekhi, phir date batayi. Direct call feature sabse best hai.",
+    "service": "Shop / Office Opening"
+  }
+]

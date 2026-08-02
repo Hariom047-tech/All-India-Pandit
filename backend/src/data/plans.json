@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Free",
+    "price": "₹0",
+    "per": "forever",
+    "feats": [
+      "Basic profile",
+      "1 temple listing",
+      "Standard search placement",
+      "Up to 3 services"
+    ],
+    "cta": "Current plan"
+  },
+  {
+    "name": "Silver",
+    "price": "₹299",
+    "per": "/month",
+    "feats": [
+      "Verified badge",
+      "5 temple listings",
+      "60-sec video intro",
+      "Priority in search",
+      "Unlimited services"
+    ],
+    "cta": "Upgrade"
+  },
+  {
+    "name": "Gold",
+    "price": "₹599",
+    "per": "/month",
+    "feats": [
+      "Everything in Silver",
+      "Homepage featuring",
+      "Analytics dashboard",
+      "QR profile code",
+      "Review response tools"
+    ],
+    "cta": "Upgrade",
+    "popular": true
+  },
+  {
+    "name": "Diamond",
+    "price": "₹999",
+    "per": "/month",
+    "feats": [
+      "Everything in Gold",
+      "Top placement always",
+      "Multi-city listing",
+      "Dedicated support line",
+      "Leaderboard eligibility"
+    ],
+    "cta": "Upgrade"
+  }
+]

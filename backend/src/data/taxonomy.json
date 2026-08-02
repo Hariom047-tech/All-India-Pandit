@@ -1,0 +1,52 @@
+{
+  "cities": [
+    "Varanasi",
+    "Ujjain",
+    "Haridwar",
+    "Mathura",
+    "Ayodhya",
+    "Tirupati",
+    "Puri",
+    "Madurai",
+    "Nashik",
+    "Dwarka",
+    "Amritsar",
+    "Guwahati",
+    "Mumbai",
+    "Delhi",
+    "Jaipur"
+  ],
+  "states": [
+    "Uttar Pradesh",
+    "Madhya Pradesh",
+    "Uttarakhand",
+    "Andhra Pradesh",
+    "Odisha",
+    "Tamil Nadu",
+    "Maharashtra",
+    "Gujarat",
+    "Punjab",
+    "Assam",
+    "Delhi",
+    "Rajasthan"
+  ],
+  "languages": [
+    "Hindi",
+    "English",
+    "Sanskrit",
+    "Marathi",
+    "Tamil",
+    "Telugu",
+    "Bengali",
+    "Gujarati",
+    "Kannada",
+    "Malayalam",
+    "Punjabi",
+    "Odia",
+    "Assamese",
+    "Bhojpuri",
+    "Braj",
+    "Garhwali",
+    "Marwari"
+  ]
+}

@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Golden temple at sunset">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#9EC1DC"/>
+      <stop offset="30%"  stop-color="#D8DFE0"/>
+      <stop offset="55%"  stop-color="#F6DFB4"/>
+      <stop offset="78%"  stop-color="#F8C878"/>
+      <stop offset="100%" stop-color="#EDA855"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="16%" cy="70%" r="42%">
+      <stop offset="0%"   stop-color="#FFFBEA" stop-opacity=".98"/>
+      <stop offset="34%"  stop-color="#FFE6A8" stop-opacity=".66"/>
+      <stop offset="100%" stop-color="#FFE6A8" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2=".3">
+      <stop offset="0%"   stop-color="#F3DCA9"/>
+      <stop offset="38%"  stop-color="#DFB671"/>
+      <stop offset="72%"  stop-color="#C2913F"/>
+      <stop offset="100%" stop-color="#96682A"/>
+    </linearGradient>
+    <linearGradient id="stoneDark" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#C79A54"/>
+      <stop offset="100%" stop-color="#8A5F26"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2=".7" y2="1">
+      <stop offset="0%"   stop-color="#FFF3C4"/>
+      <stop offset="42%"  stop-color="#F0C949"/>
+      <stop offset="100%" stop-color="#A9791A"/>
+    </linearGradient>
+    <linearGradient id="plinth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#EBD3A2"/>
+      <stop offset="100%" stop-color="#BE9455"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#F2E2BE"/>
+      <stop offset="100%" stop-color="#D6B683"/>
+    </linearGradient>
+
+    <!-- one curvilinear nagara shikhara, reused at three scales -->
+    <clipPath id="shikClip">
+      <path d="M-130 0 C-112 -196 -74 -330 0 -474 C74 -330 112 -196 130 0 Z"/>
+    </clipPath>
+    <g id="shikhara">
+      <path d="M-130 0 C-112 -196 -74 -330 0 -474 C74 -330 112 -196 130 0 Z" fill="url(#stone)"/>
+      <g clip-path="url(#shikClip)">
+        <!-- horizontal courses -->
+        <g fill="#FFFFFF" opacity=".17">
+          <rect x="-140" y="-46"  width="280" height="7"/>
+          <rect x="-140" y="-96"  width="280" height="7"/>
+          <rect x="-140" y="-148" width="280" height="7"/>
+          <rect x="-140" y="-202" width="280" height="7"/>
+          <rect x="-140" y="-256" width="280" height="6"/>
+          <rect x="-140" y="-308" width="280" height="6"/>
+          <rect x="-140" y="-358" width="280" height="5"/>
+          <rect x="-140" y="-404" width="280" height="5"/>
+        </g>
+        <!-- vertical ribs (latas) -->
+        <g fill="#8A5F26" opacity=".2">
+          <rect x="-4" y="-470" width="8" height="470"/>
+          <rect x="-58" y="-430" width="7" height="430"/>
+          <rect x="51" y="-430" width="7" height="430"/>
+          <rect x="-104" y="-330" width="6" height="330"/>
+          <rect x="98" y="-330" width="6" height="330"/>
+        </g>
+        <!-- shadowed right flank -->
+        <rect x="26" y="-474" width="140" height="474" fill="#7C5520" opacity=".16"/>
+        <!-- niche shrines -->
+        <g fill="#6E4A1C" opacity=".42">
+          <path d="M-22 -30h44v-46a22 22 0 00-44 0z"/>
+          <path d="M-74 -30h34v-34a17 17 0 00-34 0z"/>
+          <path d="M40 -30h34v-34a17 17 0 00-34 0z"/>
+        </g>
+      </g>
+      <!-- amalaka + kalash finial -->
+      <ellipse cy="-482" rx="30" ry="12" fill="url(#gold)"/>
+      <ellipse cy="-494" rx="21" ry="9"  fill="url(#gold)"/>
+      <path d="M-11 -500h22l-4 -18h-14z" fill="url(#gold)"/>
+      <circle cy="-528" r="11" fill="url(#gold)"/>
+      <path d="M-1.6 -544h3.2v-22h-3.2z" fill="url(#gold)"/>
+      <path d="M2 -566l34 9-34 9z" fill="#D9531E"/>
+    </g>
+  </defs>
+
+  <!-- sky -->
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#sunGlow)"/>
+  <circle cx="256" cy="630" r="74" fill="#FFFCEC" opacity=".95"/>
+  <circle cx="256" cy="630" r="112" fill="#FFF3CE" opacity=".35"/>
+
+  <g fill="#FFFFFF" opacity=".38">
+    <ellipse cx="430" cy="128" rx="164" ry="30"/>
+    <ellipse cx="546" cy="108" rx="104" ry="22"/>
+    <ellipse cx="1216" cy="182" rx="196" ry="34"/>
+    <ellipse cx="1348" cy="156" rx="118" ry="24"/>
+    <ellipse cx="880" cy="72"  rx="132" ry="20"/>
+  </g>
+  <g fill="none" stroke="#8A6C42" stroke-width="2.4" stroke-linecap="round" opacity=".4">
+    <path d="M1052 150c8-9 17-9 25 0M1082 138c7-8 15-8 22 0M1120 162c6-7 13-7 19 0"/>
+  </g>
+
+  <!-- distant temples -->
+  <g opacity=".34">
+    <use href="#shikhara" transform="translate(1352 612) scale(.42)" />
+    <use href="#shikhara" transform="translate(1468 622) scale(.3)" />
+    <rect x="1300" y="600" width="300" height="26" fill="#C79A54"/>
+  </g>
+  <g opacity=".28">
+    <use href="#shikhara" transform="translate(112 606) scale(.34)"/>
+    <rect x="0" y="596" width="200" height="26" fill="#C79A54"/>
+  </g>
+
+  <!-- courtyard, drawn before the temple so the plinth reads as sitting on it -->
+  <rect y="742" width="1600" height="158" fill="url(#ground)"/>
+  <g opacity=".16" stroke="#8A5F26" stroke-width="2">
+    <path d="M0 782h1600M0 828h1600M0 874h1600"/>
+    <path d="M200 742v158M520 742v158M900 742v158M1240 742v158"/>
+  </g>
+
+  <!-- main temple, held left of centre so the hero panel never covers the spire -->
+  <g transform="translate(-210 0)">
+  <!-- flanking shikharas first (behind) -->
+  <use href="#shikhara" transform="translate(474 604) scale(.6)"/>
+  <use href="#shikhara" transform="translate(1010 604) scale(.6)"/>
+  <use href="#shikhara" transform="translate(360 612) scale(.4)"/>
+  <use href="#shikhara" transform="translate(1122 612) scale(.4)"/>
+
+  <!-- central shikhara -->
+  <use href="#shikhara" transform="translate(742 610) scale(1)"/>
+
+  <!-- mandapa (pillared hall) in front -->
+  <g>
+    <!-- tiered pyramidal roof -->
+    <path d="M560 470h364l-30 34H590z" fill="url(#stoneDark)"/>
+    <path d="M540 504h404l-26 32H566z" fill="url(#stone)"/>
+    <path d="M520 536h444l-24 30H544z" fill="url(#stoneDark)"/>
+    <path d="M500 566h484v22H500z" fill="url(#gold)" opacity=".82"/>
+    <!-- small kalash on the mandapa -->
+    <ellipse cx="742" cy="466" rx="19" ry="8" fill="url(#gold)"/>
+    <circle cx="742" cy="450" r="9" fill="url(#gold)"/>
+
+    <!-- hall body -->
+    <rect x="500" y="588" width="484" height="122" fill="url(#stone)"/>
+    <!-- pillars -->
+    <g>
+      <g fill="url(#stoneDark)">
+        <rect x="524" y="600" width="24" height="110" rx="4"/>
+        <rect x="596" y="600" width="24" height="110" rx="4"/>
+        <rect x="864" y="600" width="24" height="110" rx="4"/>
+        <rect x="936" y="600" width="24" height="110" rx="4"/>
+      </g>
+      <g fill="url(#gold)" opacity=".7">
+        <rect x="518" y="596" width="36" height="10" rx="3"/>
+        <rect x="590" y="596" width="36" height="10" rx="3"/>
+        <rect x="858" y="596" width="36" height="10" rx="3"/>
+        <rect x="930" y="596" width="36" height="10" rx="3"/>
+      </g>
+    </g>
+    <!-- torana arch + sanctum doorway -->
+    <path d="M652 710V648a90 90 0 01180 0v62z" fill="#6E4A1C"/>
+    <path d="M652 648a90 90 0 01180 0v10H652z" fill="url(#gold)" opacity=".92"/>
+    <path d="M672 710V652a70 70 0 01140 0v58z" fill="#4A2F12"/>
+    <path d="M694 710V660a48 48 0 0196 0v50z" fill="#241505"/>
+    <!-- inner lamp glow -->
+    <ellipse cx="742" cy="682" rx="26" ry="30" fill="#FFB733" opacity=".5"/>
+    <ellipse cx="742" cy="680" rx="10" ry="16" fill="#FFE7A6" opacity=".85"/>
+    <!-- steps -->
+    <g fill="#EBD3A2">
+      <rect x="620" y="710" width="244" height="15"/>
+      <rect x="600" y="725" width="284" height="15"/>
+      <rect x="580" y="740" width="324" height="15"/>
+    </g>
+    <g fill="#C9A469" opacity=".55">
+      <rect x="620" y="723" width="244" height="2"/>
+      <rect x="600" y="738" width="284" height="2"/>
+    </g>
+  </g>
+
+  <!-- plinth / jagati -->
+  <rect x="440" y="710" width="604" height="18" fill="url(#plinth)"/>
+  <rect x="424" y="728" width="636" height="14" fill="#C9A469"/>
+
+  <!-- brass diya stands flanking the steps -->
+  <g>
+    <g transform="translate(536 742)">
+      <rect x="-5" y="-58" width="10" height="58" fill="url(#gold)"/>
+      <ellipse cy="-62" rx="20" ry="7" fill="url(#gold)"/>
+      <ellipse cy="-74" rx="8" ry="13" fill="#FFB733"/>
+      <ellipse cy="-78" rx="4" ry="7" fill="#FFF0BE"/>
+      <ellipse cy="0" rx="17" ry="5" fill="#8A5F26" opacity=".3"/>
+    </g>
+    <g transform="translate(948 742)">
+      <rect x="-5" y="-58" width="10" height="58" fill="url(#gold)"/>
+      <ellipse cy="-62" rx="20" ry="7" fill="url(#gold)"/>
+      <ellipse cy="-74" rx="8" ry="13" fill="#FFB733"/>
+      <ellipse cy="-78" rx="4" ry="7" fill="#FFF0BE"/>
+      <ellipse cy="0" rx="17" ry="5" fill="#8A5F26" opacity=".3"/>
+    </g>
+  </g>
+
+  <!-- devotees -->
+  <g>
+    <g transform="translate(268 790)" opacity=".8">
+      <ellipse cy="4" rx="20" ry="5" fill="#8A5F26" opacity=".26"/>
+      <circle cy="-58" r="12" fill="#3E2A18"/>
+      <path d="M-14 -46h28l7 46h-42z" fill="#C2600F"/>
+      <path d="M0 -46l-9 46h18z" fill="#E07A1B"/>
+    </g>
+    <g transform="translate(318 796)" opacity=".8">
+      <ellipse cy="4" rx="18" ry="5" fill="#8A5F26" opacity=".26"/>
+      <circle cy="-52" r="11" fill="#4A3320"/>
+      <path d="M-13 -41h26l6 41h-38z" fill="#8C3B0B"/>
+    </g>
+    <g transform="translate(1174 792)" opacity=".8">
+      <ellipse cy="4" rx="20" ry="5" fill="#8A5F26" opacity=".26"/>
+      <circle cy="-56" r="12" fill="#3E2A18"/>
+      <path d="M-14 -44h28l7 44h-42z" fill="#B4520D"/>
+      <path d="M0 -44l-9 44h18z" fill="#F0A03C"/>
+    </g>
+    <g transform="translate(1224 798)" opacity=".8">
+      <ellipse cy="4" rx="17" ry="5" fill="#8A5F26" opacity=".26"/>
+      <circle cy="-50" r="10" fill="#5A3D24"/>
+      <path d="M-12 -40h24l6 40h-36z" fill="#7A2E08"/>
+    </g>
+    <!-- pair climbing the steps -->
+    <g transform="translate(742 744) scale(.72)" opacity=".72">
+      <circle cy="-54" r="12" fill="#3E2A18"/>
+      <path d="M-14 -42h28l7 42h-42z" fill="#D2760F"/>
+    </g>
+  </g>
+
+  <!-- marigold garland strung across the entrance -->
+  <path d="M584 596q158 46 316 0" fill="none" stroke="#E8862A" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+  <g fill="#F5A623">
+    <circle cx="620" cy="608" r="6"/><circle cx="668" cy="618" r="6"/><circle cx="716" cy="623" r="6"/>
+    <circle cx="768" cy="623" r="6"/><circle cx="816" cy="618" r="6"/><circle cx="864" cy="608" r="6"/>
+  </g>
+  </g>
+</svg>

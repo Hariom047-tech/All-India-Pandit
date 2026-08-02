@@ -1,0 +1,7 @@
+**/node_modules
+**/.env
+.git
+.gitignore
+tools/shots
+backend/src/data/submissions/*.jsonl
+*.log

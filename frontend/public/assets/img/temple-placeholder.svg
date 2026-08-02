@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Temple">
+  <defs>
+    <linearGradient id="tpSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CFE0EC"/>
+      <stop offset="55%" stop-color="#F6E6C4"/>
+      <stop offset="100%" stop-color="#F2CE86"/>
+    </linearGradient>
+    <linearGradient id="tpStone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E9CB92"/>
+      <stop offset="55%" stop-color="#D2A257"/>
+      <stop offset="100%" stop-color="#A87A2C"/>
+    </linearGradient>
+    <linearGradient id="tpGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE8A0"/>
+      <stop offset="100%" stop-color="#B98B15"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#tpSky)"/>
+  <circle cx="112" cy="118" r="38" fill="#FFF7DF" opacity=".9"/>
+  <g fill="#FFFFFF" opacity=".4"><ellipse cx="430" cy="80" rx="86" ry="18"/><ellipse cx="486" cy="66" rx="54" ry="13"/></g>
+  <path d="M300 52l8 24 8-18 7 24 58 176H219l58-176 7-24 8 18z" fill="url(#tpStone)"/>
+  <path d="M300 52l22 30-22 14-22-14z" fill="url(#tpGold)"/>
+  <circle cx="300" cy="30" r="8" fill="url(#tpGold)"/>
+  <path d="M196 148l12 26 48 104H136l48-104z" fill="url(#tpStone)" opacity=".9"/>
+  <path d="M404 148l12 26 48 104H344l48-104z" fill="url(#tpStone)" opacity=".9"/>
+  <rect x="150" y="278" width="300" height="80" fill="url(#tpStone)"/>
+  <rect x="150" y="278" width="300" height="9" fill="url(#tpGold)" opacity=".8"/>
+  <path d="M270 358v-42a30 30 0 0160 0v42z" fill="#3A2410"/>
+  <g fill="#E6CE9F"><rect x="240" y="358" width="120" height="10"/><rect x="226" y="368" width="148" height="10"/></g>
+  <rect y="378" width="600" height="22" fill="#DEC59B"/>
+</svg>

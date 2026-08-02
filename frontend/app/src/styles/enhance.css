@@ -1,0 +1,443 @@
+/* ==========================================================================
+   Additions layered on top of the ported design system (base.css):
+   the redesigned avatar-forward pandit card, and small Hindu-ritual touches.
+   ========================================================================== */
+
+/* ------------------------------------------------------------ pandit card (Astrotalk style) */
+.astro-card {
+  background: linear-gradient(150deg, #fffcf5 0%, #fff8e8 100%);
+  border: 1px solid rgba(212, 160, 23, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(212, 160, 23, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.astro-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(212, 160, 23, 0.12);
+}
+
+.astro-card__link-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+.astro-card__link-wrap:hover { color: inherit; }
+
+/* ── Header ── */
+.astro-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 20px 14px;
+  position: relative;
+}
+
+.astro-card__avatar {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #f0f0f0;
+}
+.astro-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.astro-card__header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.astro-card__name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.astro-card__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.astro-card__verified {
+  color: #10b981; /* green */
+  display: flex;
+}
+
+.astro-card__meta-short {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Tags ── */
+.astro-card__tags {
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.astro-card__tag {
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ── Stats ── */
+.astro-card__stats-row {
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.astro-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+.astro-card__star {
+  color: var(--gold);
+  font-size: 1.1rem;
+}
+.astro-card__rating-num {
+  font-weight: 700;
+  color: var(--text);
+}
+.astro-card__orders {
+  color: var(--text-2);
+  margin-left: 4px;
+}
+
+.astro-card__online {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #10b981;
+  font-weight: 600;
+}
+.astro-card__online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* ── Footer ── */
+.astro-card__footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(212, 160, 23, 0.15);
+  padding: 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(240, 194, 70, 0.05); /* very soft gold tint */
+}
+
+.astro-card__price-col {
+  display: flex;
+  flex-direction: column;
+}
+.astro-card__price {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.astro-card__free {
+  font-size: 0.75rem;
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+
+.astro-card__actions {
+  display: flex;
+  gap: 6px;
+}
+.astro-card__btn {
+  padding: 6px 10px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: inline-flex;
+  gap: 4px;
+  background: #fff;
+}
+.astro-card__btn--green {
+  border-color: #10b981;
+  color: #10b981;
+}
+.astro-card__btn--green:hover {
+  background: #10b981;
+  color: #fff;
+}
+
+/* -------------------------------------------------------- 3D service icon */
+/* A glossy emoji "sticker" sitting on a soft gradient tile, standing in for
+   the flat line-icon — reads as a dimensional 3D icon at a glance. */
+.svc-ico--emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 26px;
+  background: radial-gradient(120% 120% at 30% 25%, #fff8e7 0%, #fbe9c2 45%, #f0d9a0 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -6px 10px rgba(168, 122, 18, 0.14),
+    0 8px 18px rgba(168, 122, 18, 0.16);
+  font-size: 2.1rem;
+  line-height: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card--hover:hover .svc-ico--emoji,
+a.card:hover .svc-ico--emoji {
+  transform: translateY(-3px) scale(1.06) rotate(-3deg);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -6px 10px rgba(168, 122, 18, 0.14),
+    0 12px 24px rgba(168, 122, 18, 0.24);
+}
+.svc-ico--emoji--lg {
+  width: 108px;
+  height: 108px;
+  border-radius: 32px;
+  font-size: 3.1rem;
+  margin: 0 auto 16px;
+}
+
+/* --------------------------------------------------------- ritual accents */
+/* soft mandala corner watermark, used behind section headers site-wide */
+.ritual-corner {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.06;
+  z-index: 0;
+}
+
+.page-transition-root { min-height: 60vh; }
+
+/* filter chip used on Pandits/Temples/Services listing pages */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  background: var(--white);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--gold); color: var(--gold-deep); }
+.chip.is-active { background: var(--gold-grad); color: #fff; border-color: transparent; box-shadow: var(--sh-gold); }
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.sort-select {
+  appearance: none;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 9px 34px 9px 16px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a017' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 15px;
+}
+
+/* -------------------------------------------------------- gallery + lightbox */
+.temple-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.temple-gallery__item {
+  position: relative;
+  border: 0;
+  padding: 0;
+  cursor: zoom-in;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--ivory);
+}
+.temple-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.temple-gallery__item:hover img { transform: scale(1.08); }
+.temple-gallery__item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.temple-gallery__item:hover::after { opacity: 1; }
+.temple-gallery__zoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--gold-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.temple-gallery__item:hover .temple-gallery__zoom { opacity: 1; transform: translateY(0); }
+
+/* clickable hint pill sitting on the detail banner */
+.banner-view-gallery {
+  position: absolute;
+  z-index: 2;
+  right: 24px;
+  bottom: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
+  background: rgba(20, 15, 6, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.banner-view-gallery:hover { background: rgba(20, 15, 6, 0.75); }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(10, 8, 4, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.lightbox__figure {
+  max-width: min(90vw, 1100px);
+  max-height: 86vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.lightbox__figure img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.lightbox__figure figcaption {
+  margin-top: 14px;
+  color: #fff;
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  text-align: center;
+}
+.lightbox__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+}
+.lightbox__close:hover { background: rgba(255, 255, 255, 0.22); }
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  cursor: pointer;
+}
+.lightbox__nav:hover { background: rgba(255, 255, 255, 0.22); }
+.lightbox__nav--prev { left: 16px; }
+.lightbox__nav--next { right: 16px; }
+.lightbox__counter {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 640px) {
+  .lightbox { padding: 16px; }
+  .lightbox__nav { width: 42px; height: 42px; }
+  .banner-view-gallery { right: 16px; bottom: 16px; padding: 8px 14px; font-size: 0.78rem; }
+}
+
+/* --------------------------------------------------------------- 404 page */
+.notfound { text-align: center; padding: 110px 24px; }
+.notfound .om-mark { font-size: 4.5rem; color: var(--gold); }

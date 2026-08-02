@@ -1,0 +1,583 @@
+[
+  {
+    "id": "griha-pravesh",
+    "name": "Griha Pravesh",
+    "icon": "home",
+    "cat": "life",
+    "tag": "New home inauguration",
+    "dur": "3–4 hours",
+    "pandits": 186,
+    "desc": "Vastu Shanti and Griha Pravesh puja performed before entering a new home, invoking Ganesh, Vastu Purush and the nine planets for peace and prosperity.",
+    "samagri": [
+      "Kalash with copper vessel",
+      "Coconut with husk",
+      "Mango leaves",
+      "Roli, haldi, akshat",
+      "Cow ghee & camphor",
+      "Havan samagri 500g",
+      "Navgrah samidha",
+      "Red cloth (1m)",
+      "Panchamrit ingredients",
+      "Fresh flowers & garland"
+    ]
+  },
+  {
+    "id": "satyanarayan-katha",
+    "name": "Satyanarayan Katha",
+    "icon": "book-open",
+    "cat": "daily",
+    "tag": "Blessings and prosperity",
+    "dur": "2–3 hours",
+    "pandits": 214,
+    "desc": "Recitation of the Shri Satyanarayan Vrat Katha in five chapters, traditionally performed on Purnima or after a wish is fulfilled.",
+    "samagri": [
+      "Banana leaves & stem",
+      "Sapatha (wheat flour, sugar, ghee) for prasad",
+      "Panchamrit",
+      "Tulsi leaves",
+      "Betel leaves & nuts",
+      "Kalash & coconut",
+      "Yellow cloth",
+      "Fruits (5 varieties)"
+    ]
+  },
+  {
+    "id": "havan-yagna",
+    "name": "Havan / Yagna",
+    "icon": "flame",
+    "cat": "daily",
+    "tag": "Purification ritual",
+    "dur": "2–5 hours",
+    "pandits": 248,
+    "desc": "Fire ritual with Vedic mantra offerings for purification of space and mind. Available as Ganesh, Navgrah, Rudra or Chandi havan.",
+    "samagri": [
+      "Havan kund",
+      "Mango wood samidha 2kg",
+      "Havan samagri 1kg",
+      "Cow ghee 500g",
+      "Camphor & kapoor",
+      "Black sesame & barley",
+      "Guggul & loban",
+      "Purnahuti coconut"
+    ]
+  },
+  {
+    "id": "wedding",
+    "name": "Wedding Ceremony",
+    "icon": "rings",
+    "cat": "life",
+    "tag": "Traditional Hindu marriage",
+    "dur": "4–6 hours",
+    "pandits": 172,
+    "desc": "Complete Vivah Sanskar — Ganesh puja, Kanyadaan, Panigrahan, Saptapadi and Sindoor daan, performed per your family tradition (Gotra-specific).",
+    "samagri": [
+      "Mandap samagri set",
+      "Havan kund & samidha",
+      "Mangalsutra & sindoor",
+      "Varmala (2)",
+      "Kalash (4)",
+      "Ganesh-Gauri idols",
+      "Red & yellow cloth",
+      "Puffed rice (laja) 1kg"
+    ]
+  },
+  {
+    "id": "mundan",
+    "name": "Mundan Ceremony",
+    "icon": "scissors",
+    "cat": "life",
+    "tag": "First haircut ritual for kids",
+    "dur": "1–2 hours",
+    "pandits": 158,
+    "desc": "Chudakarana Sanskar — the child's first tonsure, performed at a temple or home on an auspicious muhurat for health and long life.",
+    "samagri": [
+      "Kalash & coconut",
+      "Ganga jal",
+      "Silver razor (or barber kit)",
+      "Turmeric paste",
+      "Sweet prasad",
+      "New clothes for child",
+      "Flowers & akshat"
+    ]
+  },
+  {
+    "id": "sunderkand",
+    "name": "Sunderkand Path",
+    "icon": "book-open",
+    "cat": "daily",
+    "tag": "Devotional reciting of Sunderkand",
+    "dur": "3 hours",
+    "pandits": 196,
+    "desc": "Melodious recitation of the Sunderkand from Ramcharitmanas with dholak and manjira — a favourite for removing obstacles and fear.",
+    "samagri": [
+      "Hanuman ji idol/picture",
+      "Sindoor & chameli oil",
+      "Boondi laddoo prasad",
+      "Red flag & cloth",
+      "Diya & ghee",
+      "Tulsi mala",
+      "Banana & jaggery"
+    ]
+  },
+  {
+    "id": "rudrabhishek",
+    "name": "Rudrabhishek",
+    "icon": "trishul",
+    "cat": "shanti",
+    "tag": "Rudra mantra chanting for Shiva",
+    "dur": "2–3 hours",
+    "pandits": 164,
+    "desc": "Abhishek of the Shivling with panchamrit while chanting the Rudri path — highly recommended on Mondays, Pradosh and Shivratri.",
+    "samagri": [
+      "Panchamrit (milk, curd, ghee, honey, sugar)",
+      "Bel patra 108",
+      "Dhatura & bhang",
+      "White flowers",
+      "Gangajal",
+      "Bhasma & chandan",
+      "Black sesame"
+    ]
+  },
+  {
+    "id": "navgrah-shanti",
+    "name": "Navgraha Shanti",
+    "icon": "sparkles",
+    "cat": "shanti",
+    "tag": "Appeasing the nine planets",
+    "dur": "3–4 hours",
+    "pandits": 142,
+    "desc": "Graha shanti havan with planet-specific mantra japa and daan, prescribed from your janm kundali to reduce malefic planetary effects.",
+    "samagri": [
+      "Nine grains (nav dhanya)",
+      "Nine samidha woods",
+      "Nine cloth pieces",
+      "Navratna or substitutes",
+      "Havan samagri",
+      "Til, jau, ghee",
+      "Daan items per planet"
+    ]
+  },
+  {
+    "id": "ganesh-puja",
+    "name": "Ganesh Puja",
+    "icon": "om",
+    "cat": "daily",
+    "tag": "Obstacle-removing first puja",
+    "dur": "1–2 hours",
+    "pandits": 232,
+    "desc": "Shri Ganesh Sthapana and Atharvashirsha path — the mandatory opening ritual for every auspicious beginning.",
+    "samagri": [
+      "Ganesh idol (clay)",
+      "Durva grass 21",
+      "Modak prasad",
+      "Red flowers",
+      "Sindoor",
+      "Kalash & coconut"
+    ]
+  },
+  {
+    "id": "namkaran",
+    "name": "Namkaran Sanskar",
+    "icon": "baby",
+    "cat": "life",
+    "tag": "Baby naming ceremony",
+    "dur": "1–2 hours",
+    "pandits": 138,
+    "desc": "Naming ceremony on the 11th/12th day, with nakshatra-based name suggestion, Surya darshan and blessings for the newborn.",
+    "samagri": [
+      "Honey & gold ring",
+      "Kalash & mango leaves",
+      "Cradle decoration",
+      "Panchamrit",
+      "Akshat & haldi",
+      "Sweet prasad"
+    ]
+  },
+  {
+    "id": "annaprashan",
+    "name": "Annaprashan",
+    "icon": "kalash",
+    "cat": "life",
+    "tag": "First solid food ritual",
+    "dur": "1 hour",
+    "pandits": 112,
+    "desc": "The baby's first rice ceremony performed on a shubh muhurat with kheer prepared in silver, followed by blessings from elders.",
+    "samagri": [
+      "Silver bowl & spoon",
+      "Kheer ingredients",
+      "Kalash",
+      "Fruits & flowers",
+      "New clothes"
+    ]
+  },
+  {
+    "id": "satyanarayan-vrat",
+    "name": "Vastu Shanti",
+    "icon": "shield-check",
+    "cat": "shanti",
+    "tag": "Correcting vastu doshas",
+    "dur": "2–3 hours",
+    "pandits": 126,
+    "desc": "Vastu dosh nivaran puja with Vastu Purush mandala, for homes, shops and offices facing recurring problems.",
+    "samagri": [
+      "Vastu yantra",
+      "Copper kalash",
+      "Nav dhanya",
+      "Havan samagri",
+      "Red cloth",
+      "Panchdhatu items"
+    ]
+  },
+  {
+    "id": "katha-bhagwat",
+    "name": "Bhagwat Katha",
+    "icon": "book-open",
+    "cat": "festival",
+    "tag": "Seven-day Bhagwat recital",
+    "dur": "7 days",
+    "pandits": 84,
+    "desc": "Shrimad Bhagwat Mahapuran katha over seven days with vyas peeth, sung by an experienced katha vachak.",
+    "samagri": [
+      "Vyas peeth setup",
+      "Bhagwat granth",
+      "Tulsi mala",
+      "Peacock feather & flute",
+      "Chhappan bhog items",
+      "Mandap decoration"
+    ]
+  },
+  {
+    "id": "durga-path",
+    "name": "Durga Saptashati Path",
+    "icon": "flame",
+    "cat": "shanti",
+    "tag": "Chandi path for shakti",
+    "dur": "4–6 hours",
+    "pandits": 96,
+    "desc": "Complete 700-verse Durga Saptashati recitation with Kavach, Argala and Keelak — powerful during Navratri.",
+    "samagri": [
+      "Durga idol/picture",
+      "Red chunri & bangles",
+      "Coconut & kalash",
+      "Red flowers (hibiscus)",
+      "Havan samagri",
+      "Kumkum & sindoor"
+    ]
+  },
+  {
+    "id": "mahamrityunjay",
+    "name": "Mahamrityunjay Jaap",
+    "icon": "trishul",
+    "cat": "shanti",
+    "tag": "Health & longevity mantra japa",
+    "dur": "3–5 hours",
+    "pandits": 118,
+    "desc": "Sankalp-based Mahamrityunjay mantra japa (11,000 / 1.25 lakh) for recovery from illness and protection from untimely danger.",
+    "samagri": [
+      "Rudraksh mala",
+      "Shivling",
+      "Bel patra & white flowers",
+      "Milk & gangajal",
+      "Havan samagri",
+      "Black til"
+    ]
+  },
+  {
+    "id": "satyanarayan-akhand",
+    "name": "Akhand Ramayan Path",
+    "icon": "book-open",
+    "cat": "festival",
+    "tag": "24-hour continuous recital",
+    "dur": "24 hours",
+    "pandits": 72,
+    "desc": "Non-stop 24-hour Ramcharitmanas recitation by a team of pandits, ending with havan and bhandara.",
+    "samagri": [
+      "Ramcharitmanas granth",
+      "Team seating arrangement",
+      "Akhand diya",
+      "Havan kund",
+      "Bhog & prasad",
+      "Flowers & garlands"
+    ]
+  },
+  {
+    "id": "kaal-sarp",
+    "name": "Kaal Sarp Dosh Puja",
+    "icon": "alert-circle",
+    "cat": "shanti",
+    "tag": "Rahu–Ketu dosh remedy",
+    "dur": "3–4 hours",
+    "pandits": 68,
+    "desc": "Specialised Kaal Sarp Yog nivaran puja, traditionally performed at Trimbakeshwar or Ujjain with Naag pratishtha.",
+    "samagri": [
+      "Silver naag-naagin pair",
+      "Rudraksh",
+      "Black til & urad",
+      "Havan samagri",
+      "Blue/black cloth",
+      "Coconut"
+    ]
+  },
+  {
+    "id": "pitru-dosh",
+    "name": "Pitru Dosh / Shradh",
+    "icon": "moon",
+    "cat": "shanti",
+    "tag": "Ancestral rites & tarpan",
+    "dur": "2–4 hours",
+    "pandits": 132,
+    "desc": "Shradh, Tarpan and Pind daan for ancestral peace — performed during Pitru Paksha or on the tithi of passing.",
+    "samagri": [
+      "Black til & jau",
+      "Kush grass",
+      "Rice pind ingredients",
+      "Ganga jal",
+      "White cloth",
+      "Brahman bhoj arrangement"
+    ]
+  },
+  {
+    "id": "janeu",
+    "name": "Janeu / Upanayan",
+    "icon": "award",
+    "cat": "life",
+    "tag": "Sacred thread ceremony",
+    "dur": "3–4 hours",
+    "pandits": 104,
+    "desc": "Yagyopavit Sanskar with Gayatri mantra diksha, marking the start of Vedic study for the child.",
+    "samagri": [
+      "Yagyopavit (janeu) set",
+      "Danda & mriga charm",
+      "Havan kund & samidha",
+      "Kaupin & dhoti",
+      "Bhiksha items",
+      "Kalash"
+    ]
+  },
+  {
+    "id": "bhoomi-pujan",
+    "name": "Bhoomi Pujan",
+    "icon": "temple",
+    "cat": "life",
+    "tag": "Groundbreaking ceremony",
+    "dur": "2 hours",
+    "pandits": 148,
+    "desc": "Shilanyas and Bhoomi Pujan before construction begins — worship of Bhoomi Devi, Naag devta and the eight directions.",
+    "samagri": [
+      "Silver naag & kalash",
+      "Foundation brick/shila",
+      "Nav dhanya",
+      "Panchdhatu",
+      "Coconut & flowers",
+      "Havan samagri"
+    ]
+  },
+  {
+    "id": "gau-puja",
+    "name": "Gau Puja & Daan",
+    "icon": "sparkles",
+    "cat": "daily",
+    "tag": "Cow worship ritual",
+    "dur": "1 hour",
+    "pandits": 88,
+    "desc": "Gau puja with feeding and daan, considered highly meritorious — often paired with Govardhan puja or Gopashtami.",
+    "samagri": [
+      "Green fodder & jaggery",
+      "Haldi & kumkum",
+      "Garland for cow",
+      "Diya & agarbatti",
+      "Cloth for daan"
+    ]
+  },
+  {
+    "id": "satyanarayan-diwali",
+    "name": "Lakshmi Puja (Diwali)",
+    "icon": "diya",
+    "cat": "festival",
+    "tag": "Diwali evening puja",
+    "dur": "1–2 hours",
+    "pandits": 226,
+    "desc": "Shri Lakshmi-Ganesh puja with Kuber and bahi-khata pujan on Diwali night at the shubh Pradosh muhurat.",
+    "samagri": [
+      "Lakshmi-Ganesh idols",
+      "Lotus flowers",
+      "Kamal gatta mala",
+      "Silver coin",
+      "Kheel-batasha",
+      "Bahi khata & pen",
+      "11 diyas"
+    ]
+  },
+  {
+    "id": "navratri-sthapana",
+    "name": "Navratri Kalash Sthapana",
+    "icon": "kalash",
+    "cat": "festival",
+    "tag": "Nine-night ghatasthapana",
+    "dur": "1–2 hours",
+    "pandits": 178,
+    "desc": "Ghatasthapana on Pratipada with jawara sowing, akhand jyoti and daily aarti arrangement through nine nights.",
+    "samagri": [
+      "Clay pot & soil",
+      "Barley seeds (jawara)",
+      "Kalash & coconut",
+      "Red chunri",
+      "Akhand jyoti diya",
+      "Nine-day flowers"
+    ]
+  },
+  {
+    "id": "ganesh-utsav",
+    "name": "Ganesh Utsav Sthapana",
+    "icon": "om",
+    "cat": "festival",
+    "tag": "Ganesh Chaturthi setup",
+    "dur": "2 hours",
+    "pandits": 192,
+    "desc": "Pranpratishtha of the Ganesh idol on Chaturthi with daily aarti schedule and visarjan guidance.",
+    "samagri": [
+      "Ganesh idol",
+      "Durva & modak",
+      "Red flowers",
+      "Decoration set",
+      "Kalash",
+      "Aarti thali"
+    ]
+  },
+  {
+    "id": "holika-dahan",
+    "name": "Holika Dahan Puja",
+    "icon": "flame",
+    "cat": "festival",
+    "tag": "Holi eve fire worship",
+    "dur": "1 hour",
+    "pandits": 116,
+    "desc": "Holika puja and dahan at the correct Bhadra-free muhurat with parikrama and new-grain offering.",
+    "samagri": [
+      "Cow dung cakes",
+      "Wheat sheaves",
+      "Gulal & haldi",
+      "Coconut",
+      "Kalava thread",
+      "Water pot"
+    ]
+  },
+  {
+    "id": "chhath",
+    "name": "Chhath Puja Vidhi",
+    "icon": "sun",
+    "cat": "festival",
+    "tag": "Surya arghya guidance",
+    "dur": "2 days",
+    "pandits": 64,
+    "desc": "Guided Chhath vidhi across Nahay-Khay, Kharna, Sandhya Arghya and Usha Arghya with Surya mantras.",
+    "samagri": [
+      "Bamboo soop & daura",
+      "Thekua prasad",
+      "Sugarcane",
+      "Seasonal fruits",
+      "Diya & agarbatti",
+      "Sindoor"
+    ]
+  },
+  {
+    "id": "katha-jagran",
+    "name": "Mata Ka Jagran",
+    "icon": "flame",
+    "cat": "festival",
+    "tag": "Night-long bhajan jagran",
+    "dur": "6–8 hours",
+    "pandits": 78,
+    "desc": "Devi jagran with chowki, bhajan mandali, akhand jyoti and morning bhandara arrangement.",
+    "samagri": [
+      "Chowki decoration",
+      "Devi idols/pictures",
+      "Akhand jyoti",
+      "Bhajan mandali setup",
+      "Prasad & bhandara",
+      "Red chunri"
+    ]
+  },
+  {
+    "id": "kundali",
+    "name": "Kundali & Matchmaking",
+    "icon": "globe",
+    "cat": "shanti",
+    "tag": "Horoscope & guna milan",
+    "dur": "1 hour",
+    "pandits": 154,
+    "desc": "Janm kundali preparation, dasha analysis and 36-guna matching for marriage with written report.",
+    "samagri": [
+      "Birth date, time & place",
+      "Both kundalis (for milan)",
+      "Notebook for remedies"
+    ]
+  },
+  {
+    "id": "aarti-seva",
+    "name": "Daily Aarti Seva",
+    "icon": "diya",
+    "cat": "daily",
+    "tag": "Regular temple aarti",
+    "dur": "30 min",
+    "pandits": 204,
+    "desc": "Arrange daily, weekly or monthly aarti and abhishek seva in your name at a listed temple with photo confirmation.",
+    "samagri": [
+      "Ghee for diya",
+      "Flowers & garland",
+      "Prasad items",
+      "Agarbatti & dhoop"
+    ]
+  },
+  {
+    "id": "antim-sanskar",
+    "name": "Antim Sanskar",
+    "icon": "moon",
+    "cat": "life",
+    "tag": "Last rites guidance",
+    "dur": "As needed",
+    "pandits": 92,
+    "desc": "Respectful guidance and pandit availability for Antim Sanskar, Asthi visarjan and the 13-day rites.",
+    "samagri": [
+      "Kush & til",
+      "Ganga jal",
+      "White cloth",
+      "Havan samagri",
+      "Pind daan items"
+    ]
+  },
+  {
+    "id": "shop-opening",
+    "name": "Shop / Office Opening",
+    "icon": "briefcase",
+    "cat": "life",
+    "tag": "Business muhurat puja",
+    "dur": "1–2 hours",
+    "pandits": 136,
+    "desc": "Lakshmi-Kuber puja with Vastu shanti for a new shop, office or factory at a business-friendly muhurat.",
+    "samagri": [
+      "Lakshmi-Ganesh idols",
+      "Kalash & coconut",
+      "Cash box & bahi khata",
+      "Nimbu-mirchi & toran",
+      "Havan samagri"
+    ]
+  },
+  {
+    "id": "satyanarayan-shanti",
+    "name": "Shani Shanti Puja",
+    "icon": "moon",
+    "cat": "shanti",
+    "tag": "Shani dosh remedy",
+    "dur": "2 hours",
+    "pandits": 108,
+    "desc": "Shani shanti with til-tel abhishek and Shani stotra japa, advised during Shani Mahadasha or Sade Sati.",
+    "samagri": [
+      "Black til & mustard oil",
+      "Black cloth & urad dal",
+      "Iron item for daan",
+      "Blue flowers",
+      "Havan samagri"
+    ]
+  }
+]

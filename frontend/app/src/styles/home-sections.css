@@ -1,0 +1,440 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Home Page — Premium Sections: AI/Panchang Cards + Festival Grid
+   Glassmorphism, golden animations, sacred decorations
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────── SACRED SECTION BACKGROUND ─────────────────────── */
+.hp-sacred-section {
+  background: linear-gradient(180deg, #faf7f0 0%, #fff9ed 40%, #fdf8f0 100%);
+}
+
+.hp-sacred-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* rotating mandala watermarks */
+.hp-sacred-mandala {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  opacity: 0.04;
+  animation: hp-mandala-spin 100s linear infinite;
+}
+.hp-sacred-mandala--l { top: -80px; left: -100px; }
+.hp-sacred-mandala--r { bottom: -80px; right: -100px; animation-direction: reverse; }
+
+@keyframes hp-mandala-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* floating golden particles */
+.hp-particle {
+  position: absolute;
+  top: 30%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold-bright, #f0c246);
+  opacity: 0;
+  animation: hp-particle-float 14s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(240, 194, 70, 0.4);
+}
+
+@keyframes hp-particle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0.4); }
+  15% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.25; transform: translateY(-40px); }
+  85% { opacity: 0.5; transform: translateY(-70px) scale(1); }
+  100% { opacity: 0; transform: translateY(-90px) scale(0.3); }
+}
+
+/* ───────────────────── DUO FEATURE CARDS GRID ───────────────────── */
+.hp-duo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .hp-duo-grid { grid-template-columns: 1fr; }
+}
+
+/* ── feature card ── */
+.hp-feature-card {
+  position: relative;
+  padding: 36px 32px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 160, 23, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: box-shadow 0.35s ease;
+  z-index: 1;
+}
+.hp-feature-card:hover {
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 0 40px rgba(212, 160, 23, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* animated glow behind card */
+.hp-feature-card__glow {
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.12) 0%, transparent 70%);
+  animation: hp-glow-pulse 6s ease-in-out infinite;
+  z-index: -1;
+}
+.hp-feature-card__glow--alt {
+  top: auto;
+  bottom: -40%;
+  right: auto;
+  left: -20%;
+  animation-delay: 3s;
+}
+
+@keyframes hp-glow-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* icon circle */
+.hp-feature-card__icon-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(212, 160, 23, 0.1), rgba(240, 194, 70, 0.15));
+  border: 1px solid rgba(212, 160, 23, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-deep, #b8860b);
+  margin-bottom: 20px;
+}
+.hp-feature-card__icon-wrap--alt {
+  background: linear-gradient(145deg, rgba(178, 134, 11, 0.08), rgba(212, 160, 23, 0.12));
+}
+
+.hp-feature-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--gold-deep, #b8860b);
+  transition: opacity 0.2s, transform 0.2s;
+  align-self: flex-start;
+}
+.hp-feature-card__cta:hover {
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+
+/* ───────────────────── MASONRY SERVICES GRID (OPTION D) ───────────────────── */
+.hp-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.hp-service-tile {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  text-decoration: none;
+  border: 1px solid rgba(212, 160, 23, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  group: true; /* For tailwind-like hover logic if we had it, but we use plain CSS */
+}
+
+.hp-service-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  border-color: rgba(212, 160, 23, 0.5);
+}
+
+.hp-service-tile.wide {
+  grid-column: span 2;
+}
+
+.hp-service-tile.regular {
+  grid-column: span 1;
+}
+
+.hp-service-tile__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.6s ease;
+}
+
+.hp-service-tile:hover .hp-service-tile__img {
+  transform: scale(1.05);
+}
+
+.hp-service-tile__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 15, 15, 0.9) 0%, rgba(15, 15, 15, 0.4) 50%, rgba(15, 15, 15, 0) 100%);
+  z-index: 1;
+}
+
+.hp-service-tile__content {
+  position: relative;
+  z-index: 2;
+}
+
+.hp-service-tile__title {
+  color: #ffffff;
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.hp-service-tile__desc {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  margin-bottom: 16px;
+  max-width: 90%;
+  line-height: 1.4;
+}
+
+.hp-service-tile__link {
+  color: var(--gold-bright, #f0c246);
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.2s;
+}
+
+.hp-service-tile:hover .hp-service-tile__link {
+  gap: 10px;
+}
+
+/* Dark theme section override */
+.hp-dark-section {
+  background: var(--text, #1a1714);
+  color: #fff;
+}
+.hp-dark-section .section-title {
+  color: #fff;
+}
+.hp-dark-section .section-sub {
+  color: rgba(255, 255, 255, 0.7);
+}
+.hp-dark-section .ornament path {
+  stroke: var(--gold-bright, #f0c246);
+}
+
+@media (max-width: 992px) {
+  .hp-services-grid {
+    grid-template-columns: 1fr;
+  }
+  .hp-service-tile.wide, .hp-service-tile.regular {
+    grid-column: span 1;
+  }
+}
+
+/* text */
+.hp-feature-card__title {
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text, #1a1714);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.hp-feature-card__text {
+  color: #5a5650;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  flex: 1;
+}
+.hp-feature-card__text em {
+  color: var(--gold-deep, #b8860b);
+  font-style: italic;
+}
+
+/* button */
+.hp-feature-card__btn {
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+/* corner sacred SVG decoration */
+.hp-feature-card__deco {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 70px;
+  height: 70px;
+  opacity: 0.07;
+  transition: opacity 0.4s ease;
+}
+.hp-feature-card:hover .hp-feature-card__deco {
+  opacity: 0.14;
+}
+
+/* golden border shimmer on primary card */
+.hp-feature-card--primary {
+  border-image: linear-gradient(145deg, rgba(212, 160, 23, 0.25), rgba(240, 194, 70, 0.05), rgba(212, 160, 23, 0.2)) 1;
+  border: 1px solid;
+  border-image-slice: 1;
+  border-radius: 24px;
+  /* fallback for border-radius with border-image */
+  background-clip: padding-box;
+}
+/* fix: use outline instead since border-image breaks border-radius */
+.hp-feature-card--primary {
+  border: none;
+  outline: 1px solid rgba(212, 160, 23, 0.15);
+  outline-offset: -1px;
+}
+.hp-feature-card--primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: linear-gradient(145deg, rgba(240, 194, 70, 0.4), transparent 40%, rgba(212, 160, 23, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.hp-feature-card--secondary {
+  outline: 1px solid rgba(212, 160, 23, 0.1);
+  outline-offset: -1px;
+  border: none;
+}
+
+
+/* ═══════════════════════════ FESTIVALS SECTION ═══════════════════════════ */
+.hp-fest-section {
+  background: linear-gradient(180deg, #fff 0%, #fdfaf3 100%);
+}
+
+.hp-fest-circles {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hp-fest-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+
+.hp-fest-circle__img-wrap {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.15), 0 8px 24px rgba(212, 160, 23, 0.1);
+  border: 3px solid var(--gold, #d4a017);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  background: var(--gold-soft, #fdfaf3);
+}
+
+.hp-fest-circle:hover .hp-fest-circle__img-wrap {
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 6px rgba(212, 160, 23, 0.25), 0 14px 28px rgba(212, 160, 23, 0.3);
+  border-color: var(--gold-bright, #f0c246);
+}
+
+.hp-fest-circle__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hp-fest-circle:hover .hp-fest-circle__img {
+  transform: scale(1.08);
+}
+
+.hp-fest-circle__name {
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text, #1a1714);
+  line-height: 1.25;
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .hp-fest-circles { flex-wrap: wrap; justify-content: center; gap: 32px 24px; }
+}
+@media (max-width: 700px) {
+  .hp-fest-circles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px 12px; }
+}
+@media (max-width: 480px) {
+  .hp-fest-circles { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .hp-fest-circle { width: 100%; min-width: 80px; }
+  .hp-fest-circle__img-wrap { width: 80px; height: 80px; margin-bottom: 10px; border-width: 2px; box-shadow: 0 0 0 2px rgba(212, 160, 23, 0.15), 0 4px 12px rgba(212, 160, 23, 0.1); }
+  .hp-fest-circle__name { font-size: 0.8rem; }
+}
+
+/* golden shimmer line at section bottom */
+.hp-fest-shimmer-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-bright, #f0c246), var(--gold, #d4a017), var(--gold-bright, #f0c246), transparent);
+  background-size: 200% 100%;
+  animation: hp-line-shimmer 3.5s ease-in-out infinite;
+}
+
+@keyframes hp-line-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .hp-particle { animation: none; }
+  .hp-feature-card__glow { animation: none; opacity: 0.6; }
+  .hp-fest-shimmer-line { animation: none; }
+}
