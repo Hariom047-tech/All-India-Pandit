@@ -11,8 +11,7 @@
     "seed": "node backend/scripts/sync-seed-data.js",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f",
-    "build": "cd frontend/app && npm install && npm run build"
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "jsdom": "^24.1.3"
