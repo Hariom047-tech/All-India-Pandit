@@ -21,17 +21,20 @@ password + real TOTP login, mounted under `/api/<ADMIN_SECRET_PATH>/...` — no 
 
 ```
 maa-baglamukhi-project/
-├── frontend/               Static multi-page site — no framework, no build step (frontend/public/)
+├── frontend/
+│   ├── app/                React 19 + TypeScript SPA (Vite, React Router, Framer Motion, Swiper)
+│   │                        — the only frontend; see "Frontend code structure" below
+│   └── Dockerfile          Multi-stage: builds frontend/app, serves the static output via nginx
 ├── backend/                Express REST API, Postgres-backed (temples, pandits, services, auth,
 │                            reviews, community, subscriptions/payments, contact, enquiries,
-│                            admin panel…)
-├── docker/                 Shared nginx reverse-proxy config
+│                            admin panel…) — Node.js throughout, layered as
+│                            routes/ → controllers/ → repositories/ → Postgres
+├── docker/                 Shared nginx reverse-proxy config (serves the SPA, proxies /api)
 ├── docker-compose.yml      One command to run db + backend + frontend together
 ├── docs/                   Business blueprint, UI design spec, architecture notes
 ├── database_architecture.md  Original DB design proposal (see docs/ARCHITECTURE.md for what changed)
 ├── security_architecture.md  Original security proposal (see docs/SECURITY.md for what changed)
 ├── admin_architecture.md     Original admin panel proposal (see docs/ADMIN.md for what changed)
-├── tools/                  Offline data-integrity + page smoke tests
 └── package.json            Root dev scripts only (test, seed, docker:*)
 ```
 
@@ -64,15 +67,17 @@ docker compose down -v      # stop AND wipe the database — start over from not
 
 ### Manual: frontend only (no backend/database needed to browse)
 
-Every list/detail page renders from data embedded in the page — no server required to look around:
+Every list/detail page renders from data bundled into the app — no server required to look around:
 
 ```bash
-cd frontend/public && npx serve .    # or: python -m http.server 8000
+cd frontend/app
+npm install
+npm run dev          # Vite dev server, usually http://localhost:5173
 ```
 
-Opening `frontend/public/index.html` directly in a browser also works. Contact/enquiry/newsletter
-forms will just fall back to a local confirmation if no backend is running (see
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for why that's the deliberate design).
+Contact/enquiry/newsletter forms will just fall back to a local confirmation toast if no backend is
+running (see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for why that's the deliberate design).
+`npm run build` produces the static `dist/` that `frontend/Dockerfile` also builds and nginx serves.
 
 ### Manual: backend + Postgres, without the frontend container
 
@@ -97,24 +102,24 @@ DATABASE_URL=postgresql://<superuser>:...@host:5432/dbname npm run db:init
 
 ## Pages (14)
 
-| Page | File | What it does |
-|---|---|---|
-| Homepage | `index.html` | Hero + search, stats, how-it-works, featured pandits, popular temples, services, festivals, testimonials |
-| Temple Directory | `temples.html` | Search + sidebar filters (city, state, service, rating), sort, pagination |
-| Temple Detail | `temple-detail.html?id=` | Banner, gold tabs (Overview / Pandits / Services / Reviews / Location), inquiry sidebar |
-| Pandit Directory | `pandits.html` | Filters by city, service, language, experience, rating, verified |
-| Pandit Profile | `pandit-profile.html?id=` | Gold-ring photo, verified badge, WhatsApp/Call, services, temples, credentials, video intro, availability, reviews, QR |
-| Services | `services.html` | Bento grid of 32 rituals, category pills, live search |
-| Service Detail | `service-detail.html?id=` | Description, samagri list, best muhurat, pandits and temples for it |
-| Panchang | `panchang.html` | Today's tithi/nakshatra/yoga/karana, Rahu Kaal, muhurat finder, month calendar with festivals |
-| Temple Map | `temple-map.html` | Interactive India map, markers from real lat/lng, filter by state/service |
-| AI Pooja Guide | `ai-recommender.html` | Chat-style recommender, Hindi or English |
-| Blog | `blog.html` | Category pills, search, featured post |
-| Pandit Dashboard | `dashboard.html` | Overview KPIs, profile, services & availability, reviews, analytics, subscription tiers |
-| About | `about.html` | Mission, verification process, us-vs-them table, revenue model stated openly |
-| Contact | `contact.html` | Form + FAQ accordion |
+React Router routes, all under `frontend/app/src/pages/`:
 
-All paths above are relative to `frontend/public/`.
+| Page | Route | Component | What it does |
+|---|---|---|---|
+| Homepage | `/` | `Home.tsx` | Animated hero, stats, how-it-works, featured pandits, popular temples, services, festivals, testimonials |
+| Temple Directory | `/temples` | `Temples.tsx` | Search + sidebar filters (city, state, service, rating), sort, pagination |
+| Temple Detail | `/temples/:id` | `TempleDetail.tsx` | Full-screen animated photo banner, gold tabs (Overview / Gallery / Pandits / Services / Reviews / Location), inquiry sidebar |
+| Pandit Directory | `/pandits` | `Pandits.tsx` | Filters by city, service, language, experience, rating, verified |
+| Pandit Profile | `/pandits/:id` | `PanditProfile.tsx` | Gold-ring photo, verified badge, WhatsApp/Call, services, temples, credentials, video intro, availability, reviews, QR |
+| Services | `/services` | `Services.tsx` | Grid of rituals with 3D-style icons, category pills, live search |
+| Service Detail | `/services/:id` | `ServiceDetail.tsx` | Description, samagri list, best muhurat, pandits and temples for it |
+| Panchang | `/panchang` | `Panchang.tsx` | Today's tithi/nakshatra/yoga/karana, Rahu Kaal, muhurat finder, month calendar with festivals |
+| Temple Map | `/temple-map` | `TempleMap.tsx` | Interactive India map, markers from real lat/lng, filter by state/service |
+| AI Pooja Guide | `/ai-recommender` | `AiRecommender.tsx` | Chat-style recommender, Hindi or English |
+| Blog | `/blog` | `Blog.tsx` | Category pills, search, featured post |
+| Pandit Dashboard | `/dashboard` | `Dashboard.tsx` | Overview KPIs, profile, services & availability, reviews, analytics, subscription tiers |
+| About | `/about` | `About.tsx` | Mission, verification process, us-vs-them table, revenue model stated openly |
+| Contact | `/contact` | `Contact.tsx` | Form + FAQ accordion |
 
 ---
 
@@ -164,12 +169,14 @@ Backend tests: `cd backend && npm test` (Node's built-in test runner — runs ag
 
 ## Keeping frontend content, backend seed data and the database in sync
 
-`frontend/public/assets/js/data.js` is the single source of truth for all content (temples, pandits,
-services, festivals, reviews, blog posts, panchang, plans, FAQs). Everything else is generated from
-it, never hand-edited:
+`frontend/app/src/data/content.ts` is the single source of truth for all directory content (temples,
+pandits, services, festivals, reviews, blog posts, panchang, plans, FAQs) — it's what the SPA imports
+directly and bundles at build time. `backend/src/data/*.json` is a separate, parallel copy used only
+to seed Postgres; keep the two in sync by hand when you add or edit a record (there is currently no
+generator between them, unlike the old static site):
 
 ```
-data.js  →  backend/src/data/*.json  →  backend/src/db/02-seed.sql  →  Postgres tables
+frontend/app/src/data/content.ts  ⇄  backend/src/data/*.json  →  backend/src/db/02-seed.sql  →  Postgres
 ```
 
 ```bash
@@ -187,58 +194,25 @@ For a Postgres it didn't create (or to re-apply after editing without wiping the
 ## Adding your real temple & pandit photos
 
 Every image already points at a real file path and **falls back to bundled SVG artwork** when the
-photo is missing. That is why the site looks complete right now with zero photos. To use real
-pictures, drop files with these exact names into `frontend/public/assets/img/` — no code change needed.
-
-**`frontend/public/assets/img/temples/`** — landscape, ideally 1200×750 or larger:
-
-```
-hero.jpg              ← the big homepage hero (use a wide 16:9 shot)
-kashi-vishwanath.jpg   mahakaleshwar.jpg    haridwar.jpg
-banke-bihari.jpg       ram-mandir.jpg       tirumala.jpg
-jagannath.jpg          meenakshi.jpg        trimbakeshwar.jpg
-dwarkadhish.jpg        kamakhya.jpg         siddhivinayak.jpg
-chhatarpur.jpg         govind-devji.jpg
-```
-
-**`frontend/public/assets/img/pandits/`** — square, 600×600 or larger:
+photo is missing. To use real pictures, drop files into `frontend/app/public/assets/img/` (Vite
+copies this folder verbatim into the built site) and point the matching record's `img` /
+`gallery` field at it in `frontend/app/src/data/content.ts` — filenames don't have to match the
+`id` the way the old static site required, since the path is now explicit data, not a convention.
 
 ```
-ramesh-sharma.jpg      devdatt-shastri.jpg   naman-tiwari.jpg
-suresh-joshi.jpg       anand-iyer.jpg        mohan-das.jpg
-gopal-chaturvedi.jpg   vikas-upadhyay.jpg    srinivas-rao.jpg
-harish-bhatt.jpg       bipul-goswami.jpg     kailash-mishra.jpg
-satish-dubey.jpg       mahesh-vyas.jpg       raghav-pathak.jpg
-lakshman-acharya.jpg
+frontend/app/public/assets/img/temples/     one hero photo + an optional gallery/ subfolder per temple
+frontend/app/public/assets/img/pandits/     square headshots, ~600×600 or larger
 ```
 
-Filenames come from each record's `id` in `data.js` — add a temple or pandit there (then `npm run seed`)
-and its photo filename follows the same pattern.
-
----
-
-## Choosing your hero (the three options from the design doc)
-
-`index.html` currently uses **Option A** — temple full-bleed with a white→gold transparent panel on
-the right. To switch, add one class to the `<section class="hero">` tag:
-
-| Option | Class to add | Look |
-|---|---|---|
-| **A** (current) | *none* | Temple full width, translucent panel on the right |
-| **B** | `hero--frosted` | Frosted-glass panel on the left, temple on the right |
-| **C** | `hero--center` | Centred floating glassmorphism search card, white fade from the bottom |
-
-```html
-<!-- Option B -->
-<section class="hero hero--frosted">
-```
+After editing `content.ts`, run `npm run seed` (repo root) to regenerate the backend's JSON/SQL
+seed copy — see "Keeping frontend content, backend seed data and the database in sync" above.
 
 ---
 
 ## Design system
 
-Tokens live at the top of `frontend/public/assets/css/style.css` as CSS custom properties, matching
-the design doc:
+Tokens live at the top of `frontend/app/src/styles/base.css` as CSS custom properties, matching the
+design doc, with additions layered on top in `frontend/app/src/styles/enhance.css`:
 
 | Token | Value |
 |---|---|
@@ -251,44 +225,52 @@ the design doc:
 | `--border` | `#E8D5B7` |
 
 Fonts: **Playfair Display** for large page titles, **Poppins** for UI headings, **Inter** for body —
-loaded from Google Fonts with a system fallback stack, so the site still looks right offline.
+loaded from Google Fonts with a system fallback stack.
 
-Icons are a hand-built line-art set in `PC.iconPaths` (`data.js`), drawn with `currentColor` so gold
-theming is automatic. Hindu-specific icons included: Om, Diya, Kalash, Trishul, Lotus, Temple.
+Icons are a hand-built line-art set in `frontend/app/src/lib/icons.tsx` (component: `<Icon name="..." />`),
+drawn with `currentColor` so gold theming is automatic. Hindu-specific icons included: Om, Diya,
+Kalash, Trishul, Lotus, Temple. Service cards use full-color emoji "3D icon" tiles instead
+(`frontend/app/src/lib/serviceEmoji.ts`) for a more dimensional look.
+
+Animation is Framer Motion throughout (page transitions, scroll reveals, staggered grids, card
+hover) plus Swiper for the temple photo sliders (homepage hero, temple detail banner).
 
 ---
 
 ## Frontend code structure
 
 ```
-frontend/public/assets/js/data.js     All content + the icon set — single source of truth.
-frontend/public/assets/js/api.js      Thin client for write-actions (contact/enquiry/newsletter).
-frontend/public/assets/js/app.js      Shell (header, drawer, bottom nav, footer), shared components.
-frontend/public/assets/js/pages.js    One controller per page, keyed by <body data-page="...">.
-frontend/public/assets/css/style.css  Design tokens + every component. No framework.
+frontend/app/src/
+├── pages/            One component per route (Home.tsx, Temples.tsx, TempleDetail.tsx, …)
+├── components/
+│   ├── layout/        Header, Footer, page Layout shell
+│   ├── ui/             Shared building blocks: cards, modal, lightbox, toast, star rating…
+│   ├── hero/           Homepage hero photo slider
+│   └── temple/         Temple-detail-specific banner slider
+├── data/
+│   ├── content.ts      All directory content — single source of truth for the frontend
+│   └── types.ts        Shared TypeScript interfaces for that content
+├── lib/                Icon set, API client, small formatting/QR helpers
+└── styles/             base.css (ported design tokens + components) + enhance.css (additions)
 ```
 
-Pages are plain HTML with empty containers; controllers fill them on `DOMContentLoaded`.
-To add a page: create the HTML with `data-page="foo"` and register `PC.pages.foo`.
+To add a page: create `pages/Foo.tsx`, then add a `<Route>` for it in `src/App.tsx`.
 
 ---
 
 ## Tests
 
 ```bash
-npm install        # once, at repo root — installs jsdom for the smoke test
-npm test            # runs all three layers below in sequence
+npm test            # repo root — currently just proxies to the backend suite
 ```
 
 | Layer | Command | What it checks |
 |---|---|---|
-| Data integrity | `npm run test:data` (`tools/validate.js`) | Cross-references, unique ids, icon names, map coordinates, missing assets, page→controller mapping, **frontend/backend seed drift** |
-| Frontend smoke | `npm run test:smoke` (`tools/smoke.js`) | Boots all 14 pages (+ deep links) in jsdom — fails on any console error, empty container, `undefined` in output, or dead internal link |
-| Backend API | `npm run test:backend` (`backend/npm test`) | Every route, filter, validation error and 404 — Node's built-in test runner |
+| Backend API | `npm run test:backend` (`cd backend && npm test`) | Every route, filter, validation error and 404 — Node's built-in test runner, against a real Postgres |
 
-`tools/mobile-frame.html` renders pages inside fixed-width iframes for phone-width screenshots —
-Chrome's window has a ~500px minimum on Windows, so `--window-size=390` alone never gives a true
-phone viewport.
+There is no automated frontend test suite yet (the old jsdom-based data/smoke checks were tied to
+the static-HTML site and were removed along with it). `frontend/app` is a standard Vite + TypeScript
+project, so adding Vitest/Playwright there is the natural next step if you want one.
 
 ---
 
@@ -297,23 +279,25 @@ phone viewport.
 Honest list of what is not yet real, so nothing surprises you later:
 
 - **Phone numbers** are placeholders (`+9190000001xx`). The WhatsApp and Call buttons build correct
-  `wa.me` / `tel:` links, so they will work the moment you put real numbers in `data.js`.
+  `wa.me` / `tel:` links, so they will work the moment you put real numbers in `content.ts`.
 - **The AI Pooja Guide is rule-based, not an LLM.** It keyword-matches a rule table entirely
   client-side (and the same table is exposed at `POST /api/recommend`), and the page says so
   plainly. The current version has the advantage of working offline and never sending a user's
   problem anywhere.
 - **Panchang figures are static sample values.** Real panchang needs an ephemeris calculation per
   location — the page states that the numbers are indicative. Wire an API (e.g. ProKerala,
-  VedicRishi) into `PC.panchang` / `backend/src/data/panchang.json` when ready.
+  VedicRishi) into `panchang` in `content.ts` / `backend/src/data/panchang.json` when ready.
 - **The India map outline is a hand-simplified silhouette**, not a survey-accurate boundary. Markers
   use each temple's real latitude and longitude, so relative positions are correct. For production,
-  drop Leaflet + a GeoJSON layer into `PC.pages.map`.
-- **Temple/pandit imagery is SVG artwork** until you add the photos listed above.
-- **`dashboard.html` still shows illustrative numbers and has no login form.** The backend behind it
-  is real — `POST /api/auth/register-pandit` + `POST /api/auth/login` issue a working bearer session,
-  and `GET /api/me/dashboard` returns that pandit's actual KPIs (views, clicks, pending inquiries,
-  subscription status) — but nothing in `frontend/` calls them yet. Wiring the page up is a frontend
-  task, not a backend one.
+  drop Leaflet + a GeoJSON layer into `pages/TempleMap.tsx`.
+- **Most temple/pandit photos are real, openly-licensed stock photography** sourced for this build
+  (Wikimedia Commons) rather than photos you own — swap in your own licensed photography before any
+  commercial launch. A few still fall back to bundled SVG artwork where no photo was sourced.
+- **`pages/Dashboard.tsx` still shows illustrative numbers and has no login form.** The backend behind
+  it is real — `POST /api/auth/register-pandit` + `POST /api/auth/login` issue a working bearer
+  session, and `GET /api/me/dashboard` returns that pandit's actual KPIs (views, clicks, pending
+  inquiries, subscription status) — but nothing in the frontend calls them yet. Wiring the page up is
+  a frontend task, not a backend one.
 - **No real SMS/email provider is wired up for OTP delivery.** `POST /api/auth/otp/request` generates
   and stores a real, hashed, expiring OTP, but "sending" it is a `console.log` on the backend
   container (visible via `docker compose logs backend`) rather than an actual text message.
@@ -333,4 +317,4 @@ Honest list of what is not yet real, so nothing surprises you later:
   keyboard-operable tabs, accordion, map markers and modals (Escape closes).
 - Focus-visible outlines in gold; every interactive target meets 44px on touch.
 - `prefers-reduced-motion` disables all animation and scroll-smoothing.
-- Frontend loads no external JS or CSS beyond Google Fonts — no framework, no bundler, no tracking.
+- Frontend loads no external JS beyond Google Fonts — no analytics, no tracking scripts.

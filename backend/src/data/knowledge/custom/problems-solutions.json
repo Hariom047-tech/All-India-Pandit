@@ -1,0 +1,1173 @@
+[
+  {
+    "id": "ghar-mein-kalesh",
+    "problemCategory": "family",
+    "userMightSay": [
+      "Ghar mein hamesha ladai hoti hai",
+      "Pati patni mein banti nahi",
+      "Ghar mein shanti nahi hai",
+      "Roz kalesh rehta hai",
+      "Family members aapas mein ladte hain",
+      "Ghar ka mahol bahut negative hai"
+    ],
+    "diagnosis": "Ghar mein kalesh aksar nakaratmak urja (negative energy) ya graho ke nakaratmak prabhav (jaise Mangal ya Rahu) ki wajah se hota hai. Vastu dosh bhi iska ek mukhya karan ho sakta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Navagraha Shanti Puja",
+        "description": "Sabhi nau graho ki shanti ke liye jisse parivar mein anukulta aaye.",
+        "duration": "2-3 hours",
+        "bestDay": "Monday or Thursday",
+        "samagriList": ["Navagraha samidha", "Ghee", "Havan kund", "Navagraha yantra"],
+        "shastraReference": "Navagraha Stotram"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Ghar ki Shuddhi",
+      "steps": [
+        "Roz subah aur sham ghar mein kapoor aur laung jalaye",
+        "Pani mein thoda namak dalkar poncha lagaye",
+        "Hanuman Chalisa ka roz path karein"
+      ],
+      "itemsNeeded": ["Kapoor", "Laung", "Sendha Namak"],
+      "frequency": "Daily",
+      "duration": "41 days"
+    },
+    "connectToPandit": {
+      "serviceId": "navagraha_shanti",
+      "why": "Pandit ji vidhi-vidhan se Navagraha pujan karenge jo ghar ki negative energy ko door karega."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["vastu-dosh", "nazar-evil-eye"]
+  },
+  {
+    "id": "court-case",
+    "problemCategory": "legal",
+    "userMightSay": [
+      "Court case chal raha hai, jeet nahi mil rahi",
+      "Legal matter mein problem aa rahi hai",
+      "Jhuta case lag gaya hai",
+      "Tarik pe tarik pad rahi hai",
+      "Shatru court mein pareshan kar rahe hain"
+    ],
+    "diagnosis": "Court cases aur mukadmebazi aamtaur par Shani aur Rahu ke dushprabhav, ya chhathve (6th) ghar ke pirit hone ke karan hote hain. Baglamukhi mata ki aradhana isme vishesh labhdayak hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Maa Baglamukhi Anushthan",
+        "description": "Shatru badha aur court case mein vijay prapti ke liye shaktishali anushthan.",
+        "duration": "3-5 hours",
+        "bestDay": "Tuesday",
+        "samagriList": ["Haldi ki mala", "Peela kapda", "Peeli sarson", "Besan ke laddu"],
+        "shastraReference": "Baglamukhi Tantra"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Bajrang Baan Path",
+      "steps": [
+        "Mangalwar ke din lal asan par baithein",
+        "Hanuman ji ki murti ke samne chameli ke tel ka deepak jalaye",
+        "Bajrang Baan ka 11 baar path karein"
+      ],
+      "itemsNeeded": ["Chameli ka tel", "Deepak", "Lal asan"],
+      "frequency": "Every Tuesday",
+      "duration": "11 weeks"
+    },
+    "connectToPandit": {
+      "serviceId": "baglamukhi_puja",
+      "why": "Baglamukhi anushthan tantrik vidhi se karna chahiye jiske liye anubhavi Pandit ki aavashyakta hoti hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["business-enemies", "shani-dosh"]
+  },
+  {
+    "id": "business-loss",
+    "problemCategory": "finance",
+    "userMightSay": [
+      "Business mein bahut loss ho raha hai",
+      "Dukaan par customer nahi aa rahe",
+      "Kaam dhanda bilkul thap pad gaya hai",
+      "Vyapar mein barkat nahi ho rahi",
+      "Investment doob gaya hai"
+    ],
+    "diagnosis": "Vyapar mein nuksan aksar budh (Mercury) ke kamzor hone ya Lakshmi mata ki kripa ruk jane ke karan hota hai. Nazar dosh bhi dhande ko bandh deta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Shree Yantra Sthapana & Kanakdhara Path",
+        "description": "Mata Lakshmi ki kripa aur vyapar mein vriddhi ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Friday",
+        "samagriList": ["Shree Yantra", "Kamal gatta", "Gulab ke phool", "Ghee"],
+        "shastraReference": "Kanakdhara Stotram"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Galle/Tijori ki Shuddhi",
+      "steps": [
+        "Shukrawar ko dukan ke galle ko gangajal se dhoyen",
+        "Galle mein ek lal kapde mein 11 gomti chakra aur 7 kaudi bandh kar rakhein",
+        "Roz subah dukan kholte hi agarbatti dikhayen"
+      ],
+      "itemsNeeded": ["Lal kapda", "Gomti chakra", "Kaudi"],
+      "frequency": "Once (keep for lifetime)",
+      "duration": "Permanent"
+    },
+    "connectToPandit": {
+      "serviceId": "lakshmi_kubera_puja",
+      "why": "Lakshmi-Kuber anushthan se vyaparik bandhan khulte hain aur dhan aagaman ke marg banate hain."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["debt-rin", "nazar-evil-eye"]
+  },
+  {
+    "id": "health-issues",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Bimari theek nahi ho rahi hai",
+      "Ghar mein koi na koi beemar rehta hai",
+      "Dawai asar nahi kar rahi",
+      "Achanak se tabiyat kharab ho jati hai",
+      "Doctors ko samajh nahi aa raha kya problem hai"
+    ],
+    "diagnosis": "Lambi bimari ya asadhya rog Surya ke kamzor hone, ya ashtam (8th) bhav mein krur graho ke baithe hone ki wajah se hote hain. Mahamrityunjay mantra sabse uttam upay hai.",
+    "recommendedPujas": [
+      {
+        "name": "Mahamrityunjaya Jaap",
+        "description": "Bhagwan Shiv ka amogh mantra jo asadhya rogo ka nash karta hai.",
+        "duration": "4-6 hours (depending on jaap count)",
+        "bestDay": "Monday",
+        "samagriList": ["Bael patra", "Dhatura", "Doodh", "Ghee ka deepak"],
+        "shastraReference": "Rigveda / Shiv Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Surya Arghya aur Jal",
+      "steps": [
+        "Subah jaldi uthkar Surya Dev ko tambe ke lote se jal chadhaye",
+        "Jal mein thoda lal chandan aur gur dalen",
+        "'Om Suryaya Namah' ka jaap karein"
+      ],
+      "itemsNeeded": ["Tambe ka lota", "Lal chandan", "Gur"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "mahamrityunjaya_anushthan",
+      "why": "Mahamrityunjaya Jaap 1.25 lakh baar sankalp lekar vidhi-vidhan se pandit ji dwara karna faldayi hota hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["body-pain", "family-illness"]
+  },
+  {
+    "id": "marriage-delays",
+    "problemCategory": "marriage",
+    "userMightSay": [
+      "Shaadi mein bahut deri ho rahi hai",
+      "Rishte aate hain par baat nahi banti",
+      "Umar badhti ja rahi hai vivah nahi ho raha",
+      "Manglik dosh bata rahe hain",
+      "Kundli match nahi ho rahi"
+    ],
+    "diagnosis": "Vivah mein deri saptam (7th) bhav ke Swami ke pirit hone, Mangal dosh, ya Brihaspati/Shukra ke kamzor hone se hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Gauri Shankar Puja",
+        "description": "Shighra vivah aur achhe jeevan sathi ke liye Shiv-Parvati ki puja.",
+        "duration": "2 hours",
+        "bestDay": "Thursday or Friday",
+        "samagriList": ["Haldi ki ganth", "Peela aur Lal kapda", "Gauri Shankar Rudraksha"],
+        "shastraReference": "Shiv Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Kela Vriksh Puja",
+      "steps": [
+        "Guruwar (Thursday) ke din kele ke ped par jal chadhaye",
+        "Jal mein thodi haldi aur chane ki daal milaye",
+        "Ghee ka deepak jalaye aur Brihaspati dev ki katha sune"
+      ],
+      "itemsNeeded": ["Haldi", "Chana daal", "Ghee ka deepak"],
+      "frequency": "Every Thursday",
+      "duration": "11 Thursdays"
+    },
+    "connectToPandit": {
+      "serviceId": "kumbh_vivah_ark_vivah",
+      "why": "Agar Mangal dosh ke karan shaadi ruki hai, toh Kumbh Vivah/Ark Vivah shastra sammat upay hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["manglik-dosh"]
+  },
+  {
+    "id": "shaadi-problems",
+    "problemCategory": "marriage",
+    "userMightSay": [
+      "Shaadi ke baad problem aa rahi hai",
+      "Divorce ki naubat aa gayi hai",
+      "Sasural wale pareshan kar rahe hain",
+      "Pati/Patni ka extra marital affair hai",
+      "Pati-Patni ke beech pyar khatam ho gaya hai"
+    ],
+    "diagnosis": "Dampatya jeevan mein pareshani Rahu-Ketu ke saptam bhav mein hone, ya Shukra ki sthiti kharab hone se hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Uma Maheshwar Puja",
+        "description": "Pati-patni ke beech samanjasya aur prem badhane ke liye.",
+        "duration": "3 hours",
+        "bestDay": "Friday or Monday",
+        "samagriList": ["Panchamrit", "Suhag ka saman", "Mitha pan", "Phoolo ki mala"],
+        "shastraReference": "Skanda Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Shivling par Jal aur Madhu",
+      "steps": [
+        "Roz subah Shivling par jal arpit karein",
+        "Shivling par thoda sa shahed (honey) lagayein",
+        "'Om Namah Shivaya' ka 108 baar jaap karein"
+      ],
+      "itemsNeeded": ["Jal", "Shahed", "Rudraksha mala"],
+      "frequency": "Daily",
+      "duration": "At least 40 days"
+    },
+    "connectToPandit": {
+      "serviceId": "navagraha_shanti_marriage",
+      "why": "Kundli milaan ka punah vishleshan aur dosh nivaran puja pandit dwara karwayein."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["post-marriage-problems", "ghar-mein-kalesh"]
+  },
+  {
+    "id": "pitru-dosh",
+    "problemCategory": "ancestors",
+    "userMightSay": [
+      "Kundli mein Pitru dosh hai",
+      "Sapne mein mare hue log aate hain",
+      "Ghar mein achanak nuksan ho jata hai",
+      "Vansh aage nahi badh raha",
+      "Koi bhi shubh kaam ruk jata hai"
+    ],
+    "diagnosis": "Jab purvajo ki aatma ko shanti nahi milti ya unka shradh vidhipurvak nahi hota, tab Pitru dosh lagta hai. Isse jeevan ke har kshetra mein badha aati hai.",
+    "recommendedPujas": [
+      {
+        "name": "Narayan Nagbali & Tripindi Shradh",
+        "description": "Pitru dosh ki poorn shanti aur purvajo ke ashirvad ke liye.",
+        "duration": "3 days",
+        "bestDay": "Amavasya",
+        "samagriList": ["Pind daan samagri", "Kush", "Kale til", "Safed kapda"],
+        "shastraReference": "Garuda Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Amavasya Daan",
+      "steps": [
+        "Har amavasya ko dakshin disha ki or mukh karke pitaro ko jal de",
+        "Jal mein kale til aur safed phool milaye",
+        "Gareebo ko bhojan aur vastra daan karein"
+      ],
+      "itemsNeeded": ["Kale til", "Safed phool", "Daan samagri"],
+      "frequency": "Every Amavasya",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "pitru_dosh_shanti",
+      "why": "Pitru dosh shanti ek jatil prakriya hai jise kisi yogya brahman dwara teerth sthan (jaise Gaya ya Trimbakeshwar) par karana uttam hota hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["santan-issues", "repeated-accidents"]
+  },
+  {
+    "id": "shani-dosh",
+    "problemCategory": "planetary",
+    "userMightSay": [
+      "Shani ki sade sati chal rahi hai",
+      "Shani ki dhaiya hai",
+      "Kaam bante bante bigad jate hain",
+      "Pairo mein dard rehta hai",
+      "Gareebi aur kalesh pichha nahi chhod rahe"
+    ],
+    "diagnosis": "Shani jab gochar mein janma rashi par ya uske aage-pichhe hota hai toh Sade Sati lagti hai. Shani kachche karmo ka phal deta hai, isliye iska prabhav kashtdayi ho sakta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Shani Tailabhishekam & Shanti Puja",
+        "description": "Shani dev ka tel se abhishek aur Vedic mantro ka jaap.",
+        "duration": "3 hours",
+        "bestDay": "Saturday",
+        "samagriList": ["Sarson ka tel", "Kale til", "Kali udad daal", "Loha (Iron)"],
+        "shastraReference": "Shani Mahatmya"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Peepal Puja",
+      "steps": [
+        "Har Shanivar sham ko Peepal ke ped ke neeche sarson ke tel ka deepak jalaye",
+        "Shani Chalisa ka path karein",
+        "Gareebo, langdo ya kodo ki madad karein"
+      ],
+      "itemsNeeded": ["Sarson ka tel", "Deepak", "Shani Chalisa"],
+      "frequency": "Every Saturday",
+      "duration": "During entire Sade Sati/Dhaiya"
+    },
+    "connectToPandit": {
+      "serviceId": "shani_shanti",
+      "why": "Shani mantra ka 23,000 baar jaap aur dashansh havan sankalp sahit karne ke liye pandit jaruri hain."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["business-loss", "court-case"]
+  },
+  {
+    "id": "kaal-sarpa-dosh",
+    "problemCategory": "planetary",
+    "userMightSay": [
+      "Kundli mein Kaal Sarpa dosh bata rahe hain",
+      "Jeevan mein bhayankar sangharsh hai",
+      "Sapne mein saamp (snakes) dikhte hain",
+      "Success milti milti chhut jati hai",
+      "Akal mrityu ka darr lagta hai"
+    ],
+    "diagnosis": "Jab kundli mein sabhi 7 grah Rahu aur Ketu ke beech mein aa jate hain, toh Kaal Sarpa dosh banta hai. Isse purvaj krodhit hote hain aur bhagya ruk jata hai.",
+    "recommendedPujas": [
+      {
+        "name": "Kaal Sarpa Dosh Nivaran Puja",
+        "description": "Rahu aur Ketu ki shanti aur Naag Devta ki puja.",
+        "duration": "4-5 hours",
+        "bestDay": "Panchami (Naag Panchami) or Wednesday",
+        "samagriList": ["Chandi ka Naag-Nagin joda", "Kachcha doodh", "Kaale til", "Kush"],
+        "shastraReference": "Muhurta Chintamani"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Shiv Puja",
+      "steps": [
+        "Roz Shivling par kachcha doodh aur jal chadhaye",
+        "'Om Namah Shivaya' aur 'Om Namo Bhagavate Vasudevaya' ka path karein",
+        "Saawan ke mahine mein rudrabhishek karein"
+      ],
+      "itemsNeeded": ["Kachcha doodh", "Jal", "Bael patra"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "kaal_sarpa_puja",
+      "why": "Kaal Sarpa Puja Tryambakeshwar ya Ujjain jaisi jagah par vidhi anusaar brahmano dwara ki jati hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["pitru-dosh", "marriage-delays"]
+  },
+  {
+    "id": "manglik-dosh",
+    "problemCategory": "planetary",
+    "userMightSay": [
+      "Ladka/Ladki Manglik hai",
+      "Mangal dosh ke karan shaadi toot gayi",
+      "Gussa bahut aata hai aur ego clashes hote hain",
+      "Vivah ke liye non-manglik partner chalega kya?",
+      "Kundli mein high Mangal dosh hai"
+    ],
+    "diagnosis": "Kundli ke 1, 4, 7, 8 ya 12ve bhav mein Mangal hone se Manglik dosh banta hai. Yeh shadi mein rukawat aur shadi ke baad takrav paida karta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Mangal Bhat Puja / Kumbh Vivah",
+        "description": "Mangal dev ko shant karne ke liye aur dushprabhav hatane ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Tuesday",
+        "samagriList": ["Lal masoor daal", "Lal kapda", "Gud (Jaggery)", "Mitti ka kalash"],
+        "shastraReference": "Parashar Hora Shastra"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Hanuman Ji ki Aradhana",
+      "steps": [
+        "Har Mangalwar Hanuman ji ko sindoor aur chola chadhaye",
+        "Sundarkand ka path karein",
+        "Gusse par control rakhein aur lal rang ka daan karein"
+      ],
+      "itemsNeeded": ["Sindoor", "Chameli ka tel", "Sundarkand book"],
+      "frequency": "Every Tuesday",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "mangal_dosh_puja",
+      "why": "Kumbh Vivah ya Ark Vivah shastriya vidhi hai jisme pandit ji mantra ucharan ke sath dosh ka nivaran karte hain."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["marriage-delays", "shaadi-problems"]
+  },
+  {
+    "id": "nazar-evil-eye",
+    "problemCategory": "spiritual",
+    "userMightSay": [
+      "Kisi ki buri nazar lag gayi hai",
+      "Bachha bahut rota hai, doodh nahi peeta",
+      "Dukan par nazar lag gayi hai",
+      "Ghar mein sab bimar pad gaye achanak",
+      "Nazar utarne ka upay batao"
+    ],
+    "diagnosis": "Buri nazar (Evil Eye) nakaratmak urja ka ek prabhav hai jo kisi ki irshya (jealousy) ya nakaratmak soch se aata hai, jisse health ya business gir jata hai.",
+    "recommendedPujas": [
+      {
+        "name": "Nazar Dosh Nivaran Havan",
+        "description": "Ghar ya dukan se nakaratmak urja nikalne ke liye havan.",
+        "duration": "1-2 hours",
+        "bestDay": "Tuesday or Saturday",
+        "samagriList": ["Lal mirch", "Peeli sarson", "Rai", "Ghee", "Nariyal"],
+        "shastraReference": "Atharvaveda"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Lal Mirch aur Namak ka Upay",
+      "steps": [
+        "7 sookhi lal mirch, thoda sendha namak aur thodi rai lein",
+        "Jise nazar lagi ho uske upar se 7 baar anti-clockwise ghumaye",
+        "Use aag mein jala dein (bahar)"
+      ],
+      "itemsNeeded": ["7 Sookhi Lal Mirch", "Sendha Namak", "Rai"],
+      "frequency": "As needed",
+      "duration": "Once"
+    },
+    "connectToPandit": {
+      "serviceId": "nazar_dosh_havan",
+      "why": "Grave nazar dosh ke liye Raksha Kavach aur Vedic mantro se havan karwana avashyak hota hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["business-loss", "health-issues"]
+  },
+  {
+    "id": "santan-issues",
+    "problemCategory": "children",
+    "userMightSay": [
+      "Bachha nahi ho raha hai",
+      "Pregnancy mein complications aa rahi hain",
+      "Bar bar miscarriage ho jata hai",
+      "Santan prapti ke upay bataiye",
+      "Medical report normal hai par fir bhi problem hai"
+    ],
+    "diagnosis": "Santan prapti mein badha Pancham (5th) bhav ke pirit hone, Guru (Jupiter) ki weak position ya Pitru dosh ke karan aati hai.",
+    "recommendedPujas": [
+      {
+        "name": "Santan Gopal Puja",
+        "description": "Bhagwan Krishna ke bal roop ki puja santan prapti ke liye.",
+        "duration": "3-4 hours",
+        "bestDay": "Thursday or Ashtami",
+        "samagriList": ["Laddu Gopal ki murti", "Makhan mishri", "Tulsi patra", "Peela kapda"],
+        "shastraReference": "Srimad Bhagavatam"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Santan Gopal Mantra Jaap",
+      "steps": [
+        "Pati-patni dono subah naha kar saaf kapde pehne",
+        "'Om Devaki Sudha Govinda...' mantra ka 108 baar jaap karein",
+        "Gau mata ko gud aur roti khilaye"
+      ],
+      "itemsNeeded": ["Tulsi mala", "Makhan", "Gud"],
+      "frequency": "Daily",
+      "duration": "Till wish fulfillment"
+    },
+    "connectToPandit": {
+      "serviceId": "santan_gopal_jaap",
+      "why": "Santan Gopal Mantra ka lakh-guna jaap pandit ji dwara karwane se shighra aur swasth santan prapti ke yog bante hain."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["pregnancy-issues", "pitru-dosh"]
+  },
+  {
+    "id": "bachche-ki-padhai",
+    "problemCategory": "education",
+    "userMightSay": [
+      "Bachche ka padhai mein man nahi lagta",
+      "Exam mein marks kam aate hain",
+      "Yaad karta hai par bhool jata hai",
+      "Concentration nahi hai",
+      "Competitive exam clear nahi ho raha"
+    ],
+    "diagnosis": "Shiksha aur concentration mein kami Budh (Mercury), Guru (Jupiter) ya pancham bhav ke kamzor hone aur Vastu dosh ki wajah se hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Saraswati Puja & Havan",
+        "description": "Mata Saraswati ki kripa se vidya, buddhi aur gyan ki prapti.",
+        "duration": "2 hours",
+        "bestDay": "Wednesday or Vasant Panchami",
+        "samagriList": ["Safed phool", "Kesar", "Kitab/Pen", "Saraswati Yantra"],
+        "shastraReference": "Rigveda (Saraswati Suktam)"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Study Table Vastu & Saraswati Mantra",
+      "steps": [
+        "Bachche ka muh padhte samay Purv (East) ya Uttar (North) ki taraf rakhein",
+        "Roz padhai shuru karne se pehle 'Om Aim Saraswatyai Namah' 11 baar bolein",
+        "Study table par mor pankh rakhein"
+      ],
+      "itemsNeeded": ["Mor pankh", "East/North direction table"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "saraswati_puja",
+      "why": "Exam se pehle pandit dwara yagya aur Saraswati yantra sthapana se bachche ki memory aur focus badhta hai."
+    },
+    "urgencyLevel": "low",
+    "relatedProblems": ["vastu-dosh"]
+  },
+  {
+    "id": "griha-pravesh",
+    "problemCategory": "property",
+    "userMightSay": [
+      "Naye ghar mein shift hona hai",
+      "Griha Pravesh ki puja karni hai",
+      "Ghar banvaya hai, uski shanti karni hai",
+      "Naya flat liya hai, Vastu shanti puja chahiye",
+      "Muhurat janna hai ghar me shift hone ka"
+    ],
+    "diagnosis": "Naye nirmaan ya flat mein kai tarah ke vastu dosh ya bhumi dosh ho sakte hain. Pravesh se pehle in dosho ka nivaran aur devtaon ka aavahan zaroori hai.",
+    "recommendedPujas": [
+      {
+        "name": "Vastu Shanti & Griha Pravesh Puja",
+        "description": "Naye ghar mein sukh, shanti aur samriddhi ke liye Navagraha, Vastu Purush aur Ganesh pujan.",
+        "duration": "4-5 hours",
+        "bestDay": "Auspicious Muhurat based on Kundli",
+        "samagriList": ["Kalash", "Aam ke patte", "Nariyal", "Navdhanya", "Ghee"],
+        "shastraReference": "Matsya Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Ganga Jal aur Haldi ka Chhidkav",
+      "steps": [
+        "Pravesh se pehle ghar ko acche se saaf karein",
+        "Mukhya dwar par haldi se Swastik banaye",
+        "Ghar ke har kone mein Ganga jal ka chhidkav karein"
+      ],
+      "itemsNeeded": ["Ganga Jal", "Haldi", "Aam ka patta"],
+      "frequency": "Once",
+      "duration": "Day of shifting"
+    },
+    "connectToPandit": {
+      "serviceId": "griha_pravesh_puja",
+      "why": "Griha pravesh bina Brahman aur Vedic vidhi ke adhoora hai, isse ghar mein shanti aati hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["vastu-dosh"]
+  },
+  {
+    "id": "business-opening",
+    "problemCategory": "career",
+    "userMightSay": [
+      "Nayi dukan kholni hai",
+      "Office ka udghatan karna hai",
+      "Business startup start kar rahe hain",
+      "Factory opening ki puja karwani hai",
+      "Showroom inauguration muhurat"
+    ],
+    "diagnosis": "Kisi bhi naye karya ki shuruwat mein nirvidhna roop se safalta paane ke liye Lord Ganesha aur Mata Lakshmi ka ashirvad aavashyak hai.",
+    "recommendedPujas": [
+      {
+        "name": "Ganesh Lakshmi Puja / Udghatan Puja",
+        "description": "Business mein safalta aur dhan aagaman ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Wednesday, Thursday or Friday",
+        "samagriList": ["Ganesh Lakshmi murti", "Mithai", "Phool", "Roli", "Moli"],
+        "shastraReference": "Padma Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Galle/Cashbox Sthapana",
+      "steps": [
+        "Dukan kholte hi sabse pehle dehleez (threshold) ko pranam karein",
+        "Galle mein lal kapda bichha kar usme 5 gomti chakra rakhein",
+        "Kapur jalakar aarti karein"
+      ],
+      "itemsNeeded": ["Lal kapda", "Gomti chakra", "Kapur"],
+      "frequency": "Daily opening routine",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "office_opening_puja",
+      "why": "Udghatan ke samay Vedic mantra ucharan se sthaan ki negative energy dur hoti hai aur business badhta hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["business-loss", "vastu-dosh"]
+  },
+  {
+    "id": "job-problems",
+    "problemCategory": "career",
+    "userMightSay": [
+      "Naukri nahi mil rahi hai",
+      "Interview clear nahi hote",
+      "Job lagti hai par choot jati hai",
+      "Office mein boss pareshan karta hai",
+      "Career mein growth ruki hui hai"
+    ],
+    "diagnosis": "Career mein samasya dasham (10th) bhav, Surya ya Shani ke pratikool hone ke karan hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Surya & Shani Shanti Puja",
+        "description": "Surya (authority) aur Shani (karma/job) ko anukul banane ke liye puja.",
+        "duration": "2-3 hours",
+        "bestDay": "Sunday or Saturday",
+        "samagriList": ["Lal phool", "Kale til", "Gud", "Navagraha samidha"],
+        "shastraReference": "Navagraha Shanti"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Surya aur Hanuman Aradhana",
+      "steps": [
+        "Roz subah Surya Dev ko jal arpit karein (roal/lal chandan dal kar)",
+        "Aditya Hridaya Stotram ka path karein",
+        "Mangalwar ko Hanuman mandir mein darshan karein"
+      ],
+      "itemsNeeded": ["Tambe ka lota", "Lal chandan", "Aditya Hridaya Stotram book"],
+      "frequency": "Daily",
+      "duration": "Until job secured"
+    },
+    "connectToPandit": {
+      "serviceId": "navagraha_shanti_career",
+      "why": "Kundli dikha kar vishesh graho ka havan pandit ji se karwane par interview mein safalta milti hai."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["promotion-issues"]
+  },
+  {
+    "id": "promotion-issues",
+    "problemCategory": "career",
+    "userMightSay": [
+      "Promotion ruka hua hai",
+      "Appraisal achha nahi hua",
+      "Salary nahi badh rahi",
+      "Dusro ko promotion mil gaya mujhe nahi",
+      "Boss se banti nahi hai"
+    ],
+    "diagnosis": "Promotion aur recognition Surya ki kripa aur dasham bhav ki mazbooti par nirbhar karta hai. Rahu ka prabhav politics create karta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Navagraha Havan for Career",
+        "description": "Rukawato ko door karne aur official kshetra mein maan-samman badhane ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Sunday",
+        "samagriList": ["Havan samagri", "Ghee", "Lal kapda", "Navagraha yantra"],
+        "shastraReference": "Jyotish Shastra"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Gau-Mata Seva",
+      "steps": [
+        "Roz subah phli roti gau mata ko khilaye (us par gud rakh kar)",
+        "Apne work desk par ek chota crystal tortoise (kachhua) rakhein",
+        "Gayatri Mantra ka jaap karein"
+      ],
+      "itemsNeeded": ["Roti", "Gud", "Crystal Tortoise"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "surya_shanti",
+      "why": "Surya mantra ka anushthan pandit ji se karwane par adhikariyo (bosses) se anukulta milti hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["job-problems", "business-enemies"]
+  },
+  {
+    "id": "depression-stress",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Bahut tension rehti hai",
+      "Depression feel hota hai",
+      "Dimag shant nahi rehta",
+      "Suicidal thoughts aate hain",
+      "Overthinking band nahi hoti"
+    ],
+    "diagnosis": "Mansik ashanti aur depression Chandrama (Moon) ke pirit hone (Rahu/Ketu/Shani ke sath) ya chaturth (4th) bhav ke dosh se hota hai.",
+    "recommendedPujas": [
+      {
+        "name": "Chandra Shanti & Rudrabhishek",
+        "description": "Chandrama ko balwan karne aur mansik shanti ke liye bhagwan Shiv ka abhishek.",
+        "duration": "2-3 hours",
+        "bestDay": "Monday",
+        "samagriList": ["Ganga jal", "Kachcha doodh", "Bhaang", "Safed phool", "Chandi ka chandra"],
+        "shastraReference": "Shiv Puran"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Chandi ke gilass mein pani",
+      "steps": [
+        "Raat ko chandi ke gilass mein pani bhar kar rakhein aur subah piyein",
+        "Roz dhyan (meditation) karein aur 'Om' ka uchcharan karein",
+        "Mata-pita ka ashirvad lein"
+      ],
+      "itemsNeeded": ["Chandi ka glass", "Water"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "rudrabhishek",
+      "why": "Vedic Rudrabhishek mansik tanav ko jadd se khatam karne ka sabse prabhavshali shastriya upay hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["insomnia", "nazar-evil-eye"]
+  },
+  {
+    "id": "bhoot-pret",
+    "problemCategory": "spiritual",
+    "userMightSay": [
+      "Ghar mein ajeeb aawazein aati hain",
+      "Koi saya (ghost) dikhta hai",
+      "Raat ko dar lagta hai, achanak uth jate hain",
+      "Ghar mein kisi ko upari hawa lag gayi hai",
+      "Black magic ya kala jadu ka doubt hai"
+    ],
+    "diagnosis": "Upari hawa, bhoot-pret ya kala jadu ka prabhav tab hota hai jab ghar mein nakaratmak urja bhari ho aur Rahu/Ketu/Shani ki dasha chal rahi ho.",
+    "recommendedPujas": [
+      {
+        "name": "Chandi Path / Baglamukhi Havan",
+        "description": "Nakarathmak urja aur tantrik kriyaon (black magic) ko nasht karne ke liye.",
+        "duration": "4-5 hours",
+        "bestDay": "Amavasya or Tuesday",
+        "samagriList": ["Nimbu", "Kali mirch", "Gugal", "Loban", "Mustard oil"],
+        "shastraReference": "Durga Saptashati"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Gugal aur Loban ka dhuni",
+      "steps": [
+        "Sham ke samay pure ghar mein Gugal aur Loban ki dhuni/dhoop dikhaye",
+        "Hanuman Chalisa ya Bajrang Baan ka path unchi awaz mein karein",
+        "Sone wale kamre mein kapoor jalaye"
+      ],
+      "itemsNeeded": ["Gugal", "Loban", "Kapoor"],
+      "frequency": "Daily at sunset",
+      "duration": "21 days"
+    },
+    "connectToPandit": {
+      "serviceId": "tantra_badha_nivaran",
+      "why": "Tantrik badha ko sirf anubhavi pandit hi uchit anushthan (Chandi Path) dwara kaat sakte hain."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["nazar-evil-eye", "insomnia"]
+  },
+  {
+    "id": "business-enemies",
+    "problemCategory": "enemies",
+    "userMightSay": [
+      "Competitors market mein pareshan kar rahe hain",
+      "Log dushmani nikal rahe hain",
+      "Bina baat ke log mere khilaf ho rahe hain",
+      "Shatru business destroy karna chahte hain",
+      "Office politics se pareshan hu"
+    ],
+    "diagnosis": "Shatru badha 6th house ke sakriya hone ya Mangal/Rahu ke ashubh prabhav se aati hai. Ise Baglamukhi Mata ki kripa se dur kiya ja sakta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Maa Baglamukhi Puja",
+        "description": "Shatruo ka stambhan (paralyze their bad intentions) karne aur vijay pane ke liye.",
+        "duration": "3 hours",
+        "bestDay": "Tuesday or Thursday",
+        "samagriList": ["Peela kapda", "Haldi ki mala", "Peeli sarson", "Peela aasan"],
+        "shastraReference": "Baglamukhi Tantra"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Bhairav Darshan aur Sarson",
+      "steps": [
+        "Ravivar (Sunday) ko Bhairav mandir mein jalebi aur imarti ka bhog lagaye",
+        "Apne office/dukan ke charo kono mein thodi peeli sarson chhidke",
+        "'Om Hreem Baglamukhi Namaha' ka jaap karein"
+      ],
+      "itemsNeeded": ["Peeli Sarson", "Jalebi/Imarti"],
+      "frequency": "Every Sunday",
+      "duration": "Until problem resolves"
+    },
+    "connectToPandit": {
+      "serviceId": "baglamukhi_puja",
+      "why": "Gupt shatruo se bachav ke liye Baglamukhi mantra ka jaap vidhi-vidhan se Brahman dwara hi karana chahiye."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["court-case", "business-loss"]
+  },
+  {
+    "id": "debt-rin",
+    "problemCategory": "finance",
+    "userMightSay": [
+      "Karza bahut badh gaya hai",
+      "Loan nahi chuka paa raha",
+      "Paisa aata hai par tikta nahi, EMI mein chala jata hai",
+      "Rin mukti ke upay chahiye",
+      "Log udhaar le gaye aur wapas nahi kar rahe"
+    ],
+    "diagnosis": "Karza badhna Mangal (Mars) ke kharab hone ya chhathve (6th) aur barhve (12th) bhav ke dosh ke karan hota hai.",
+    "recommendedPujas": [
+      {
+        "name": "Rin Mukteshwar Puja / Mangal Bhaat Puja",
+        "description": "Karze se mukti aur fasa hua paisa wapas nikalne ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Tuesday",
+        "samagriList": ["Lal masoor daal", "Lal pushp", "Gud", "Tambe ka patra"],
+        "shastraReference": "Rinmochan Mangal Stotram"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Rinmochan Mangal Stotram",
+      "steps": [
+        "Har Mangalwar ko Rinmochan Mangal Stotram ka path karein",
+        "Shivling par masoor ki daal (lal) arpit karein",
+        "Koshish karein ki EMI ya loan ki kist Mangalwar ko pay karein"
+      ],
+      "itemsNeeded": ["Masoor daal", "Rinmochan book"],
+      "frequency": "Every Tuesday",
+      "duration": "Until debt is cleared"
+    },
+    "connectToPandit": {
+      "serviceId": "mangal_shanti_debt",
+      "why": "Mangal grah ki shanti aur yagya pandit ji dwara karwane se karza utarne ke raste jaldi khulte hain."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["business-loss", "health-issues"]
+  },
+  {
+    "id": "body-pain",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Sharir mein hamesha dard rehta hai",
+      "Ghutno aur jodo mein bahut dard hai",
+      "Kamar dard theek nahi ho raha",
+      "Medical test normal hain par pain hai",
+      "Unexplained body ache"
+    ],
+    "diagnosis": "Vata dosh (Ayurveda) aur Shani ka prabhav sharir mein dard paida karta hai. Surya ka kamzor hona haddiyo (bones) ki kamzori laata hai.",
+    "recommendedPujas": [
+      {
+        "name": "Surya Shanti & Dhanvantari Havan",
+        "description": "Sharirik peeda se mukti aur achhi health ke liye.",
+        "duration": "2 hours",
+        "bestDay": "Sunday",
+        "samagriList": ["Dhanvantari yantra", "Gud", "Gehu", "Lal kapda", "Aushadhi (herbs)"],
+        "shastraReference": "Ayurveda / Atharvaveda"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Surya Namaskar aur Tel Malish",
+      "steps": [
+        "Roz subah Surya Namaskar karein aur Surya arghya dein",
+        "Shanivar ko sarson ya til ke tel se malish karein",
+        "Diet mein haldi aur methi ka upyog badhaye"
+      ],
+      "itemsNeeded": ["Sarson ka tel", "Haldi", "Methi"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "dhanvantari_puja",
+      "why": "Lord Dhanvantari (God of medicine) ki puja aur havan pandit ji se karwane par dawai asar karne lagti hai."
+    },
+    "urgencyLevel": "low",
+    "relatedProblems": ["health-issues"]
+  },
+  {
+    "id": "insomnia",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Raat ko neend nahi aati",
+      "Sone ki koshish karta hu par thoughts chalte rehte hain",
+      "Sleeping pills khani pad rahi hain",
+      "Bure sapne aate hain",
+      "Neend bar bar toot jati hai"
+    ],
+    "diagnosis": "Neend ki samasya Chandrama (Moon) aur barhve (12th) bhav ke Rahu/Ketu/Shani dwara pirit hone se hoti hai. Vastu dosh (galat disha mein sona) bhi iska karan hai.",
+    "recommendedPujas": [
+      {
+        "name": "Chandra Graha Shanti Puja",
+        "description": "Dimag ko shant karne aur acchi neend ke liye Chandrama ki puja.",
+        "duration": "2 hours",
+        "bestDay": "Monday",
+        "samagriList": ["Kachcha doodh", "Chawal", "Safed phool", "Chandi ka sikka"],
+        "shastraReference": "Navagraha Shanti"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Sone ki Disha aur Mantra",
+      "steps": [
+        "Sote samay sir (head) Dakshin (South) disha ki taraf rakhein",
+        "Sone se pehle hath-pair dho kar bistar par baithein aur 11 baar 'Om Namah Shivaya' bolein",
+        "Takiye ke niche saunf ki choti pudiya rakhein"
+      ],
+      "itemsNeeded": ["Saunf", "South facing bed"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "rudrabhishek_moon",
+      "why": "Mansik shanti ke liye pandit ji dwara Rudrabhishek aur Chandra mantra jaap anivarya hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["depression-stress", "bhoot-pret", "vastu-dosh"]
+  },
+  {
+    "id": "vastu-dosh",
+    "problemCategory": "property",
+    "userMightSay": [
+      "Ghar ka vastu theek nahi hai",
+      "North east mein toilet ban gaya hai",
+      "South facing ghar le liya hai",
+      "Ghar aate hi mood kharab ho jata hai",
+      "Vastu dosh ki wajah se kalesh ho raha hai"
+    ],
+    "diagnosis": "Vastu dosh pancho tatvo (Jal, Vayu, Agni, Prithvi, Akash) ke asantulan se hota hai. Isse health, wealth aur relation sab par asar padta hai.",
+    "recommendedPujas": [
+      {
+        "name": "Vastu Dosh Nivaran Puja",
+        "description": "Bina tod-phod kiye ghar ke Vastu dosh ko shant karne ke liye.",
+        "duration": "3-4 hours",
+        "bestDay": "Thursday or Friday",
+        "samagriList": ["Vastu Yantra", "Navratna", "Sarso", "Havan Samagri"],
+        "shastraReference": "Vastu Shastra / Vishwakarma Prakash"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Namak aur Fitkari ka Upay",
+      "steps": [
+        "Ghar ke bathroom mein ek katori mein khada namak (rock salt) bharkar rakhein",
+        "Har hafte is namak ko flush kar dein aur naya rakh dein",
+        "Ghar mein poncha lagate samay thoda sea salt dalein"
+      ],
+      "itemsNeeded": ["Rock Salt", "Bowl"],
+      "frequency": "Weekly",
+      "duration": "Permanent"
+    },
+    "connectToPandit": {
+      "serviceId": "vastu_shanti_puja",
+      "why": "Vastu Purush ki sthapana aur disha shuddhi puja pandit ji ke mantro dwara hi faldayi hoti hai bina tod-phod ke."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["ghar-mein-kalesh", "health-issues", "business-loss"]
+  },
+  {
+    "id": "post-marriage-problems",
+    "problemCategory": "marriage",
+    "userMightSay": [
+      "Shaadi ke baad in-laws se nahi banti",
+      "Saas-bahu mein bahut jhagda hota hai",
+      "Husband meri side nahi leta",
+      "Sasural ka mahol bahut kharab hai",
+      "Roz roz ke tane sunne padte hain"
+    ],
+    "diagnosis": "Sasural paksh (8th house) ya Chandrama (Mother-in-law) aur Mangal (anger) ke kharab connection se yeh samasya aati hai.",
+    "recommendedPujas": [
+      {
+        "name": "Navachandi Path",
+        "description": "Ghar mein shanti aur sabhi sadasyo mein prem bhav jagrat karne ke liye.",
+        "duration": "4-5 hours",
+        "bestDay": "Ashtami or Navami",
+        "samagriList": ["Chunri", "Sindoor", "Mithai", "Nariyal"],
+        "shastraReference": "Durga Saptashati"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Gauri Puja aur Meetha",
+      "steps": [
+        "Ghar mein jab bhi khana banaye, phli roti mata gaye (cow) ke liye nikalein",
+        "Roti par thoda meetha (gud) rakh kar dein",
+        "Mata Parvati ko roj sindoor arpit karein aur wahi sindoor apni maang mein bharein"
+      ],
+      "itemsNeeded": ["Gud", "Roti", "Sindoor"],
+      "frequency": "Daily",
+      "duration": "Minimum 40 days"
+    },
+    "connectToPandit": {
+      "serviceId": "grah_shanti_marriage",
+      "why": "Kundli dikhakar Mangal ya Rahu ki shanti ka havan karwane se sasural ka mahol shant hota hai."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["ghar-mein-kalesh", "shaadi-problems"]
+  },
+  {
+    "id": "mundan-sanskar",
+    "problemCategory": "children",
+    "userMightSay": [
+      "Bachche ka mundan karwana hai",
+      "Baal utarwane ka shubh muhurat chahiye",
+      "Mundan ki puja vidhi karwani hai",
+      "Kuldevi ke yaha mundan hai, pandit ji chahiye",
+      "Jadula utarwana hai"
+    ],
+    "diagnosis": "Mundan (Chudakarana) 16 sanskaro mein se ek hai. Purb janam ke baal utarne se bachche ki aayu, buddhi aur bal mein vriddhi hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Mundan Sanskar Puja",
+        "description": "Bachche ke acche swasthya aur gyan ke liye paramparik mundan puja.",
+        "duration": "1.5 hours",
+        "bestDay": "Auspicious Muhurat",
+        "samagriList": ["Nayi kainchi (scissors)", "Ganga jal", "Aata", "Ghee", "Peela kapda"],
+        "shastraReference": "Manusmriti / Grihya Sutras"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Pre-Mundan Tyari",
+      "steps": [
+        "Bachche ko naye aur saaf kapde pehnaye",
+        "Ghar ke mandir mein Ganesh ji ko pranam karein",
+        "Kati hui shikha (baal) ko aate ke pede mein dabakar nadi ya mandir mein visarjit karein"
+      ],
+      "itemsNeeded": ["Gundha hua aata", "Naye kapde"],
+      "frequency": "Once",
+      "duration": "Day of Mundan"
+    },
+    "connectToPandit": {
+      "serviceId": "mundan_sanskar_puja",
+      "why": "Vedic mantro ke sath pandit ji dwara baal katna bachche ko buri nazar se bachata hai."
+    },
+    "urgencyLevel": "low",
+    "relatedProblems": ["nazar-evil-eye"]
+  },
+  {
+    "id": "pregnancy-issues",
+    "problemCategory": "children",
+    "userMightSay": [
+      "Pregnancy conceive nahi ho rahi",
+      "Doctor ne bed rest bola hai complications hain",
+      "Healthy baby ke liye puja karni hai",
+      "Garbh sanskar puja karwani hai",
+      "Bar bar garbhpat (miscarriage) ho jata hai"
+    ],
+    "diagnosis": "Pregnancy mein complications Pancham bhav, Guru grah ki durbalta, aur pitru dosh/nazar dosh ke karan aati hain.",
+    "recommendedPujas": [
+      {
+        "name": "Garbh Raksha & Santan Gopal Puja",
+        "description": "Garbhavati mahila aur aane wale bachche ki raksha ke liye puja.",
+        "duration": "2 hours",
+        "bestDay": "Thursday",
+        "samagriList": ["Laddu Gopal", "Makhan", "Tulsi", "Raksha sutra"],
+        "shastraReference": "Atharvaveda / Garbha Upanishad"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Garbh Raksha Stotram",
+      "steps": [
+        "Mata ko roj Garbh Raksha Stotram sunna ya padhna chahiye",
+        "Kesar wala doodh piyein",
+        "Apne kamre mein bal Krishna (Laddu Gopal) ki sundar tasveer lagayein"
+      ],
+      "itemsNeeded": ["Garbh Raksha Stotram Book", "Bal Krishna Photo", "Kesar"],
+      "frequency": "Daily during pregnancy",
+      "duration": "9 months"
+    },
+    "connectToPandit": {
+      "serviceId": "santan_gopal_havan",
+      "why": "Pandit ji dwara abhimantrit Raksha Sutra (dhaaga) mahila ke pet/haath par bandhne se garbh ki raksha hoti hai."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["santan-issues", "nazar-evil-eye", "pitru-dosh"]
+  },
+  {
+    "id": "political-success",
+    "problemCategory": "career",
+    "userMightSay": [
+      "Election aane wale hain, jeet chahiye",
+      "Politics mein naam kamana hai",
+      "Party mein ticket nahi mil raha",
+      "Janta ka support nahi mil raha",
+      "Virodhi neta pareshan kar rahe hain"
+    ],
+    "diagnosis": "Rajniti mein safalta ke liye Surya (power), Rahu (politics/diplomacy) aur Shani (janta/masses) ka strong hona behad zaroori hai.",
+    "recommendedPujas": [
+      {
+        "name": "Shatru Vijay Baglamukhi & Surya Anushthan",
+        "description": "Virodhiyo ko shant karne aur power/authority pane ke liye.",
+        "duration": "5+ hours",
+        "bestDay": "Sunday or Tuesday",
+        "samagriList": ["Peela kapda", "Haldi", "Surya yantra", "Lal kaner ke phool"],
+        "shastraReference": "Baglamukhi Tantra / Surya Siddhanta"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Surya aur Bhairav Puja",
+      "steps": [
+        "Roz subah Surya ko jal dein aur Aditya Hridaya Stotram padhein",
+        "Bhairav mandir mein Ravivar ko darshan karein",
+        "Gareebo (Shani) mein bhagidari aur daan badhayein"
+      ],
+      "itemsNeeded": ["Tambe ka lota", "Aditya Hridaya book"],
+      "frequency": "Daily",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "baglamukhi_anushthan",
+      "why": "Political success aur enemies ko dabane ke liye lamba aur gupt Baglamukhi anushthan pandit ji hi kar sakte hain."
+    },
+    "urgencyLevel": "medium",
+    "relatedProblems": ["business-enemies", "court-case"]
+  },
+  {
+    "id": "family-illness",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Ghar mein ek theek hota hai dusra bimar pad jata hai",
+      "Dawaiyon ka kharcha bahut ho raha hai",
+      "Family ki health negative rehti hai",
+      "Mata-pita ki tabiyat lagatar kharab hai",
+      "Lagta hai ghar ko nazar lag gayi hai"
+    ],
+    "diagnosis": "Ek ke baad ek bimari ghar mein Vastu dosh (Visheshkar South-East ya North-East) aur nakaratmak urja (Rahu/Ketu) ki wajah se aati hai.",
+    "recommendedPujas": [
+      {
+        "name": "Navagraha & Mahamrityunjaya Havan",
+        "description": "Ghar se rogo (diseases) ka nash karne aur pure parivar ki raksha ke liye.",
+        "duration": "3-4 hours",
+        "bestDay": "Monday",
+        "samagriList": ["Guduchi (Giloy)", "Bael patra", "Havan kund", "Ghee"],
+        "shastraReference": "Rigveda / Ayurveda"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Neem aur Kapoor ki Dhuni",
+      "steps": [
+        "Hafte mein ek baar sookhe neem ke patte aur kapoor milakar jalayein aur pure ghar mein dhuni dein",
+        "Pene ke pani ke matke ya filter ke paas ek chota tambe ka sikka rakhein",
+        "Raat ko jhute bartan kitchen mein na chhodein"
+      ],
+      "itemsNeeded": ["Neem leaves", "Kapoor", "Tambe ka sikka"],
+      "frequency": "Weekly",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "rudrabhishek_family",
+      "why": "Ghar mein pandit ji bula kar shankh dhwani aur Vedic mantro se havan karwane par negative bacteria/energy nasht hote hain."
+    },
+    "urgencyLevel": "high",
+    "relatedProblems": ["health-issues", "nazar-evil-eye", "vastu-dosh"]
+  },
+  {
+    "id": "repeated-accidents",
+    "problemCategory": "health",
+    "userMightSay": [
+      "Bar bar accident ho raha hai",
+      "Gadi bar bar thuk jati hai ya kharab hoti hai",
+      "Chot bahut lagti hai",
+      "Dar lagta hai drive karne mein",
+      "Akal mrityu ka bhay hai"
+    ],
+    "diagnosis": "Bar bar durghatna (accident) Mangal (Mars) aur Rahu-Ketu ke dushprabhav se ya Markesh dasha chalne ke karan hoti hai.",
+    "recommendedPujas": [
+      {
+        "name": "Vahan (Vehicle) Puja & Raksha Kavach",
+        "description": "Vahan (gaadi) ki puja aur durghatnaon se bachne ke liye Hanuman puja.",
+        "duration": "1-2 hours",
+        "bestDay": "Tuesday or Saturday",
+        "samagriList": ["Nariyal", "Sindoor", "Moli", "Nimbu", "Kali mirch"],
+        "shastraReference": "Hanuman Tantra"
+      }
+    ],
+    "diyRemedy": {
+      "title": "Nimbu Mirchi aur Hanuman Aradhana",
+      "steps": [
+        "Har mangalwar ya shanivar vahan (car/bike) ke aage nimbu-mirchi bandhein",
+        "Gaadi chalane se pehle Hanuman Chalisa ka smaran karein",
+        "Apni gaadi mein dashboard par ek choti Hanuman ji ki ya Ganesh ji ki murti rakhein"
+      ],
+      "itemsNeeded": ["Nimbu", "Mirchi", "Hanuman Idol"],
+      "frequency": "Weekly",
+      "duration": "Lifelong"
+    },
+    "connectToPandit": {
+      "serviceId": "vahan_puja_raksha",
+      "why": "Naye ya purane vahan ki vidhivat puja pandit ji dwara karwane se aur abhimantrit moli bandhne se aksmita durghatna se bacha hota hai."
+    },
+    "urgencyLevel": "critical",
+    "relatedProblems": ["kaal-sarpa-dosh", "manglik-dosh"]
+  }
+]

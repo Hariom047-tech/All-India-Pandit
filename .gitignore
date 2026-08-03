@@ -8,8 +8,8 @@ node_modules/
 # submitted contact/enquiry/newsletter data (dev store — see backend/src/utils/store.js)
 backend/src/data/submissions/*.jsonl
 
-# dev screenshots
-tools/shots/
+# frontend build output
+frontend/app/dist/
 
 # OS
 .DS_Store

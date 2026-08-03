@@ -13,6 +13,7 @@ const NAV = [
 ];
 
 const NAV_EXTRA = [
+  { to: "/pandit-ji", label: "Pandit Ji AI 🔱", icon: "sparkles" },
   { to: "/temple-map", label: "Temple Map", icon: "map" },
   { to: "/ai-recommender", label: "AI Pooja Guide", icon: "sparkles" },
   { to: "/dashboard", label: "Pandit Dashboard", icon: "layout-dashboard" },
@@ -70,7 +71,27 @@ export function Header() {
             ))}
           </nav>
           <div className="header-cta">
-            <Link className="btn btn-outline btn-sm" to="/dashboard">
+            <Link 
+              className="btn btn-sm" 
+              to="/pandit-ji"
+              style={{
+                background: "linear-gradient(135deg, #f3d47d, #d4a017)",
+                color: "white",
+                border: "none",
+                boxShadow: "0 4px 14px rgba(212,160,23,0.3)",
+                animation: "pc-pulse 2s infinite"
+              }}
+            >
+              🔱 Pandit Ji AI
+            </Link>
+            <style>{`
+              @keyframes pc-pulse {
+                0% { box-shadow: 0 0 0 0 rgba(212,160,23,0.6); }
+                70% { box-shadow: 0 0 0 8px rgba(212,160,23,0); }
+                100% { box-shadow: 0 0 0 0 rgba(212,160,23,0); }
+              }
+            `}</style>
+            <Link className="btn btn-outline btn-sm" style={{ marginLeft: '8px' }} to="/dashboard">
               <Icon name="user" size={17} /> Profile/Login
             </Link>
             <button

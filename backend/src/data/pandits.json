@@ -29,7 +29,7 @@
     "edu": "Shastri (Veda), Sampurnanand Sanskrit University",
     "gotra": "Bharadwaj",
     "about": "Twenty-two years of performing Rudrabhishek and Mahamrityunjay anusthans at Kashi Vishwanath. Explains every step of the vidhi in Hindi and English so families understand what they are participating in.",
-    "img": "assets/img/pandits/ramesh-sharma.jpg"
+    "img": "/assets/img/pandits/ramesh-sharma.jpg"
   },
   {
     "id": "devdatt-shastri",
@@ -61,7 +61,7 @@
     "edu": "Acharya (Jyotish), Maharishi Panini Sanskrit University",
     "gotra": "Kashyap",
     "about": "Ujjain's senior-most Kaal Sarp and Navgrah shanti specialist. Reads the kundali first and performs only the puja your chart actually calls for — never a package.",
-    "img": "assets/img/pandits/devdatt-shastri.jpg"
+    "img": "/assets/img/pandits/devdatt-shastri.jpg"
   },
   {
     "id": "naman-tiwari",
@@ -94,7 +94,7 @@
     "edu": "Shastri (Ramcharitmanas), Ayodhya Sanskrit Mahavidyalaya",
     "gotra": "Vatsa",
     "about": "Leads a Sunderkand mandali of five with dholak and manjira. Known for a clear, singing recitation style that keeps children and elders engaged for the full three hours.",
-    "img": "assets/img/pandits/naman-tiwari.jpg"
+    "img": "/assets/img/pandits/naman-tiwari.jpg"
   },
   {
     "id": "suresh-joshi",
@@ -126,7 +126,7 @@
     "edu": "Ved Murti, Trimbakeshwar Vedshala",
     "gotra": "Gautam",
     "about": "Trained at Trimbakeshwar Vedshala in Narayan Nagbali and Tripindi Shradh — rituals that require exact procedure. Handles all samagri arrangement at the ghat himself.",
-    "img": "assets/img/pandits/suresh-joshi.jpg"
+    "img": "/assets/img/pandits/suresh-joshi.jpg"
   },
   {
     "id": "anand-iyer",
@@ -159,7 +159,7 @@
     "edu": "Ghanapaathi (Yajur Veda), Madurai Veda Patasala",
     "gotra": "Srivatsa",
     "about": "A Ghanapaathi who has conducted over 900 Tamil-tradition weddings at Meenakshi Amman. Provides the full muhurat sheet and guna-milan report before the ceremony.",
-    "img": "assets/img/pandits/anand-iyer.jpg"
+    "img": "/assets/img/pandits/anand-iyer.jpg"
   },
   {
     "id": "mohan-das",
@@ -191,7 +191,7 @@
     "edu": "Shastri (Puran), Puri Sanskrit College",
     "gotra": "Vishwamitra",
     "about": "Sevayat family of the Jagannath temple, fourth generation. Conducts Pind daan at Swargadwar and seven-day Bhagwat Katha in Odia, Hindi or Bengali.",
-    "img": "assets/img/pandits/mohan-das.jpg"
+    "img": "/assets/img/pandits/mohan-das.jpg"
   },
   {
     "id": "gopal-chaturvedi",
@@ -223,7 +223,7 @@
     "edu": "Acharya (Bhagwat), Vrindavan Shodh Sansthan",
     "gotra": "Garg",
     "about": "Braj-tradition katha vachak. His seven-day Bhagwat Katha includes daily bhajan and a Chhappan Bhog on the final day, arranged with the temple kitchen.",
-    "img": "assets/img/pandits/gopal-chaturvedi.jpg"
+    "img": "/assets/img/pandits/gopal-chaturvedi.jpg"
   },
   {
     "id": "vikas-upadhyay",
@@ -255,7 +255,7 @@
     "edu": "Shastri (Karmakand), Gurukul Kangri",
     "gotra": "Bhargav",
     "about": "Handles Mundan, Janeu and Shradh at Har Ki Pauri with the family vanshavali register. Patient with first-time families and transparent about ghat charges upfront.",
-    "img": "assets/img/pandits/vikas-upadhyay.jpg"
+    "img": "/assets/img/pandits/vikas-upadhyay.jpg"
   },
   {
     "id": "srinivas-rao",
@@ -287,7 +287,7 @@
     "edu": "Vedanta Vidwan, Tirumala Veda Patasala",
     "gotra": "Atreya",
     "about": "Twenty-six years of Tirumala sevas. Coordinates tonsure, Annaprashan and Kalyanotsavam slots including the TTD booking formalities for out-of-state families.",
-    "img": "assets/img/pandits/srinivas-rao.jpg"
+    "img": "/assets/img/pandits/srinivas-rao.jpg"
   },
   {
     "id": "harish-bhatt",
@@ -318,7 +318,7 @@
     "edu": "Shastri (Veda), Dwarka Sharda Peeth",
     "gotra": "Shandilya",
     "about": "Gugli pandit of Dwarkadhish. Performs Gujarati-vidhi weddings and Griha Pravesh with the complete samagri list shared on WhatsApp a week in advance.",
-    "img": "assets/img/pandits/harish-bhatt.jpg"
+    "img": "/assets/img/pandits/harish-bhatt.jpg"
   },
   {
     "id": "bipul-goswami",
@@ -350,7 +350,7 @@
     "edu": "Tantra Acharya, Kamakhya Peeth",
     "gotra": "Kaushik",
     "about": "Hereditary Kamakhya pandit for Devi anusthans. Performs the complete Durga Saptashati with Kavach-Argala-Keelak and explains each remedy in plain language.",
-    "img": "assets/img/pandits/bipul-goswami.jpg"
+    "img": "/assets/img/pandits/bipul-goswami.jpg"
   },
   {
     "id": "kailash-mishra",
@@ -382,7 +382,7 @@
     "edu": "Ved Shastri, Mumbai Ved Vidyalaya",
     "gotra": "Vashishtha",
     "about": "Mumbai's go-to pandit for flat Griha Pravesh and office openings. Works around apartment society rules and finishes within the muhurat window without rushing the vidhi.",
-    "img": "assets/img/pandits/kailash-mishra.jpg"
+    "img": "/assets/img/pandits/kailash-mishra.jpg"
   },
   {
     "id": "satish-dubey",
@@ -415,7 +415,7 @@
     "edu": "Shastri (Karmakand), Delhi Sanskrit Academy",
     "gotra": "Parashar",
     "about": "Delhi-NCR Griha Pravesh and Jagran specialist with his own bhajan mandali. Sends a printed vidhi card so the family knows the sequence in advance.",
-    "img": "assets/img/pandits/satish-dubey.jpg"
+    "img": "/assets/img/pandits/satish-dubey.jpg"
   },
   {
     "id": "mahesh-vyas",
@@ -447,7 +447,7 @@
     "edu": "Acharya (Jyotish), Jagatguru Ramanandacharya University",
     "gotra": "Dadhich",
     "about": "Marwari-tradition wedding vidhi with full jyotish backing — kundali milan, muhurat and dosh remedies handled by the same person who performs the ceremony.",
-    "img": "assets/img/pandits/mahesh-vyas.jpg"
+    "img": "/assets/img/pandits/mahesh-vyas.jpg"
   },
   {
     "id": "raghav-pathak",
@@ -478,7 +478,7 @@
     "edu": "Shastri (Veda), BHU",
     "gotra": "Upamanyu",
     "about": "Younger BHU-trained pandit who runs online Sunderkand and Satyanarayan katha for families abroad, with the samagri list couriered in advance.",
-    "img": "assets/img/pandits/raghav-pathak.jpg"
+    "img": "/assets/img/pandits/raghav-pathak.jpg"
   },
   {
     "id": "lakshman-acharya",
@@ -509,6 +509,6 @@
     "edu": "Mahamahopadhyaya (Veda), Ujjain",
     "gotra": "Angiras",
     "about": "Thirty-one years at Mahakal. Conducts large-scale Mahamrityunjay jaap anusthans (1.25 lakh) with a team of eleven pandits and full sankalp documentation.",
-    "img": "assets/img/pandits/lakshman-acharya.jpg"
+    "img": "/assets/img/pandits/lakshman-acharya.jpg"
   }
 ]

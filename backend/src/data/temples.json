@@ -19,8 +19,12 @@
       "aarti-seva",
       "pitru-dosh"
     ],
-    "img": "assets/img/temples/kashi-vishwanath.jpg",
+    "img": "/assets/img/temples/kashi-vishwanath.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/kashi-vishwanath-2.jpg"
+    ],
     "about": "One of the twelve Jyotirlingas and the spiritual heart of Varanasi, standing on the western bank of the Ganga. The present structure was rebuilt by Maharani Ahilyabai Holkar in 1780. Rudrabhishek and Mahamrityunjay jaap here are considered especially potent.",
+    "history": "The temple has been demolished and rebuilt several times through history before Ahilyabai Holkar's 1780 reconstruction gave it its present form. In 1839, Maharaja Ranjit Singh of Punjab donated roughly a tonne of gold to plate the shikhara, earning it the popular name 'Golden Temple of Kashi'. The Kashi Vishwanath Corridor, completed in 2021, now links the sanctum directly to the Ganga ghats.",
     "highlights": [
       "Jyotirlinga darshan",
       "Ganga Aarti at Dashashwamedh",
@@ -48,8 +52,12 @@
       "mahamrityunjay",
       "havan-yagna"
     ],
-    "img": "assets/img/temples/mahakaleshwar.jpg",
+    "img": "/assets/img/temples/mahakaleshwar.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/mahakaleshwar-2.jpg"
+    ],
     "about": "The only south-facing Jyotirlinga, famous for the Bhasma Aarti performed at dawn with sacred ash. Ujjain is the traditional seat for Kaal Sarp and Mangal dosh nivaran pujas.",
+    "history": "Ujjain, known in antiquity as Avantika, is one of India's seven sacred Moksha-giving cities (Sapta Puri) and a seat of ancient learning. The temple complex is built on five levels, one below ground, and its Nagara-style shikhara was substantially rebuilt under Maratha patronage in the 18th century after earlier structures were damaged. It is also one of the sites of the Simhastha Kumbh Mela, held roughly every twelve years.",
     "highlights": [
       "Bhasma Aarti (4 AM)",
       "Kaal Sarp dosh puja",
@@ -77,8 +85,13 @@
       "antim-sanskar",
       "havan-yagna"
     ],
-    "img": "assets/img/temples/haridwar.jpg",
+    "img": "/assets/img/temples/har-ki-pauri.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/har-ki-pauri-2.jpg",
+      "/assets/img/temples/gallery/har-ki-pauri-3.jpg"
+    ],
     "about": "The principal ghat of Haridwar where the Ganga enters the plains. The traditional destination for Shradh, Tarpan, Mundan and Asthi visarjan, with generations of pandit families maintaining vanshavali records.",
+    "history": "Tradition holds that a drop of Amrit fell here during the Samudra Manthan, making the ghat's Brahma Kund one of the most sacred bathing spots on the Ganga. It is a principal site of the Kumbh Mela, drawing millions of pilgrims once every twelve years. The present ghat structures, including the clock tower, were expanded through the 19th and early 20th centuries as Haridwar grew into a major pilgrimage town.",
     "highlights": [
       "Evening Ganga Aarti",
       "Pind daan & tarpan",
@@ -106,8 +119,12 @@
       "annaprashan",
       "gau-puja"
     ],
-    "img": "assets/img/temples/banke-bihari.jpg",
+    "img": "/assets/img/temples/banke-bihari.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/banke-bihari-2.jpg"
+    ],
     "about": "The most beloved Krishna temple of Vrindavan, where the curtain is drawn every few minutes so devotees never meet Bihari ji's gaze for too long. Bhagwat Katha and Chhappan Bhog seva are arranged through temple pandits.",
+    "history": "The deity is associated with the 16th-century saint-musician Swami Haridas, guru of the legendary court singer Tansen, and was originally worshipped in the Nidhivan grove before the present temple was built in 1864. It follows the Radha-Vallabha Sampradaya, a devotional tradition distinct from other Vrindavan temples. The practice of repeatedly drawing the curtain before the deity remains one of its most distinctive rituals.",
     "highlights": [
       "Jhulan & Holi utsav",
       "Chhappan Bhog seva",
@@ -135,8 +152,12 @@
       "namkaran",
       "aarti-seva"
     ],
-    "img": "assets/img/temples/ram-mandir.jpg",
+    "img": "/assets/img/temples/ram-mandir.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/ram-mandir-2.jpg"
+    ],
     "about": "The grand Nagara-style temple at Ram Janmabhoomi, consecrated in January 2024. Akhand Ramayan Path and Sunderkand recitals are the most requested sevas, along with Saryu snan rituals.",
+    "history": "Built at the site long venerated as Lord Ram's birthplace, construction began after a 2019 Supreme Court verdict settled a decades-long title dispute. The Pran Pratishtha consecration ceremony took place on 22 January 2024, attended by the Prime Minister and religious leaders from across the country. The temple is built primarily in Rajasthani pink sandstone with a white marble sanctum, following classical Nagara temple architecture.",
     "highlights": [
       "Ram Lalla darshan",
       "Akhand Ramayan Path",
@@ -164,8 +185,12 @@
       "aarti-seva",
       "wedding"
     ],
-    "img": "assets/img/temples/tirumala.jpg",
+    "img": "/assets/img/temples/tirumala.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/tirumala-2.jpg"
+    ],
     "about": "The world's most-visited temple, on the seventh hill of Tirumala. Mundan (tonsure) and Annaprashan here are family traditions across South India; Kalyanotsavam is performed daily.",
+    "history": "Inscriptions and references to the temple go back over a thousand years, with major expansion under the Pallava, Chola and especially Vijayanagara rulers. Emperor Krishnadevaraya, one of its most celebrated patrons, donated large quantities of gold and jewels in the 16th century and commissioned several of the temple's gopurams. It is now administered by the Tirumala Tirupati Devasthanams (TTD) trust, one of the wealthiest religious institutions in the world.",
     "highlights": [
       "Suprabhata Seva",
       "Kalyanotsavam",
@@ -193,8 +218,13 @@
       "satyanarayan-katha",
       "gau-puja"
     ],
-    "img": "assets/img/temples/jagannath.jpg",
+    "img": "/assets/img/temples/jagannath-puri.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/jagannath-puri-2.jpg",
+      "/assets/img/temples/gallery/jagannath-puri-3.jpg"
+    ],
     "about": "Home of the Char Dham deity Jagannath with brother Balabhadra and sister Subhadra. Famous for the Rath Yatra and the Mahaprasad cooked in the world's largest temple kitchen.",
+    "history": "The present structure dates to the 12th century, built under King Anantavarman Chodaganga Deva of the Eastern Ganga dynasty, though the site's worship traditions are believed to be far older. Its 65-metre shikhara, topped by the Nilachakra (sacred wheel), dominates the Puri skyline. The temple kitchen is said to prepare food for tens of thousands of devotees daily using an age-old cooking method with earthen pots stacked over open fire.",
     "highlights": [
       "Rath Yatra",
       "Mahaprasad seva",
@@ -222,8 +252,13 @@
       "kundali",
       "aarti-seva"
     ],
-    "img": "assets/img/temples/meenakshi.jpg",
+    "img": "/assets/img/temples/meenakshi.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/meenakshi-2.jpg",
+      "/assets/img/temples/gallery/meenakshi-3.jpg"
+    ],
     "about": "A Dravidian masterpiece with fourteen towering gopurams and the Hall of Thousand Pillars. Thirukalyanam — the divine wedding — makes it a favoured venue for marriage rituals.",
+    "history": "While the site's temple traditions are ancient, most of the present structure was built between the 14th and 17th centuries under the Nayak dynasty, particularly during the reign of Thirumalai Nayakar. Its fourteen gopurams, the tallest rising to around 52 metres, are covered in thousands of painted stucco figures depicting Hindu mythology. The complex's Hall of a Thousand Pillars, each carved individually, remains one of Dravidian architecture's most celebrated achievements.",
     "highlights": [
       "Thirukalyanam",
       "Chithirai festival",
@@ -251,8 +286,12 @@
       "rudrabhishek",
       "satyanarayan-shanti"
     ],
-    "img": "assets/img/temples/trimbakeshwar.jpg",
+    "img": "/assets/img/temples/trimbakeshwar.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/trimbakeshwar-2.jpg"
+    ],
     "about": "A Jyotirlinga at the source of the Godavari and the recognised centre for Kaal Sarp Yog, Narayan Nagbali and Tripindi Shradh — pujas that require specially trained pandits.",
+    "history": "The present black-stone temple was built between the 1740s and 1760s under the Maratha Peshwa Balaji Baji Rao, replacing an older structure at this Jyotirlinga site. Uncommonly, its lingam bears three small faces representing Brahma, Vishnu and Shiva together. The nearby Kushavarta Kund is regarded as the true source of the Godavari river, one of India's most sacred waterways.",
     "highlights": [
       "Kaal Sarp Yog puja",
       "Narayan Nagbali",
@@ -280,8 +319,12 @@
       "namkaran",
       "aarti-seva"
     ],
-    "img": "assets/img/temples/dwarkadhish.jpg",
+    "img": "/assets/img/temples/dwarkadhish.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/dwarkadhish-2.jpg"
+    ],
     "about": "The Jagat Mandir of Char Dham fame, with a five-storey spire held by seventy-two pillars. Bhagwat Katha and Krishna-vivah style wedding rituals are performed by resident Gugli pandits.",
+    "history": "Tradition holds that a temple has stood on or near this site for over two thousand years, believed to mark the location of Krishna's residence at Dwarka. The current structure is largely 15th–16th century, built and repeatedly renovated by the Chalukya and later rulers of the region. As one of the four Char Dham, it draws pilgrims from across India alongside its resident Gugli Brahmin priesthood, said to have served the temple for many generations.",
     "highlights": [
       "Dhwaja changing seva",
       "Janmashtami utsav",
@@ -309,9 +352,13 @@
       "navgrah-shanti",
       "kundali"
     ],
-    "img": "assets/img/temples/kamakhya.jpg",
+    "img": "/assets/img/temples/kamakhya.jpg",
     "album": true,
+    "gallery": [
+      "/assets/img/temples/gallery/kamakhya-2.jpg"
+    ],
     "about": "The most revered Shakti Peeth on Nilachal Hill, centre of tantric worship. Durga Saptashati path and Devi anusthans here are conducted by hereditary tantric pandits.",
+    "history": "One of the 51 Shakti Peethas, the temple marks the spot where, according to legend, a part of the goddess Sati fell after Shiva's grief-stricken tandava. An earlier temple was destroyed and the present structure was rebuilt in 1565 under the Koch dynasty king Naranarayana. Its distinctive beehive-shaped shikhara is characteristic of the Nilachal style of temple architecture found only in this region.",
     "highlights": [
       "Ambubachi Mela",
       "Durga Saptashati path",
@@ -339,8 +386,12 @@
       "shop-opening",
       "satyanarayan-katha"
     ],
-    "img": "assets/img/temples/siddhivinayak.jpg",
+    "img": "/assets/img/temples/siddhivinayak.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/siddhivinayak-2.jpg"
+    ],
     "about": "Mumbai's most visited Ganesh temple, where Tuesday queues stretch for kilometres. The first stop for Griha Pravesh sankalp and new-business pujas across the city.",
+    "history": "Built in 1801 by local contractor Laxman Vithu Patil and philanthropist Deubai Patil, the temple began as a small shrine long before Mumbai's growth into a metropolis. Its popularity grew steadily through the 20th century, particularly from the 1950s onward, as film and business communities embraced it before major ventures. It is today managed by one of India's wealthiest and most professionally run temple trusts.",
     "highlights": [
       "Tuesday Ganesh darshan",
       "Ganesh Utsav (10 days)",
@@ -368,8 +419,13 @@
       "mundan",
       "griha-pravesh"
     ],
-    "img": "assets/img/temples/chhatarpur.jpg",
+    "img": "/assets/img/temples/chhatarpur.jpg",
+    "gallery": [
+      "/assets/img/temples/gallery/chhatarpur-2.jpg",
+      "/assets/img/temples/gallery/chhatarpur-3.jpg"
+    ],
     "about": "Delhi's sprawling Chhatarpur temple complex in white marble, packed through both Navratris. Jagran, Durga path and Mundan ceremonies are arranged in its many mandaps.",
+    "history": "Founded in 1974 by Baba Sant Nagpal Ji, the complex grew over subsequent decades into one of India's largest temple precincts, spread across roughly 70 acres on Delhi's southern edge. Its architecture blends South Indian temple forms with modern white-marble construction on a scale rarely attempted in the capital. The complex now houses dozens of shrines besides the main Katyayani sanctum, drawing especially large crowds during Navratri.",
     "highlights": [
       "Navratri jagran",
       "Marble mandap ceremonies",
@@ -397,8 +453,10 @@
       "annaprashan",
       "aarti-seva"
     ],
-    "img": "assets/img/temples/govind-devji.jpg",
+    "img": "/assets/img/temples/govind-devji.jpg",
+    "gallery": [],
     "about": "Jaipur's presiding deity inside the City Palace complex, with seven daily jhankis. Weddings and Bhagwat Katha here follow the Gaudiya Vaishnav tradition.",
+    "history": "The deity was originally worshipped in Vrindavan before Maharaja Sawai Jai Singh II, founder of Jaipur, had it brought to his new capital around 1735 and installed within the City Palace grounds. It is regarded as the Rajya Devta — the reigning deity — of Jaipur's former royal family, who are said to have taken no major decision without first seeking its blessing. The temple follows the Gaudiya Vaishnav tradition established by the 16th-century saint Chaitanya Mahaprabhu.",
     "highlights": [
       "Seven daily jhankis",
       "Janmashtami jhulan",

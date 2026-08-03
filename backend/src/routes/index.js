@@ -33,6 +33,8 @@ router.use('/payments', require('./payments.routes'));
 router.use('/blog', require('./blog.routes'));
 router.use('/contact', require('./contact.routes'));
 router.use('/newsletter', require('./newsletter.routes'));
+const chatRoutes = require('./chat.routes');
+router.use('/chat', chatRoutes);
 router.use('/', require('./misc.routes')); // /panchang, /festivals, /faqs, /plans, /stats, /taxonomy, /recommend
 
 module.exports = router;

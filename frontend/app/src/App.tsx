@@ -19,6 +19,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const PanditChat = lazy(() => import("./pages/PanditChat"));
 
 function RouteFallback() {
   return (
@@ -72,6 +73,7 @@ export default function App() {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
+              <Route path="pandit-ji" element={<PanditChat />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

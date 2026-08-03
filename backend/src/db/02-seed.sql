@@ -1,10 +1,10 @@
 -- GENERATED FILE — do not edit by hand.
 -- Source: backend/src/data/*.json, via backend/scripts/generate-seed-sql.js
--- Content hash: a7e041aa967d94322450f95e106d63ca5e3d8955
+-- Content hash: 0abde4e2057477a1192c8251fb0c1303337c7b31
 
 -- system/editorial user (blog authorship)
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, email_verified, phone_verified)
-     VALUES ('d7943536-ef8b-5d7f-aeac-7bc0e2ac13ed', 'admin@panditconnect.demo', NULL, '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'PanditConnect Editorial', 'admin', 'active', TRUE, FALSE);
+     VALUES ('d7943536-ef8b-5d7f-aeac-7bc0e2ac13ed', 'admin@panditconnect.demo', NULL, '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'PanditConnect Editorial', 'admin', 'active', TRUE, FALSE);
 
 -- service_categories (derived from distinct services[].cat)
 INSERT INTO service_categories (id, name, slug, display_order) VALUES ('8f58bc36-d272-523d-ab61-22e50904b39e', 'life', 'life', 0);
@@ -284,7 +284,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '8eaaf858-ccfb-5889-a84b-72c2889eceac', 'Kashi Vishwanath Temple', 'kashi-vishwanath', 'One of the twelve Jyotirlingas and the spiritual heart of Varanasi, standing on the western bank of the Ganga. The present structure was rebuilt by Maharani Ahilyabai Holkar in 1780. Rudrabhishek and Mahamrityunjay jaap here are considered especially potent.', 'One of the twelve Jyotirlingas and the spiritual heart of Varanasi, standing on the western bank of the Ganga. The present structure was rebuilt by Maharani Ahilyabai Holkar in 1780. Rudrabhishek and Mahamrityunjay jaap here are considered especially potent.',
-         'Lord Shiva', 'Varanasi', 'Varanasi', 'Uttar Pradesh', 25.3109, 83.0107, 'assets/img/temples/kashi-vishwanath.jpg',
+         'Lord Shiva', 'Varanasi', 'Varanasi', 'Uttar Pradesh', 25.3109, 83.0107, '/assets/img/temples/kashi-vishwanath.jpg',
          'One of the twelve Jyotirlingas and the spiritual heart of Varanasi, standing on the western bank of the Ganga. The present structure was rebuilt by Maharani Ahilyabai Holkar in 1780. Rudrabhishek and Mahamrityunjay jaap here are considered especially potent.
 
 Traditional timings: 3:00 AM – 11:00 PM
@@ -297,7 +297,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '688beda2-fa0c-53a5-a9f5-36e53be41dfd', 'Mahakaleshwar Jyotirlinga', 'mahakaleshwar', 'The only south-facing Jyotirlinga, famous for the Bhasma Aarti performed at dawn with sacred ash. Ujjain is the traditional seat for Kaal Sarp and Mangal dosh nivaran pujas.', 'The only south-facing Jyotirlinga, famous for the Bhasma Aarti performed at dawn with sacred ash. Ujjain is the traditional seat for Kaal Sarp and Mangal dosh nivaran pujas.',
-         'Lord Mahakal', 'Ujjain', 'Ujjain', 'Madhya Pradesh', 23.1828, 75.7683, 'assets/img/temples/mahakaleshwar.jpg',
+         'Lord Mahakal', 'Ujjain', 'Ujjain', 'Madhya Pradesh', 23.1828, 75.7683, '/assets/img/temples/mahakaleshwar.jpg',
          'The only south-facing Jyotirlinga, famous for the Bhasma Aarti performed at dawn with sacred ash. Ujjain is the traditional seat for Kaal Sarp and Mangal dosh nivaran pujas.
 
 Traditional timings: 4:00 AM – 11:00 PM
@@ -310,7 +310,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '97c4197b-3741-50c5-a0a7-8e3d8d357a90', 'Har Ki Pauri & Daksheshwar', 'har-ki-pauri', 'The principal ghat of Haridwar where the Ganga enters the plains. The traditional destination for Shradh, Tarpan, Mundan and Asthi visarjan, with generations of pandit families maintaining vanshavali records.', 'The principal ghat of Haridwar where the Ganga enters the plains. The traditional destination for Shradh, Tarpan, Mundan and Asthi visarjan, with generations of pandit families maintaining vanshavali records.',
-         'Ganga Mata', 'Haridwar', 'Haridwar', 'Uttarakhand', 29.9457, 78.1642, 'assets/img/temples/haridwar.jpg',
+         'Ganga Mata', 'Haridwar', 'Haridwar', 'Uttarakhand', 29.9457, 78.1642, '/assets/img/temples/har-ki-pauri.jpg',
          'The principal ghat of Haridwar where the Ganga enters the plains. The traditional destination for Shradh, Tarpan, Mundan and Asthi visarjan, with generations of pandit families maintaining vanshavali records.
 
 Traditional timings: 5:00 AM – 10:00 PM
@@ -323,7 +323,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'e26626f2-7638-514e-87e2-4dd3cf0161ec', 'Shri Banke Bihari Mandir', 'banke-bihari', 'The most beloved Krishna temple of Vrindavan, where the curtain is drawn every few minutes so devotees never meet Bihari ji''s gaze for too long. Bhagwat Katha and Chhappan Bhog seva are arranged through temple pandits.', 'The most beloved Krishna temple of Vrindavan, where the curtain is drawn every few minutes so devotees never meet Bihari ji''s gaze for too long. Bhagwat Katha and Chhappan Bhog seva are arranged through temple pandits.',
-         'Lord Krishna', 'Mathura', 'Mathura', 'Uttar Pradesh', 27.5826, 77.7003, 'assets/img/temples/banke-bihari.jpg',
+         'Lord Krishna', 'Mathura', 'Mathura', 'Uttar Pradesh', 27.5826, 77.7003, '/assets/img/temples/banke-bihari.jpg',
          'The most beloved Krishna temple of Vrindavan, where the curtain is drawn every few minutes so devotees never meet Bihari ji''s gaze for too long. Bhagwat Katha and Chhappan Bhog seva are arranged through temple pandits.
 
 Traditional timings: 7:45 AM – 9:30 PM
@@ -336,7 +336,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'eefad424-582d-5135-bdd5-40b44157fea3', 'Shri Ram Janmabhoomi Mandir', 'ram-mandir', 'The grand Nagara-style temple at Ram Janmabhoomi, consecrated in January 2024. Akhand Ramayan Path and Sunderkand recitals are the most requested sevas, along with Saryu snan rituals.', 'The grand Nagara-style temple at Ram Janmabhoomi, consecrated in January 2024. Akhand Ramayan Path and Sunderkand recitals are the most requested sevas, along with Saryu snan rituals.',
-         'Lord Ram', 'Ayodhya', 'Ayodhya', 'Uttar Pradesh', 26.7956, 82.1943, 'assets/img/temples/ram-mandir.jpg',
+         'Lord Ram', 'Ayodhya', 'Ayodhya', 'Uttar Pradesh', 26.7956, 82.1943, '/assets/img/temples/ram-mandir.jpg',
          'The grand Nagara-style temple at Ram Janmabhoomi, consecrated in January 2024. Akhand Ramayan Path and Sunderkand recitals are the most requested sevas, along with Saryu snan rituals.
 
 Traditional timings: 6:30 AM – 9:30 PM
@@ -349,7 +349,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '75f34963-b5e1-5a70-9c5c-5429ecb7d41d', 'Tirumala Venkateswara Temple', 'tirumala', 'The world''s most-visited temple, on the seventh hill of Tirumala. Mundan (tonsure) and Annaprashan here are family traditions across South India; Kalyanotsavam is performed daily.', 'The world''s most-visited temple, on the seventh hill of Tirumala. Mundan (tonsure) and Annaprashan here are family traditions across South India; Kalyanotsavam is performed daily.',
-         'Lord Venkateswara', 'Tirupati', 'Tirupati', 'Andhra Pradesh', 13.6833, 79.3474, 'assets/img/temples/tirumala.jpg',
+         'Lord Venkateswara', 'Tirupati', 'Tirupati', 'Andhra Pradesh', 13.6833, 79.3474, '/assets/img/temples/tirumala.jpg',
          'The world''s most-visited temple, on the seventh hill of Tirumala. Mundan (tonsure) and Annaprashan here are family traditions across South India; Kalyanotsavam is performed daily.
 
 Traditional timings: 2:30 AM – 1:30 AM
@@ -362,7 +362,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '5e2e7e25-ac94-5986-b843-cacd23da3b56', 'Shri Jagannath Temple', 'jagannath-puri', 'Home of the Char Dham deity Jagannath with brother Balabhadra and sister Subhadra. Famous for the Rath Yatra and the Mahaprasad cooked in the world''s largest temple kitchen.', 'Home of the Char Dham deity Jagannath with brother Balabhadra and sister Subhadra. Famous for the Rath Yatra and the Mahaprasad cooked in the world''s largest temple kitchen.',
-         'Lord Jagannath', 'Puri', 'Puri', 'Odisha', 19.805, 85.818, 'assets/img/temples/jagannath.jpg',
+         'Lord Jagannath', 'Puri', 'Puri', 'Odisha', 19.805, 85.818, '/assets/img/temples/jagannath-puri.jpg',
          'Home of the Char Dham deity Jagannath with brother Balabhadra and sister Subhadra. Famous for the Rath Yatra and the Mahaprasad cooked in the world''s largest temple kitchen.
 
 Traditional timings: 5:00 AM – 11:00 PM
@@ -375,7 +375,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'a7dfbac7-c051-5c5b-8625-41948dd108eb', 'Meenakshi Amman Temple', 'meenakshi', 'A Dravidian masterpiece with fourteen towering gopurams and the Hall of Thousand Pillars. Thirukalyanam — the divine wedding — makes it a favoured venue for marriage rituals.', 'A Dravidian masterpiece with fourteen towering gopurams and the Hall of Thousand Pillars. Thirukalyanam — the divine wedding — makes it a favoured venue for marriage rituals.',
-         'Goddess Meenakshi', 'Madurai', 'Madurai', 'Tamil Nadu', 9.9195, 78.1193, 'assets/img/temples/meenakshi.jpg',
+         'Goddess Meenakshi', 'Madurai', 'Madurai', 'Tamil Nadu', 9.9195, 78.1193, '/assets/img/temples/meenakshi.jpg',
          'A Dravidian masterpiece with fourteen towering gopurams and the Hall of Thousand Pillars. Thirukalyanam — the divine wedding — makes it a favoured venue for marriage rituals.
 
 Traditional timings: 5:00 AM – 10:00 PM
@@ -388,7 +388,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'd0e9c36c-4f3b-568b-a3ca-5873b3d00e5f', 'Trimbakeshwar Shiva Temple', 'trimbakeshwar', 'A Jyotirlinga at the source of the Godavari and the recognised centre for Kaal Sarp Yog, Narayan Nagbali and Tripindi Shradh — pujas that require specially trained pandits.', 'A Jyotirlinga at the source of the Godavari and the recognised centre for Kaal Sarp Yog, Narayan Nagbali and Tripindi Shradh — pujas that require specially trained pandits.',
-         'Lord Shiva', 'Nashik', 'Nashik', 'Maharashtra', 19.9333, 73.5297, 'assets/img/temples/trimbakeshwar.jpg',
+         'Lord Shiva', 'Nashik', 'Nashik', 'Maharashtra', 19.9333, 73.5297, '/assets/img/temples/trimbakeshwar.jpg',
          'A Jyotirlinga at the source of the Godavari and the recognised centre for Kaal Sarp Yog, Narayan Nagbali and Tripindi Shradh — pujas that require specially trained pandits.
 
 Traditional timings: 5:30 AM – 9:00 PM
@@ -401,7 +401,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'afca3764-28ec-5a02-97be-c9a501b899d2', 'Dwarkadhish Temple', 'dwarkadhish', 'The Jagat Mandir of Char Dham fame, with a five-storey spire held by seventy-two pillars. Bhagwat Katha and Krishna-vivah style wedding rituals are performed by resident Gugli pandits.', 'The Jagat Mandir of Char Dham fame, with a five-storey spire held by seventy-two pillars. Bhagwat Katha and Krishna-vivah style wedding rituals are performed by resident Gugli pandits.',
-         'Lord Krishna', 'Dwarka', 'Dwarka', 'Gujarat', 22.2378, 68.9685, 'assets/img/temples/dwarkadhish.jpg',
+         'Lord Krishna', 'Dwarka', 'Dwarka', 'Gujarat', 22.2378, 68.9685, '/assets/img/temples/dwarkadhish.jpg',
          'The Jagat Mandir of Char Dham fame, with a five-storey spire held by seventy-two pillars. Bhagwat Katha and Krishna-vivah style wedding rituals are performed by resident Gugli pandits.
 
 Traditional timings: 6:00 AM – 9:30 PM
@@ -414,7 +414,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '43c26630-a502-50cd-ba65-aa6587b8aa32', 'Kamakhya Devi Temple', 'kamakhya', 'The most revered Shakti Peeth on Nilachal Hill, centre of tantric worship. Durga Saptashati path and Devi anusthans here are conducted by hereditary tantric pandits.', 'The most revered Shakti Peeth on Nilachal Hill, centre of tantric worship. Durga Saptashati path and Devi anusthans here are conducted by hereditary tantric pandits.',
-         'Goddess Kamakhya', 'Guwahati', 'Guwahati', 'Assam', 26.1664, 91.7055, 'assets/img/temples/kamakhya.jpg',
+         'Goddess Kamakhya', 'Guwahati', 'Guwahati', 'Assam', 26.1664, 91.7055, '/assets/img/temples/kamakhya.jpg',
          'The most revered Shakti Peeth on Nilachal Hill, centre of tantric worship. Durga Saptashati path and Devi anusthans here are conducted by hereditary tantric pandits.
 
 Traditional timings: 5:30 AM – 10:00 PM
@@ -427,7 +427,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'fffd6438-b32c-568b-89d1-b8007d923907', 'Shree Siddhivinayak Temple', 'siddhivinayak', 'Mumbai''s most visited Ganesh temple, where Tuesday queues stretch for kilometres. The first stop for Griha Pravesh sankalp and new-business pujas across the city.', 'Mumbai''s most visited Ganesh temple, where Tuesday queues stretch for kilometres. The first stop for Griha Pravesh sankalp and new-business pujas across the city.',
-         'Lord Ganesh', 'Mumbai', 'Mumbai', 'Maharashtra', 19.017, 72.8302, 'assets/img/temples/siddhivinayak.jpg',
+         'Lord Ganesh', 'Mumbai', 'Mumbai', 'Maharashtra', 19.017, 72.8302, '/assets/img/temples/siddhivinayak.jpg',
          'Mumbai''s most visited Ganesh temple, where Tuesday queues stretch for kilometres. The first stop for Griha Pravesh sankalp and new-business pujas across the city.
 
 Traditional timings: 5:30 AM – 10:00 PM
@@ -440,7 +440,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          '058eb67e-4583-5362-a9dc-450f2b847bee', 'Shri Adya Katyayani Shakti Peeth', 'chhatarpur', 'Delhi''s sprawling Chhatarpur temple complex in white marble, packed through both Navratris. Jagran, Durga path and Mundan ceremonies are arranged in its many mandaps.', 'Delhi''s sprawling Chhatarpur temple complex in white marble, packed through both Navratris. Jagran, Durga path and Mundan ceremonies are arranged in its many mandaps.',
-         'Goddess Katyayani', 'Delhi', 'Delhi', 'Delhi', 28.501, 77.178, 'assets/img/temples/chhatarpur.jpg',
+         'Goddess Katyayani', 'Delhi', 'Delhi', 'Delhi', 28.501, 77.178, '/assets/img/temples/chhatarpur.jpg',
          'Delhi''s sprawling Chhatarpur temple complex in white marble, packed through both Navratris. Jagran, Durga path and Mundan ceremonies are arranged in its many mandaps.
 
 Traditional timings: 6:00 AM – 10:00 PM
@@ -453,7 +453,7 @@ INSERT INTO temples (
          is_verified, is_active
        ) VALUES (
          'eee43db2-e65f-5c78-9143-1c754f28d754', 'Govind Dev Ji Temple', 'govind-devji', 'Jaipur''s presiding deity inside the City Palace complex, with seven daily jhankis. Weddings and Bhagwat Katha here follow the Gaudiya Vaishnav tradition.', 'Jaipur''s presiding deity inside the City Palace complex, with seven daily jhankis. Weddings and Bhagwat Katha here follow the Gaudiya Vaishnav tradition.',
-         'Lord Krishna', 'Jaipur', 'Jaipur', 'Rajasthan', 26.926, 75.8235, 'assets/img/temples/govind-devji.jpg',
+         'Lord Krishna', 'Jaipur', 'Jaipur', 'Rajasthan', 26.926, 75.8235, '/assets/img/temples/govind-devji.jpg',
          'Jaipur''s presiding deity inside the City Palace complex, with seven daily jhankis. Weddings and Bhagwat Katha here follow the Gaudiya Vaishnav tradition.
 
 Traditional timings: 4:30 AM – 9:00 PM
@@ -535,37 +535,37 @@ INSERT INTO temple_services (temple_id, service_id) VALUES ('eee43db2-e65f-5c78-
 
 -- one users row per pandit (synthetic account behind each demo profile)
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('6f368764-5196-5229-950a-f28975f52359', 'ramesh-sharma@panditconnect.demo', '+919000000101', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Ramesh Sharma', 'pandit', 'active', 'Varanasi', 'Uttar Pradesh', TRUE, TRUE);
+       VALUES ('6f368764-5196-5229-950a-f28975f52359', 'ramesh-sharma@panditconnect.demo', '+919000000101', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Ramesh Sharma', 'pandit', 'active', 'Varanasi', 'Uttar Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('9ebc917f-c73e-5015-9e82-5e5444d7460a', 'devdatt-shastri@panditconnect.demo', '+919000000102', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Devdatt Shastri', 'pandit', 'active', 'Ujjain', 'Madhya Pradesh', TRUE, TRUE);
+       VALUES ('9ebc917f-c73e-5015-9e82-5e5444d7460a', 'devdatt-shastri@panditconnect.demo', '+919000000102', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Devdatt Shastri', 'pandit', 'active', 'Ujjain', 'Madhya Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('f32f0e58-4ac5-5cc3-8a98-fdb9271dd8e4', 'naman-tiwari@panditconnect.demo', '+919000000103', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Naman Tiwari', 'pandit', 'active', 'Ayodhya', 'Uttar Pradesh', TRUE, TRUE);
+       VALUES ('f32f0e58-4ac5-5cc3-8a98-fdb9271dd8e4', 'naman-tiwari@panditconnect.demo', '+919000000103', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Naman Tiwari', 'pandit', 'active', 'Ayodhya', 'Uttar Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('b14e99ab-cfe4-511b-906c-8441b1db1d10', 'suresh-joshi@panditconnect.demo', '+919000000104', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Suresh Joshi', 'pandit', 'active', 'Nashik', 'Maharashtra', TRUE, TRUE);
+       VALUES ('b14e99ab-cfe4-511b-906c-8441b1db1d10', 'suresh-joshi@panditconnect.demo', '+919000000104', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Suresh Joshi', 'pandit', 'active', 'Nashik', 'Maharashtra', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('2bad6cb7-17f8-544e-b395-b446dd63084f', 'anand-iyer@panditconnect.demo', '+919000000105', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Anand Iyer', 'pandit', 'active', 'Madurai', 'Tamil Nadu', TRUE, TRUE);
+       VALUES ('2bad6cb7-17f8-544e-b395-b446dd63084f', 'anand-iyer@panditconnect.demo', '+919000000105', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Anand Iyer', 'pandit', 'active', 'Madurai', 'Tamil Nadu', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('6d4b3e58-3cf0-5a71-b1f9-db26451c18e1', 'mohan-das@panditconnect.demo', '+919000000106', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Mohan Das', 'pandit', 'active', 'Puri', 'Odisha', TRUE, TRUE);
+       VALUES ('6d4b3e58-3cf0-5a71-b1f9-db26451c18e1', 'mohan-das@panditconnect.demo', '+919000000106', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Mohan Das', 'pandit', 'active', 'Puri', 'Odisha', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('b823c9bf-3e64-524b-8eb7-6c6223ccf2e1', 'gopal-chaturvedi@panditconnect.demo', '+919000000107', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Gopal Chaturvedi', 'pandit', 'active', 'Mathura', 'Uttar Pradesh', TRUE, TRUE);
+       VALUES ('b823c9bf-3e64-524b-8eb7-6c6223ccf2e1', 'gopal-chaturvedi@panditconnect.demo', '+919000000107', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Gopal Chaturvedi', 'pandit', 'active', 'Mathura', 'Uttar Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('4daac5a1-7289-54b9-87ec-bf34c47a7e8f', 'vikas-upadhyay@panditconnect.demo', '+919000000108', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Vikas Upadhyay', 'pandit', 'active', 'Haridwar', 'Uttarakhand', TRUE, TRUE);
+       VALUES ('4daac5a1-7289-54b9-87ec-bf34c47a7e8f', 'vikas-upadhyay@panditconnect.demo', '+919000000108', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Vikas Upadhyay', 'pandit', 'active', 'Haridwar', 'Uttarakhand', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('1a1b5c30-d058-54f1-906a-b6f42f7168f0', 'srinivas-rao@panditconnect.demo', '+919000000109', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Srinivas Rao', 'pandit', 'active', 'Tirupati', 'Andhra Pradesh', TRUE, TRUE);
+       VALUES ('1a1b5c30-d058-54f1-906a-b6f42f7168f0', 'srinivas-rao@panditconnect.demo', '+919000000109', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Srinivas Rao', 'pandit', 'active', 'Tirupati', 'Andhra Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('974101b2-e19a-51a9-b7dc-e38e38b75ae4', 'harish-bhatt@panditconnect.demo', '+919000000110', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Harish Bhatt', 'pandit', 'active', 'Dwarka', 'Gujarat', TRUE, TRUE);
+       VALUES ('974101b2-e19a-51a9-b7dc-e38e38b75ae4', 'harish-bhatt@panditconnect.demo', '+919000000110', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Harish Bhatt', 'pandit', 'active', 'Dwarka', 'Gujarat', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('46cf5baf-0d7a-57d9-8622-c28ac3186844', 'bipul-goswami@panditconnect.demo', '+919000000111', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Bipul Goswami', 'pandit', 'active', 'Guwahati', 'Assam', TRUE, TRUE);
+       VALUES ('46cf5baf-0d7a-57d9-8622-c28ac3186844', 'bipul-goswami@panditconnect.demo', '+919000000111', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Bipul Goswami', 'pandit', 'active', 'Guwahati', 'Assam', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('fdbbbef3-9801-5721-aae1-f9abf205f121', 'kailash-mishra@panditconnect.demo', '+919000000112', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Kailash Mishra', 'pandit', 'active', 'Mumbai', 'Maharashtra', TRUE, TRUE);
+       VALUES ('fdbbbef3-9801-5721-aae1-f9abf205f121', 'kailash-mishra@panditconnect.demo', '+919000000112', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Kailash Mishra', 'pandit', 'active', 'Mumbai', 'Maharashtra', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('42b337c2-bed4-57cb-ba73-a3851a0a6c68', 'satish-dubey@panditconnect.demo', '+919000000113', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Satish Dubey', 'pandit', 'active', 'Delhi', 'Delhi', TRUE, TRUE);
+       VALUES ('42b337c2-bed4-57cb-ba73-a3851a0a6c68', 'satish-dubey@panditconnect.demo', '+919000000113', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Satish Dubey', 'pandit', 'active', 'Delhi', 'Delhi', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('2eea2e0d-cf9d-5ca1-a9ce-19f0e76f58dc', 'mahesh-vyas@panditconnect.demo', '+919000000114', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Mahesh Vyas', 'pandit', 'active', 'Jaipur', 'Rajasthan', TRUE, TRUE);
+       VALUES ('2eea2e0d-cf9d-5ca1-a9ce-19f0e76f58dc', 'mahesh-vyas@panditconnect.demo', '+919000000114', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Mahesh Vyas', 'pandit', 'active', 'Jaipur', 'Rajasthan', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('90c58aa6-0e82-5555-b485-dc054470a16f', 'raghav-pathak@panditconnect.demo', '+919000000115', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Raghav Pathak', 'pandit', 'active', 'Varanasi', 'Uttar Pradesh', TRUE, TRUE);
+       VALUES ('90c58aa6-0e82-5555-b485-dc054470a16f', 'raghav-pathak@panditconnect.demo', '+919000000115', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Raghav Pathak', 'pandit', 'active', 'Varanasi', 'Uttar Pradesh', TRUE, TRUE);
 INSERT INTO users (id, email, phone, password_hash, full_name, role, status, city, state, email_verified, phone_verified)
-       VALUES ('95682d13-84b5-5dbb-b498-a96e4df5456a', 'lakshman-acharya@panditconnect.demo', '+919000000116', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', 'Pandit Lakshman Acharya', 'pandit', 'active', 'Ujjain', 'Madhya Pradesh', TRUE, TRUE);
+       VALUES ('95682d13-84b5-5dbb-b498-a96e4df5456a', 'lakshman-acharya@panditconnect.demo', '+919000000116', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', 'Pandit Lakshman Acharya', 'pandit', 'active', 'Ujjain', 'Madhya Pradesh', TRUE, TRUE);
 
 -- pandits
 INSERT INTO pandits (
@@ -575,7 +575,7 @@ INSERT INTO pandits (
          '31ed3761-5a33-518c-8ea6-d9186ce7fc4d', '6f368764-5196-5229-950a-f28975f52359', 'Twenty-two years of performing Rudrabhishek and Mahamrityunjay anusthans at Kashi Vishwanath. Explains every step of the vidhi in Hindi and English so families understand what they are participating in.
 
 Gotra: Bharadwaj | Education: Shastri (Veda), Sampurnanand Sanskrit University', 'Twenty-two years of performing Rudrabhishek and Mahamrityunjay anusthans at Kashi Vishwanath. Explains every step of the vidhi in Hindi and English so families understand what they are participating in.',
-         22, ARRAY['Rudrabhishek', 'Mahamrityunjay Jaap', 'Havan / Yagna', 'Griha Pravesh', 'Wedding Ceremony'], '+919000000101', '+919000000101', 'assets/img/pandits/ramesh-sharma.jpg',
+         22, ARRAY['Rudrabhishek', 'Mahamrityunjay Jaap', 'Havan / Yagna', 'Griha Pravesh', 'Wedding Ceremony'], '+919000000101', '+919000000101', '/assets/img/pandits/ramesh-sharma.jpg',
          'verified', 186, 4.9, 'diamond', 'ramesh-sharma', TRUE
        );
 INSERT INTO pandits (
@@ -585,7 +585,7 @@ INSERT INTO pandits (
          'e418106d-e5bb-5ffa-8593-4186247fd003', '9ebc917f-c73e-5015-9e82-5e5444d7460a', 'Ujjain''s senior-most Kaal Sarp and Navgrah shanti specialist. Reads the kundali first and performs only the puja your chart actually calls for — never a package.
 
 Gotra: Kashyap | Education: Acharya (Jyotish), Maharishi Panini Sanskrit University', 'Ujjain''s senior-most Kaal Sarp and Navgrah shanti specialist. Reads the kundali first and performs only the puja your chart actually calls for — never a package.',
-         28, ARRAY['Kaal Sarp Dosh Puja', 'Navgraha Shanti', 'Rudrabhishek', 'Shani Shanti Puja', 'Mahamrityunjay Jaap'], '+919000000102', '+919000000102', 'assets/img/pandits/devdatt-shastri.jpg',
+         28, ARRAY['Kaal Sarp Dosh Puja', 'Navgraha Shanti', 'Rudrabhishek', 'Shani Shanti Puja', 'Mahamrityunjay Jaap'], '+919000000102', '+919000000102', '/assets/img/pandits/devdatt-shastri.jpg',
          'verified', 241, 4.9, 'diamond', 'devdatt-shastri', TRUE
        );
 INSERT INTO pandits (
@@ -595,7 +595,7 @@ INSERT INTO pandits (
          '10f3f087-fc02-590a-b797-a1b4460f14ef', 'f32f0e58-4ac5-5cc3-8a98-fdb9271dd8e4', 'Leads a Sunderkand mandali of five with dholak and manjira. Known for a clear, singing recitation style that keeps children and elders engaged for the full three hours.
 
 Gotra: Vatsa | Education: Shastri (Ramcharitmanas), Ayodhya Sanskrit Mahavidyalaya', 'Leads a Sunderkand mandali of five with dholak and manjira. Known for a clear, singing recitation style that keeps children and elders engaged for the full three hours.',
-         14, ARRAY['Sunderkand Path', 'Akhand Ramayan Path', 'Havan / Yagna', 'Namkaran Sanskar', 'Satyanarayan Katha', 'Chhath Puja Vidhi'], '+919000000103', '+919000000103', 'assets/img/pandits/naman-tiwari.jpg',
+         14, ARRAY['Sunderkand Path', 'Akhand Ramayan Path', 'Havan / Yagna', 'Namkaran Sanskar', 'Satyanarayan Katha', 'Chhath Puja Vidhi'], '+919000000103', '+919000000103', '/assets/img/pandits/naman-tiwari.jpg',
          'verified', 132, 4.8, 'gold', 'naman-tiwari', TRUE
        );
 INSERT INTO pandits (
@@ -605,7 +605,7 @@ INSERT INTO pandits (
          'a08063d0-8621-596b-8ea4-baa45e073063', 'b14e99ab-cfe4-511b-906c-8441b1db1d10', 'Trained at Trimbakeshwar Vedshala in Narayan Nagbali and Tripindi Shradh — rituals that require exact procedure. Handles all samagri arrangement at the ghat himself.
 
 Gotra: Gautam | Education: Ved Murti, Trimbakeshwar Vedshala', 'Trained at Trimbakeshwar Vedshala in Narayan Nagbali and Tripindi Shradh — rituals that require exact procedure. Handles all samagri arrangement at the ghat himself.',
-         19, ARRAY['Kaal Sarp Dosh Puja', 'Pitru Dosh / Shradh', 'Navgraha Shanti', 'Vastu Shanti', 'Shani Shanti Puja'], '+919000000104', '+919000000104', 'assets/img/pandits/suresh-joshi.jpg',
+         19, ARRAY['Kaal Sarp Dosh Puja', 'Pitru Dosh / Shradh', 'Navgraha Shanti', 'Vastu Shanti', 'Shani Shanti Puja'], '+919000000104', '+919000000104', '/assets/img/pandits/suresh-joshi.jpg',
          'verified', 164, 4.8, 'gold', 'suresh-joshi', TRUE
        );
 INSERT INTO pandits (
@@ -615,7 +615,7 @@ INSERT INTO pandits (
          '74812001-07ef-5876-ac6f-6e2cf186886d', '2bad6cb7-17f8-544e-b395-b446dd63084f', 'A Ghanapaathi who has conducted over 900 Tamil-tradition weddings at Meenakshi Amman. Provides the full muhurat sheet and guna-milan report before the ceremony.
 
 Gotra: Srivatsa | Education: Ghanapaathi (Yajur Veda), Madurai Veda Patasala', 'A Ghanapaathi who has conducted over 900 Tamil-tradition weddings at Meenakshi Amman. Provides the full muhurat sheet and guna-milan report before the ceremony.',
-         24, ARRAY['Wedding Ceremony', 'Namkaran Sanskar', 'Annaprashan', 'Durga Saptashati Path', 'Kundali & Matchmaking'], '+919000000105', '+919000000105', 'assets/img/pandits/anand-iyer.jpg',
+         24, ARRAY['Wedding Ceremony', 'Namkaran Sanskar', 'Annaprashan', 'Durga Saptashati Path', 'Kundali & Matchmaking'], '+919000000105', '+919000000105', '/assets/img/pandits/anand-iyer.jpg',
          'verified', 208, 4.9, 'diamond', 'anand-iyer', TRUE
        );
 INSERT INTO pandits (
@@ -625,7 +625,7 @@ INSERT INTO pandits (
          '364cd69f-bf8b-5b27-9c78-e93d10b7dfcd', '6d4b3e58-3cf0-5a71-b1f9-db26451c18e1', 'Sevayat family of the Jagannath temple, fourth generation. Conducts Pind daan at Swargadwar and seven-day Bhagwat Katha in Odia, Hindi or Bengali.
 
 Gotra: Vishwamitra | Education: Shastri (Puran), Puri Sanskrit College', 'Sevayat family of the Jagannath temple, fourth generation. Conducts Pind daan at Swargadwar and seven-day Bhagwat Katha in Odia, Hindi or Bengali.',
-         17, ARRAY['Pitru Dosh / Shradh', 'Bhagwat Katha', 'Havan / Yagna', 'Gau Puja & Daan', 'Satyanarayan Katha'], '+919000000106', '+919000000106', 'assets/img/pandits/mohan-das.jpg',
+         17, ARRAY['Pitru Dosh / Shradh', 'Bhagwat Katha', 'Havan / Yagna', 'Gau Puja & Daan', 'Satyanarayan Katha'], '+919000000106', '+919000000106', '/assets/img/pandits/mohan-das.jpg',
          'verified', 118, 4.7, 'silver', 'mohan-das', TRUE
        );
 INSERT INTO pandits (
@@ -635,7 +635,7 @@ INSERT INTO pandits (
          '78e7167f-c063-58ac-a090-4828679a2789', 'b823c9bf-3e64-524b-8eb7-6c6223ccf2e1', 'Braj-tradition katha vachak. His seven-day Bhagwat Katha includes daily bhajan and a Chhappan Bhog on the final day, arranged with the temple kitchen.
 
 Gotra: Garg | Education: Acharya (Bhagwat), Vrindavan Shodh Sansthan', 'Braj-tradition katha vachak. His seven-day Bhagwat Katha includes daily bhajan and a Chhappan Bhog on the final day, arranged with the temple kitchen.',
-         21, ARRAY['Bhagwat Katha', 'Satyanarayan Katha', 'Ganesh Puja', 'Annaprashan', 'Gau Puja & Daan'], '+919000000107', '+919000000107', 'assets/img/pandits/gopal-chaturvedi.jpg',
+         21, ARRAY['Bhagwat Katha', 'Satyanarayan Katha', 'Ganesh Puja', 'Annaprashan', 'Gau Puja & Daan'], '+919000000107', '+919000000107', '/assets/img/pandits/gopal-chaturvedi.jpg',
          'verified', 176, 4.8, 'gold', 'gopal-chaturvedi', TRUE
        );
 INSERT INTO pandits (
@@ -645,7 +645,7 @@ INSERT INTO pandits (
          '7f13ecb0-64f8-5177-b6b9-759e93d23799', '4daac5a1-7289-54b9-87ec-bf34c47a7e8f', 'Handles Mundan, Janeu and Shradh at Har Ki Pauri with the family vanshavali register. Patient with first-time families and transparent about ghat charges upfront.
 
 Gotra: Bhargav | Education: Shastri (Karmakand), Gurukul Kangri', 'Handles Mundan, Janeu and Shradh at Har Ki Pauri with the family vanshavali register. Patient with first-time families and transparent about ghat charges upfront.',
-         12, ARRAY['Mundan Ceremony', 'Janeu / Upanayan', 'Pitru Dosh / Shradh', 'Antim Sanskar', 'Havan / Yagna'], '+919000000108', '+919000000108', 'assets/img/pandits/vikas-upadhyay.jpg',
+         12, ARRAY['Mundan Ceremony', 'Janeu / Upanayan', 'Pitru Dosh / Shradh', 'Antim Sanskar', 'Havan / Yagna'], '+919000000108', '+919000000108', '/assets/img/pandits/vikas-upadhyay.jpg',
          'verified', 96, 4.7, 'silver', 'vikas-upadhyay', TRUE
        );
 INSERT INTO pandits (
@@ -655,7 +655,7 @@ INSERT INTO pandits (
          '864b0d69-fb7d-5344-afcc-cf42d4910f39', '1a1b5c30-d058-54f1-906a-b6f42f7168f0', 'Twenty-six years of Tirumala sevas. Coordinates tonsure, Annaprashan and Kalyanotsavam slots including the TTD booking formalities for out-of-state families.
 
 Gotra: Atreya | Education: Vedanta Vidwan, Tirumala Veda Patasala', 'Twenty-six years of Tirumala sevas. Coordinates tonsure, Annaprashan and Kalyanotsavam slots including the TTD booking formalities for out-of-state families.',
-         26, ARRAY['Mundan Ceremony', 'Annaprashan', 'Namkaran Sanskar', 'Wedding Ceremony', 'Kundali & Matchmaking'], '+919000000109', '+919000000109', 'assets/img/pandits/srinivas-rao.jpg',
+         26, ARRAY['Mundan Ceremony', 'Annaprashan', 'Namkaran Sanskar', 'Wedding Ceremony', 'Kundali & Matchmaking'], '+919000000109', '+919000000109', '/assets/img/pandits/srinivas-rao.jpg',
          'verified', 224, 4.9, 'diamond', 'srinivas-rao', TRUE
        );
 INSERT INTO pandits (
@@ -665,7 +665,7 @@ INSERT INTO pandits (
          '5addaad2-e05a-5dd0-90a5-4739d9d6bcd4', '974101b2-e19a-51a9-b7dc-e38e38b75ae4', 'Gugli pandit of Dwarkadhish. Performs Gujarati-vidhi weddings and Griha Pravesh with the complete samagri list shared on WhatsApp a week in advance.
 
 Gotra: Shandilya | Education: Shastri (Veda), Dwarka Sharda Peeth', 'Gugli pandit of Dwarkadhish. Performs Gujarati-vidhi weddings and Griha Pravesh with the complete samagri list shared on WhatsApp a week in advance.',
-         16, ARRAY['Bhagwat Katha', 'Wedding Ceremony', 'Griha Pravesh', 'Shop / Office Opening', 'Satyanarayan Katha'], '+919000000110', '+919000000110', 'assets/img/pandits/harish-bhatt.jpg',
+         16, ARRAY['Bhagwat Katha', 'Wedding Ceremony', 'Griha Pravesh', 'Shop / Office Opening', 'Satyanarayan Katha'], '+919000000110', '+919000000110', '/assets/img/pandits/harish-bhatt.jpg',
          'verified', 104, 4.7, 'silver', 'harish-bhatt', TRUE
        );
 INSERT INTO pandits (
@@ -675,7 +675,7 @@ INSERT INTO pandits (
          '41e8fc01-72ea-5800-8a18-a578be661d4d', '46cf5baf-0d7a-57d9-8622-c28ac3186844', 'Hereditary Kamakhya pandit for Devi anusthans. Performs the complete Durga Saptashati with Kavach-Argala-Keelak and explains each remedy in plain language.
 
 Gotra: Kaushik | Education: Tantra Acharya, Kamakhya Peeth', 'Hereditary Kamakhya pandit for Devi anusthans. Performs the complete Durga Saptashati with Kavach-Argala-Keelak and explains each remedy in plain language.',
-         15, ARRAY['Durga Saptashati Path', 'Navratri Kalash Sthapana', 'Mata Ka Jagran', 'Navgraha Shanti', 'Kundali & Matchmaking'], '+919000000111', '+919000000111', 'assets/img/pandits/bipul-goswami.jpg',
+         15, ARRAY['Durga Saptashati Path', 'Navratri Kalash Sthapana', 'Mata Ka Jagran', 'Navgraha Shanti', 'Kundali & Matchmaking'], '+919000000111', '+919000000111', '/assets/img/pandits/bipul-goswami.jpg',
          'verified', 112, 4.8, 'gold', 'bipul-goswami', TRUE
        );
 INSERT INTO pandits (
@@ -685,7 +685,7 @@ INSERT INTO pandits (
          'e86e45ca-0967-5800-b8ba-35a304cc1e61', 'fdbbbef3-9801-5721-aae1-f9abf205f121', 'Mumbai''s go-to pandit for flat Griha Pravesh and office openings. Works around apartment society rules and finishes within the muhurat window without rushing the vidhi.
 
 Gotra: Vashishtha | Education: Ved Shastri, Mumbai Ved Vidyalaya', 'Mumbai''s go-to pandit for flat Griha Pravesh and office openings. Works around apartment society rules and finishes within the muhurat window without rushing the vidhi.',
-         20, ARRAY['Ganesh Puja', 'Ganesh Utsav Sthapana', 'Griha Pravesh', 'Shop / Office Opening', 'Bhoomi Pujan'], '+919000000112', '+919000000112', 'assets/img/pandits/kailash-mishra.jpg',
+         20, ARRAY['Ganesh Puja', 'Ganesh Utsav Sthapana', 'Griha Pravesh', 'Shop / Office Opening', 'Bhoomi Pujan'], '+919000000112', '+919000000112', '/assets/img/pandits/kailash-mishra.jpg',
          'verified', 198, 4.8, 'gold', 'kailash-mishra', TRUE
        );
 INSERT INTO pandits (
@@ -695,7 +695,7 @@ INSERT INTO pandits (
          '5c519924-358e-51fb-8291-28bb2d948c8e', '42b337c2-bed4-57cb-ba73-a3851a0a6c68', 'Delhi-NCR Griha Pravesh and Jagran specialist with his own bhajan mandali. Sends a printed vidhi card so the family knows the sequence in advance.
 
 Gotra: Parashar | Education: Shastri (Karmakand), Delhi Sanskrit Academy', 'Delhi-NCR Griha Pravesh and Jagran specialist with his own bhajan mandali. Sends a printed vidhi card so the family knows the sequence in advance.',
-         18, ARRAY['Griha Pravesh', 'Durga Saptashati Path', 'Mata Ka Jagran', 'Mundan Ceremony', 'Lakshmi Puja (Diwali)', 'Holika Dahan Puja'], '+919000000113', '+919000000113', 'assets/img/pandits/satish-dubey.jpg',
+         18, ARRAY['Griha Pravesh', 'Durga Saptashati Path', 'Mata Ka Jagran', 'Mundan Ceremony', 'Lakshmi Puja (Diwali)', 'Holika Dahan Puja'], '+919000000113', '+919000000113', '/assets/img/pandits/satish-dubey.jpg',
          'verified', 154, 4.7, 'gold', 'satish-dubey', TRUE
        );
 INSERT INTO pandits (
@@ -705,7 +705,7 @@ INSERT INTO pandits (
          '52b8ccb2-1405-5afe-bb91-f624feb31ec1', '2eea2e0d-cf9d-5ca1-a9ce-19f0e76f58dc', 'Marwari-tradition wedding vidhi with full jyotish backing — kundali milan, muhurat and dosh remedies handled by the same person who performs the ceremony.
 
 Gotra: Dadhich | Education: Acharya (Jyotish), Jagatguru Ramanandacharya University', 'Marwari-tradition wedding vidhi with full jyotish backing — kundali milan, muhurat and dosh remedies handled by the same person who performs the ceremony.',
-         23, ARRAY['Wedding Ceremony', 'Kundali & Matchmaking', 'Bhagwat Katha', 'Annaprashan', 'Navgraha Shanti'], '+919000000114', '+919000000114', 'assets/img/pandits/mahesh-vyas.jpg',
+         23, ARRAY['Wedding Ceremony', 'Kundali & Matchmaking', 'Bhagwat Katha', 'Annaprashan', 'Navgraha Shanti'], '+919000000114', '+919000000114', '/assets/img/pandits/mahesh-vyas.jpg',
          'verified', 182, 4.8, 'diamond', 'mahesh-vyas', TRUE
        );
 INSERT INTO pandits (
@@ -715,7 +715,7 @@ INSERT INTO pandits (
          '00c04647-d82b-5b78-bafb-b7a0da1e7bb1', '90c58aa6-0e82-5555-b485-dc054470a16f', 'Younger BHU-trained pandit who runs online Sunderkand and Satyanarayan katha for families abroad, with the samagri list couriered in advance.
 
 Gotra: Upamanyu | Education: Shastri (Veda), BHU', 'Younger BHU-trained pandit who runs online Sunderkand and Satyanarayan katha for families abroad, with the samagri list couriered in advance.',
-         9, ARRAY['Sunderkand Path', 'Ganesh Puja', 'Satyanarayan Katha', 'Namkaran Sanskar', 'Daily Aarti Seva'], '+919000000115', '+919000000115', 'assets/img/pandits/raghav-pathak.jpg',
+         9, ARRAY['Sunderkand Path', 'Ganesh Puja', 'Satyanarayan Katha', 'Namkaran Sanskar', 'Daily Aarti Seva'], '+919000000115', '+919000000115', '/assets/img/pandits/raghav-pathak.jpg',
          'verified', 74, 4.6, 'silver', 'raghav-pathak', TRUE
        );
 INSERT INTO pandits (
@@ -725,7 +725,7 @@ INSERT INTO pandits (
          '520d0d5c-5e32-555b-8bf9-094bd941747f', '95682d13-84b5-5dbb-b498-a96e4df5456a', 'Thirty-one years at Mahakal. Conducts large-scale Mahamrityunjay jaap anusthans (1.25 lakh) with a team of eleven pandits and full sankalp documentation.
 
 Gotra: Angiras | Education: Mahamahopadhyaya (Veda), Ujjain', 'Thirty-one years at Mahakal. Conducts large-scale Mahamrityunjay jaap anusthans (1.25 lakh) with a team of eleven pandits and full sankalp documentation.',
-         31, ARRAY['Mahamrityunjay Jaap', 'Durga Saptashati Path', 'Havan / Yagna', 'Pitru Dosh / Shradh', 'Rudrabhishek'], '+919000000116', '+919000000116', 'assets/img/pandits/lakshman-acharya.jpg',
+         31, ARRAY['Mahamrityunjay Jaap', 'Durga Saptashati Path', 'Havan / Yagna', 'Pitru Dosh / Shradh', 'Rudrabhishek'], '+919000000116', '+919000000116', '/assets/img/pandits/lakshman-acharya.jpg',
          'verified', 268, 4.9, 'diamond', 'lakshman-acharya', TRUE
        );
 
@@ -919,27 +919,27 @@ INSERT INTO subscription_plans (name, tier, price_monthly, features, is_popular,
 
 -- reviews (site testimonials, best-effort matched to a pandit offering that service)
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('1c80a0dd-55e1-5e48-bc55-e5855bbb1605', 'reviewer-0@panditconnect.demo', 'Ankit Verma', 'devotee', 'active', 'Lucknow', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('1c80a0dd-55e1-5e48-bc55-e5855bbb1605', 'reviewer-0@panditconnect.demo', 'Ankit Verma', 'devotee', 'active', 'Lucknow', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('1c80a0dd-55e1-5e48-bc55-e5855bbb1605', 'pandit', '31ed3761-5a33-518c-8ea6-d9186ce7fc4d', 5, 'Pandit ji ke saath direct baat hui, koi middleman nahi. Griha Pravesh ke liye samagri list pehle hi WhatsApp par mil gayi — sab kuch time par ho gaya.', '06a148ae-df90-5d9b-b5f4-768e9002c13b', TRUE);
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('74770e4a-ffb3-5e18-8590-b62c162eb808', 'reviewer-1@panditconnect.demo', 'Priya Nair', 'devotee', 'active', 'Bengaluru', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('74770e4a-ffb3-5e18-8590-b62c162eb808', 'reviewer-1@panditconnect.demo', 'Priya Nair', 'devotee', 'active', 'Bengaluru', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('74770e4a-ffb3-5e18-8590-b62c162eb808', 'pandit', '31ed3761-5a33-518c-8ea6-d9186ce7fc4d', 5, 'We needed a Tamil-speaking pandit in Madurai for our wedding. Found three profiles with video intros, spoke to two on call, and booked the one we connected with. No commission, no pressure.', '3333357a-4d3a-527b-b4e8-0dd61a5f5a9a', TRUE);
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('f5e77ac8-0e50-5a43-a17e-c1e28222649f', 'reviewer-2@panditconnect.demo', 'Rohit Deshmukh', 'devotee', 'active', 'Pune', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('f5e77ac8-0e50-5a43-a17e-c1e28222649f', 'reviewer-2@panditconnect.demo', 'Rohit Deshmukh', 'devotee', 'active', 'Pune', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('f5e77ac8-0e50-5a43-a17e-c1e28222649f', 'pandit', 'e418106d-e5bb-5ffa-8593-4186247fd003', 5, 'Kaal Sarp dosh puja Trimbakeshwar mein karani thi. Platform par temple ke saath jude pandit ji mile — verification aur certificate dono dikhe. Bharosa ho gaya.', '742bcb1e-9f75-5ef0-b61a-00f76d8655ca', TRUE);
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('8772a480-8ebf-5c19-a010-52cd23355abc', 'reviewer-3@panditconnect.demo', 'Sneha Agarwal', 'devotee', 'active', 'Kolkata', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('8772a480-8ebf-5c19-a010-52cd23355abc', 'reviewer-3@panditconnect.demo', 'Sneha Agarwal', 'devotee', 'active', 'Kolkata', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('8772a480-8ebf-5c19-a010-52cd23355abc', 'pandit', '74812001-07ef-5876-ac6f-6e2cf186886d', 4, 'Durga Saptashati path ke liye Kamakhya ke pandit ji se seedha contact hua. Reviews padh ke decide kiya. Bas mobile app aa jaye toh aur asaan ho.', '76ef4675-410c-51ec-aec9-a2635e9d7b2e', TRUE);
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('157c699a-1b62-5d6d-9df2-6bedabfe5525', 'reviewer-4@panditconnect.demo', 'Karthik Menon', 'devotee', 'active', 'Dubai', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('157c699a-1b62-5d6d-9df2-6bedabfe5525', 'reviewer-4@panditconnect.demo', 'Karthik Menon', 'devotee', 'active', 'Dubai', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('157c699a-1b62-5d6d-9df2-6bedabfe5525', 'pandit', 'a08063d0-8621-596b-8ea4-baa45e073063', 5, 'Living abroad, arranging my father''s Shradh in Haridwar was my biggest worry. The pandit ji did a video call during the tarpan so we could all participate. Deeply grateful.', '9b2e0d02-a574-5016-838a-f26ae25849ac', TRUE);
 INSERT INTO users (id, email, full_name, role, status, city, password_hash, email_verified)
-       VALUES ('514d6e5d-208e-5761-a527-6c54cf51e8d0', 'reviewer-5@panditconnect.demo', 'Manish Jain', 'devotee', 'active', 'Indore', '$2a$10$UUOiqnxlwitoxz6S.McrTus1n2H8K1x32DHHK5f2iVao1G.mF.ahO', TRUE);
+       VALUES ('514d6e5d-208e-5761-a527-6c54cf51e8d0', 'reviewer-5@panditconnect.demo', 'Manish Jain', 'devotee', 'active', 'Indore', '$2a$10$/rI1Tv/I8AqUANqddIo6t.SwzUjWLN/09RvLRmStBgoravFBun5ym', TRUE);
 INSERT INTO reviews (user_id, reviewable_type, reviewable_id, rating, body, service_id, is_approved)
        VALUES ('514d6e5d-208e-5761-a527-6c54cf51e8d0', 'pandit', '5addaad2-e05a-5dd0-90a5-4739d9d6bcd4', 5, 'Shop opening ka muhurat aur puja dono same pandit ji ne kiya. Kundali dekhi, phir date batayi. Direct call feature sabse best hai.', '726b9c60-e3ba-50cd-a451-349aff410f01', TRUE);
 

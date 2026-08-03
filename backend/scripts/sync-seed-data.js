@@ -1,43 +1,58 @@
 #!/usr/bin/env node
 /**
- * Regenerates backend/src/data/*.json from the frontend's embedded data layer
- * (frontend/public/assets/js/data.js).
+ * Regenerates backend/src/data/*.json from the frontend's content module
+ * (frontend/app/src/data/content.ts).
  *
- * Why this exists: the frontend ships its content embedded (instant, offline-capable
- * browsing — see docs/ARCHITECTURE.md). The backend serves the *same* content over
- * REST so write-actions (contact, enquiry, newsletter) and any future client
- * (mobile app, admin tool) have one real source of truth instead of a second
- * hand-maintained copy that quietly drifts out of sync.
+ * Why this exists: the frontend ships its directory content bundled into the
+ * SPA (instant, offline-capable browsing — see docs/ARCHITECTURE.md). The
+ * backend serves the *same* content over REST so write-actions (contact,
+ * enquiry, newsletter) and any future client (mobile app, admin tool) have
+ * one real source of truth instead of a second hand-maintained copy that
+ * quietly drifts out of sync.
  *
- * Run after editing frontend/public/assets/js/data.js:
+ * Run after editing frontend/app/src/data/content.ts:
  *   node backend/scripts/sync-seed-data.js
  */
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
-const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..', '..');
-const DATA_JS = path.join(ROOT, 'frontend/public/assets/js/data.js');
+const CONTENT_TS = path.join(ROOT, 'frontend/app/src/data/content.ts');
+const TS_COMPILER = path.join(ROOT, 'frontend/app/node_modules/typescript');
 const OUT_DIR = path.join(__dirname, '..', 'src', 'data');
 
-const ctx = vm.createContext({});
-vm.runInContext('var window = this;', ctx);
-vm.runInContext(fs.readFileSync(DATA_JS, 'utf8'), ctx);
-const PC = ctx.PC;
+// content.ts is plain TypeScript (a type-only import + type annotations on
+// otherwise ordinary object/array literals) — transpileModule strips the
+// `import type` and annotations without needing to resolve ./types at all.
+const ts = require(TS_COMPILER);
+const source = fs.readFileSync(CONTENT_TS, 'utf8');
+const { outputText } = ts.transpileModule(source, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2019 },
+});
+
+const tmpFile = path.join(os.tmpdir(), `panditconnect-content-${Date.now()}.js`);
+fs.writeFileSync(tmpFile, outputText);
+let content;
+try {
+  content = require(tmpFile);
+} finally {
+  fs.unlinkSync(tmpFile);
+}
 
 const FILES = {
-  'temples.json': PC.temples,
-  'pandits.json': PC.pandits,
-  'services.json': PC.services,
-  'festivals.json': PC.festivals,
-  'reviews.json': PC.reviews,
-  'posts.json': PC.posts,
-  'panchang.json': PC.panchang,
-  'plans.json': PC.plans,
-  'faqs.json': PC.faqs,
-  'stats.json': PC.stats,
-  'taxonomy.json': { cities: PC.cities, states: PC.states, languages: PC.languages },
-  'recommend-rules.json': PC.recommendRules,
+  'temples.json': content.temples,
+  'pandits.json': content.pandits,
+  'services.json': content.services,
+  'festivals.json': content.festivals,
+  'reviews.json': content.reviews,
+  'posts.json': content.posts,
+  'panchang.json': content.panchang,
+  'plans.json': content.plans,
+  'faqs.json': content.faqs,
+  'stats.json': content.stats,
+  'taxonomy.json': { cities: content.cities, states: content.states, languages: content.languages },
+  'recommend-rules.json': content.recommendRules,
 };
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -47,4 +62,4 @@ for (const [file, data] of Object.entries(FILES)) {
   total++;
   console.log(`  wrote ${file}`);
 }
-console.log(`\n${total} seed files written to backend/src/data/ from data.js.`);
+console.log(`\n${total} seed files written to backend/src/data/ from content.ts.`);
