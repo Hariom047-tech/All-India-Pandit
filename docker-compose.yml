@@ -81,10 +81,19 @@ services:
     container_name: panditconnect-frontend
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount Let's Encrypt certificates into the container
+      - /etc/letsencrypt/live/panditsuggest.com/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/panditsuggest.com/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+      - /etc/letsencrypt/archive/panditsuggest.com:/etc/letsencrypt/archive/panditsuggest.com:ro
+      # ACME challenge directory for certificate renewal
+      - certbot_webroot:/var/www/certbot:ro
     depends_on:
       backend:
         condition: service_healthy
 
 volumes:
   db_data:
+  certbot_webroot:
