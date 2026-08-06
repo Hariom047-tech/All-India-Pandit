@@ -3,18 +3,24 @@
 What's actually implemented, adapted from `admin_architecture.md` (kept at the repo root as the
 original proposal) — same spirit as `database_architecture.md`/`security_architecture.md` and their
 companion docs: understand the proposal, keep what's real for this app, don't build unused
-scaffolding, and fix what's actually wrong rather than transcribing it. This is a **backend-only**
-implementation — the proposal is Express routes and a dashboard mockup, not a frontend, and this repo
-has no admin UI pages; building one would be a separate, much larger project.
+scaffolding, and fix what's actually wrong rather than transcribing it. Both the backend (Express
+routes, RLS-scoped repositories) and a real frontend admin panel (`frontend/app/src/admin/`) are
+implemented.
 
 ## Where it actually lives
 
 Only `/api/*` reaches this backend at all — nginx serves the static frontend for everything else and
-never forwards a bare `/admin` hit here (see `docker/nginx/default.conf`). So "the secret URL" is
-`/api/<ADMIN_SECRET_PATH>/...` (default `ambitious-person`, configurable via env), not a top-level
-route the way the proposal shows it. The honeypot paths (`middleware/honeypot.js`) are registered
-under `/api/` for the same reason — a scanner hitting the public site's bare `/admin` never gets far
-enough to trip them; one hitting `/api/admin` does.
+never forwards a bare `/admin` hit here (see `docker/nginx/default.conf`). So the API's secret URL is
+`/api/<ADMIN_SECRET_PATH>/...` (default `ambitiousperson`, configurable via env). The honeypot paths
+(`middleware/honeypot.js`) are registered under `/api/` for the same reason — a scanner hitting the
+public site's bare `/admin` never gets far enough to trip them; one hitting `/api/admin` does.
+
+The frontend admin panel (`frontend/app/src/admin/`) is a real, separate React sub-app mounted at
+that *same* secret as a top-level browser route — `VITE_ADMIN_SECRET_PATH` (baked in at build time,
+see `frontend/Dockerfile`) must equal the backend's `ADMIN_SECRET_PATH` exactly. There is no
+`/admin` route anywhere in the SPA; every internal link/redirect uses the `ADMIN_BASE` constant
+exported from `admin/lib/adminApi.ts` rather than a hardcoded path, so the whole panel — login,
+dashboard, every nested page — only ever exists under `/<ADMIN_SECRET_PATH>/...`.
 
 **This is obscurity, not access control.** The real gate is `requireAdmin`/`requireSuperAdmin`
 (password + TOTP + a real session) and Row-Level Security underneath it — changing

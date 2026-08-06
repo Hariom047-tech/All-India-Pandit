@@ -19,11 +19,15 @@ const ADMIN_PREFIX = `/api/${adminSecretPath}/`;
  *  enforced admin session IP-pinning (see middleware/admin.js). */
 const checkIpBan = asyncHandler(async (req, res, next) => {
   if (!req.ip || req.originalUrl.startsWith(ADMIN_PREFIX)) return next();
-  const { rows } = await query(
-    `SELECT 1 FROM banned_ips WHERE ip_address = $1 AND is_active = TRUE AND (expires_at IS NULL OR expires_at > NOW()) LIMIT 1`,
-    [req.ip],
-  );
-  if (rows.length) return res.status(403).json({ error: 'Forbidden' });
+  try {
+    const { rows } = await query(
+      `SELECT 1 FROM banned_ips WHERE ip_address = $1 AND is_active = TRUE AND (expires_at IS NULL OR expires_at > NOW()) LIMIT 1`,
+      [req.ip],
+    );
+    if (rows.length) return res.status(403).json({ error: 'Forbidden' });
+  } catch {
+    // DB unavailable — skip ban check, allow request through
+  }
   next();
 });
 

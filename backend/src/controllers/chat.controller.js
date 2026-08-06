@@ -1,5 +1,4 @@
 const chatService = require('../services/chat.service');
-const { v4: uuidv4 } = require('uuid'); // or use crypto.randomUUID()
 const crypto = require('crypto');
 
 exports.chat = async (req, res, next) => {
@@ -15,9 +14,12 @@ exports.chat = async (req, res, next) => {
     }
     
     const sid = sessionId || crypto.randomUUID();
+    console.log(`💬 Chat [${sid.slice(0,8)}...] ${sessionId ? '(existing)' : '(new)'}: "${message.trim().slice(0,50)}..."`);
+    
     const result = await chatService.chat(sid, message.trim());
     
-    res.json(result);
+    // Always ensure sessionId is in the response
+    res.json({ ...result, sessionId: sid });
   } catch (error) {
     console.error('Chat error:', error.message);
     res.status(500).json({ 

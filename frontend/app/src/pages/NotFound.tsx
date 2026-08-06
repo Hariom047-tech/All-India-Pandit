@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
+import { useLang } from "../lib/i18n";
 
 export default function NotFound() {
+  const { t } = useLang();
   return (
     <div className="notfound">
       <div className="om-mark"><Icon name="om" size={72} /></div>
-      <h1 className="section-title" style={{ marginTop: 14 }}>This page has wandered off on a yatra</h1>
-      <p className="section-sub">The path you followed doesn't lead anywhere on PanditConnect. Let's get you back.</p>
+      <h1 className="section-title" style={{ marginTop: 14 }}>{t("notFound.title")}</h1>
+      <p className="section-sub">{t("notFound.text")}</p>
       <div className="row" style={{ justifyContent: "center", gap: 12, marginTop: 26, flexWrap: "wrap" }}>
-        <Link className="btn btn-gold btn-lg" to="/">Back to Home</Link>
-        <Link className="btn btn-outline btn-lg" to="/pandits">Find a Pandit</Link>
+        <Link className="btn btn-gold btn-lg" to="/">{t("notFound.backHome")}</Link>
+        <Link className="btn btn-outline btn-lg" to="/pandits">{t("common.findAPandit")}</Link>
       </div>
     </div>
   );

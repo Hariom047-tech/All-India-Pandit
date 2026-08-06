@@ -30,7 +30,7 @@ const DEFAULT_FAQ = [
   { q: "How long does this puja take?", a: "Typically 2–4 hours depending on the specific vidhi and the pandit's tradition." },
   { q: "Do I need to arrange samagri myself?", a: "Most pandits bring a complete samagri kit. Confirm this when you connect with them." },
   { q: "Can this be done on any day?", a: "While it can be done on most days, performing it during an auspicious muhurat is highly recommended for best results." },
-  { q: "What if I'm in a different city?", a: "You can book a pandit in your city through PanditConnect. We have pandits across India." },
+  { q: "What if I'm in a different city?", a: "You can book a pandit in your city through PanditSuggest. We have pandits across India." },
 ];
 
 const META: Record<string, Partial<ServiceMeta>> = {

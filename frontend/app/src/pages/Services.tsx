@@ -5,16 +5,16 @@ import { services } from "../data/content";
 import { EmptyState } from "../components/ui/ReviewCard";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { HeroTicker } from "../components/ui/HeroTicker";
-
-
-const MOST_BOOKED = [
-  { cat: "life", label: "Life Events", img: "/assets/img/services/cat-life.jpg", pandits: 186 },
-  { cat: "daily", label: "Daily Pooja", img: "/assets/img/services/cat-daily.jpg", pandits: 257 },
-  { cat: "festival", label: "Festival Specials", img: "/assets/img/services/cat-festival.jpg", pandits: 251 },
-  { cat: "shanti", label: "Shanti Remedies", img: "/assets/img/services/cat-shanti.jpg", pandits: 167 },
-];
+import { useLang } from "../lib/i18n";
 
 export default function Services() {
+  const { t } = useLang();
+  const MOST_BOOKED = [
+    { cat: "life", label: t("services.catLife"), img: "/assets/img/services/cat-life.jpg", pandits: 186 },
+    { cat: "daily", label: t("services.catDaily"), img: "/assets/img/services/cat-daily.jpg", pandits: 257 },
+    { cat: "festival", label: t("services.catFestival"), img: "/assets/img/services/cat-festival.jpg", pandits: 251 },
+    { cat: "shanti", label: t("services.catShanti"), img: "/assets/img/services/cat-shanti.jpg", pandits: 167 },
+  ];
   const [query] = useState("");
 
   const filtered = useMemo(() => {
@@ -35,26 +35,26 @@ export default function Services() {
             <div className="sp-hero__grid">
               <div className="sp-hero__content">
                 <h1 className="sp-hero__title">
-                  Divine rituals, <br />
-                  <span className="gold-text">delivered with devotion</span>
+                  {t("services.heroTitle1")} <br />
+                  <span className="gold-text">{t("services.heroTitleGold")}</span>
                 </h1>
                 <ul className="sp-hero__list">
                   <li>
                     <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                    Complete vidhi with all samagri — nothing for you to arrange
+                    {t("services.heroCheck1")}
                   </li>
                   <li>
                     <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                    From griha pravesh to shanti path — every ritual your family needs
+                    {t("services.heroCheck2")}
                   </li>
                   <li>
                     <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                    Transparent pricing, no hidden costs — book with complete peace of mind
+                    {t("services.heroCheck3")}
                   </li>
                 </ul>
                 <div className="sp-hero__cta">
                   <Link to="/pandits" className="btn btn-gold btn-lg btn-pill">
-                    Book a Service <Icon name="arrow-right" size={18} />
+                    {t("services.heroCta")} <Icon name="arrow-right" size={18} />
                   </Link>
                 </div>
               </div>
@@ -72,7 +72,7 @@ export default function Services() {
         {/* ======================== MOST BOOKED ======================== */}
         <section className="section" style={{ paddingTop: 40, paddingBottom: 30 }}>
           <div className="shell">
-            <h2 className="sp-section-title">Most Booked Services</h2>
+            <h2 className="sp-section-title">{t("services.mostBooked")}</h2>
             <div className="sp-booked-row">
               {MOST_BOOKED.map((mb) => (
                 <div
@@ -81,12 +81,12 @@ export default function Services() {
                 >
                   <img src={mb.img} alt={mb.label} className="sp-booked-card__img" />
                   <div className="sp-booked-card__overlay" />
-                  <span className="sp-booked-card__badge">⭐ Popular</span>
+                  <span className="sp-booked-card__badge">⭐ {t("services.popular")}</span>
                   <div className="sp-booked-card__bottom">
                     <h4 className="sp-booked-card__name">{mb.label}</h4>
                     <div className="sp-booked-card__meta">
                       <span className="sp-booked-card__stars">★★★★★</span>
-                      <span>{mb.pandits} Pandits</span>
+                      <span>{mb.pandits} {t("services.pandits")}</span>
                     </div>
                   </div>
                 </div>
@@ -99,15 +99,15 @@ export default function Services() {
         <section className="section" style={{ paddingTop: 10, paddingBottom: 50 }}>
           <div className="shell">
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-              <h2 className="sp-section-title" style={{ margin: 0 }}>All Services</h2>
-              <span className="muted" style={{ fontSize: ".92rem" }}>{filtered.length} services found</span>
+              <h2 className="sp-section-title" style={{ margin: 0 }}>{t("services.title")}</h2>
+              <span className="muted" style={{ fontSize: ".92rem" }}>{filtered.length} {t("services.servicesFound")}</span>
             </div>
 
             {filtered.length ? (
               <div className="sp-all-grid">
                 {filtered.map((s) => (
                   <Link
-                    to={`/pandits?service=${s.id}`}
+                    to={`/services/${s.id}`}
                     className="sp-all-card"
                     key={s.id}
                   >
@@ -118,14 +118,14 @@ export default function Services() {
                       <p className="sp-all-card__tag">{s.tag}</p>
                       <div className="sp-all-card__meta">
                         <span><Icon name="clock" size={13} /> {s.dur}</span>
-                        <span><Icon name="users" size={13} /> {s.pandits} Pandits</span>
+                        <span><Icon name="users" size={13} /> {s.pandits} {t("services.pandits")}</span>
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <EmptyState msg="No service matched. Try the AI Pooja Guide if you are unsure what you need." />
+              <EmptyState msg={t("services.noServiceMatch")} />
             )}
           </div>
         </section>
@@ -134,14 +134,12 @@ export default function Services() {
         <section className="sp-trust-footer">
           <div className="shell">
             <div className="sp-trust-footer__inner">
-              <p className="sp-trust-footer__text">
-                Join <strong>10,000+</strong> families who found their perfect pandit through PanditConnect
-              </p>
+              <p className="sp-trust-footer__text" dangerouslySetInnerHTML={{ __html: t("services.trustText") }} />
               <div className="sp-trust-footer__badges">
-                <span className="sp-trust-badge">🛡️ Verified Pandits</span>
-                <span className="sp-trust-badge">✅ Authentic Rituals</span>
-                <span className="sp-trust-badge">⭐ 4.9 Rating</span>
-                <span className="sp-trust-badge">🇮🇳 Pan-India</span>
+                <span className="sp-trust-badge">{t("services.verifiedPandits")}</span>
+                <span className="sp-trust-badge">{t("services.authenticRituals")}</span>
+                <span className="sp-trust-badge">{t("services.ratingBadge")}</span>
+                <span className="sp-trust-badge">{t("services.panIndia")}</span>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require('google-auth-library');
 const repo = require('../repositories/auth.repository');
 const { hashToken } = require('../middleware/auth');
 const { withUserContext } = require('../config/db');
@@ -116,8 +117,12 @@ async function requestOtp(req, res) {
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
   await repo.createOtp({ target, targetType, otpHash, expiresAt });
 
-  console.log(`[auth] OTP for ${targetType}:${target} = ${otp} (dev-only log — no SMS/email provider configured)`);
-  res.status(201).json({ ok: true, expiresAt, ...(nodeEnv !== 'production' ? { devOtp: otp } : {}) });
+  // Dev-only: log OTP to console so local testing works without SMS/email.
+  // NEVER include in staging — use nodeEnv === 'development', NOT !== 'production'.
+  if (nodeEnv === 'development') {
+    console.log(`[auth] OTP for ${targetType}:${target} = ${otp} (dev-only log)`);
+  }
+  res.status(201).json({ ok: true, expiresAt, ...(nodeEnv === 'development' ? { devOtp: otp } : {}) });
 }
 
 /** POST /api/auth/otp/verify */
@@ -141,4 +146,47 @@ async function verifyOtp(req, res) {
   res.json({ ok: true, verified: true });
 }
 
-module.exports = { register, registerPandit, login, logout, me, requestOtp, verifyOtp };
+/** POST /api/auth/google */
+async function googleAuth(req, res) {
+  const { credential } = req.body || {};
+  if (!credential) return res.status(400).json({ error: 'Google credential is required' });
+
+  try {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    
+    if (!payload || !payload.email) {
+      return res.status(400).json({ error: 'Invalid Google token payload' });
+    }
+
+    const { sub: googleId, email, name: fullName, email_verified } = payload;
+    let user = await repo.findByEmail(email);
+
+    if (user) {
+      // If user exists but doesn't have google_id linked, link it.
+      if (!user.google_id) {
+        // Need to run inside a context to update
+        await withUserContext(user.id, (q) => repo.linkGoogleId(user.id, googleId, q));
+        user.google_id = googleId;
+      }
+    } else {
+      // User doesn't exist, create a new one (no password).
+      user = await repo.create({ email, fullName, role: 'devotee', googleId });
+    }
+
+    if (user.status === 'suspended' || user.status === 'banned' || user.status === 'deactivated') {
+      return res.status(403).json({ error: `Account is ${user.status}` });
+    }
+
+    await issueSession(res, user, req);
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    return res.status(401).json({ error: 'Google authentication failed' });
+  }
+}
+
+module.exports = { register, registerPandit, login, logout, me, requestOtp, verifyOtp, googleAuth };

@@ -1,0 +1,207 @@
+/* ═══════════════════════════ FESTIVALS PAGE ═══════════════════════════ */
+.fc-hero {
+  background: transparent;
+  border-bottom: 1px solid var(--border-soft);
+}
+.fc-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: start;
+}
+.fc-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+.fc-filter-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-soft);
+  background: #fff;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.fc-filter-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold-deep);
+}
+.fc-filter-btn.active {
+  background: var(--gold-grad);
+  color: #fff;
+  border-color: transparent;
+}
+.fc-month-group {
+  margin-bottom: 40px;
+}
+.fc-month-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.fc-month-title {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+.fc-month-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-soft);
+}
+.fc-festival-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.fc-fest-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fc-fest-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  border-color: var(--gold-light);
+}
+.fc-fest-datebox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.fc-fest-dayname {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.fc-fest-daynum {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-top: 2px;
+}
+.fc-fest-info {
+  flex: 1;
+}
+.fc-fest-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.fc-fest-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.fc-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+.fc-meta-item svg {
+  color: var(--gold);
+}
+.fc-fest-note {
+  font-size: 0.85rem;
+  color: #888;
+}
+.fc-fest-action {
+  flex-shrink: 0;
+}
+.fc-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.fc-sidebar-card {
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.fc-sidebar-title {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.fc-panchang-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.9rem;
+}
+.fc-panchang-row:last-child {
+  border-bottom: none;
+}
+.fc-panchang-row span {
+  color: #666;
+}
+.fc-panchang-row strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .fc-layout {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .fc-fest-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .fc-fest-datebox {
+    flex-direction: row;
+    width: auto;
+    height: auto;
+    padding: 6px 12px;
+    gap: 8px;
+    background: var(--gold-grad);
+    border-color: transparent;
+  }
+  .fc-fest-dayname, .fc-fest-daynum {
+    color: #fff;
+  }
+  .fc-fest-daynum {
+    font-size: 1rem;
+    margin-top: 0;
+  }
+  .fc-fest-action {
+    width: 100%;
+  }
+  .fc-fest-action .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

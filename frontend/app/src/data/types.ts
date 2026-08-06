@@ -8,6 +8,8 @@ export interface Service {
   pandits: number;
   desc: string;
   samagri: string[];
+  priority?: number;
+  img?: string;
 }
 
 export interface Temple {
@@ -37,6 +39,8 @@ export type PanditTier = "Diamond" | "Gold" | "Silver";
 export interface Pandit {
   id: string;
   name: string;
+  /** Devanagari form of `name`, shown when the site is in Hindi mode. */
+  nameHi?: string;
   city: string;
   state: string;
   exp: number;
@@ -60,6 +64,10 @@ export interface Festival {
   name: string;
   note: string;
   img?: string;
+  cat?: "tyohar" | "vrat" | "jayanti";
+  tithi?: string;
+  muhurat?: string;
+  serviceId?: string; // Optional link to book a specific puja
 }
 
 export interface Review {
@@ -68,6 +76,9 @@ export interface Review {
   rating: number;
   text: string;
   service?: string;
+  variant?: "standard" | "with-photo" | "featured" | "short";
+  avatar?: string;
+  photos?: string[];
 }
 
 export interface BlogPost {

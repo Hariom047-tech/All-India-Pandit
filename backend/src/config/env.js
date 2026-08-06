@@ -1,18 +1,30 @@
 require('dotenv').config();
 
+// Throw at startup if a required secret is absent — better to crash loudly
+// than silently fall back to a committed placeholder value.
+function required(name) {
+  const v = process.env[name];
+  if (!v) throw new Error(`[config] Missing required environment variable: ${name}`);
+  return v;
+}
+
 module.exports = {
   port: parseInt(process.env.PORT, 10) || 4000,
   nodeEnv: process.env.NODE_ENV || 'development',
-  corsOrigin: process.env.CORS_ORIGIN || '*',
-  sessionTtlHours: parseInt(process.env.SESSION_TTL_HOURS, 10) || 720,
+  // Null = block all cross-origin (safe default). Must be set explicitly in prod.
+  corsOrigin: process.env.CORS_ORIGIN || null,
+  // 7 days default (was 720h = 30 days — too long for a stolen token to remain valid).
+  sessionTtlHours: parseInt(process.env.SESSION_TTL_HOURS, 10) || 168,
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
-  // Obscurity only, never the actual defense — see docs/ADMIN.md. Real
-  // access control is requireAdmin/requireSuperAdmin + TOTP + RLS.
-  adminSecretPath: process.env.ADMIN_SECRET_PATH || 'ambitious-person',
-  // Dev-only placeholder (same posture as DATABASE_URL's default above and
-  // POSTGRES_PASSWORD in docker-compose.yml) so `npm test`/`npm run dev`
-  // work with zero setup — see backend/.env.example for how to generate a
-  // real one. AES-256-GCM key for utils/crypto.js (admin TOTP secrets at rest).
-  encryptionKey: process.env.ENCRYPTION_KEY || '1001480ac2400463a4eadd40a3f49b4f68534e13470a319e0f2a071f0327405a',
+  // Obscurity only, never the actual defense — see docs/ADMIN.md.
+  // REQUIRED: no fallback — startup fails if not set, preventing silent exposure.
+  adminSecretPath: process.env.NODE_ENV === 'test'
+    ? (process.env.ADMIN_SECRET_PATH || 'test-admin-path')
+    : required('ADMIN_SECRET_PATH'),
+  // AES-256-GCM key for utils/crypto.js (admin TOTP secrets at rest).
+  // REQUIRED: no fallback — startup fails if not set.
+  encryptionKey: process.env.NODE_ENV === 'test'
+    ? (process.env.ENCRYPTION_KEY || '0'.repeat(64))
+    : required('ENCRYPTION_KEY'),
 };

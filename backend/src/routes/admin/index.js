@@ -18,5 +18,6 @@ router.use('/notifications', require('./notifications.routes'));
 router.use('/security', require('./security.routes'));
 router.use('/analytics', require('./analytics.routes'));
 router.use('/settings', require('./settings.routes'));
+router.use('/leads', require('./leads.routes'));
 
 module.exports = router;

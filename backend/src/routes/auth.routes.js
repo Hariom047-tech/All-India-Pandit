@@ -12,6 +12,7 @@ const router = Router();
 router.post('/register', authLimiter(20), asyncHandler(ctrl.register));
 router.post('/register-pandit', authLimiter(20), asyncHandler(ctrl.registerPandit));
 router.post('/login', authLimiter(20), asyncHandler(ctrl.login));
+router.post('/google', authLimiter(20), asyncHandler(ctrl.googleAuth));
 router.post('/logout', requireAuth, asyncHandler(ctrl.logout));
 router.get('/me', requireAuth, asyncHandler(ctrl.me));
 router.post('/otp/request', authLimiter(10), asyncHandler(ctrl.requestOtp));

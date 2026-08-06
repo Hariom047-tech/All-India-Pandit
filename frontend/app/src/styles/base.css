@@ -25,9 +25,12 @@
   --gold-grad-soft: linear-gradient(135deg, #fff8e7 0%, #f4e3bd 100%);
 
   /* --- Type --- */
-  --font-display: "Playfair Display", "Georgia", serif;
-  --font-head: "Poppins", "Segoe UI", system-ui, sans-serif;
-  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  /* Noto Sans/Serif Devanagari appended so Hindi glyphs render properly —
+     none of Playfair/Poppins/Inter cover Devanagari, so without this every
+     Hindi character falls back to the OS default font mid-sentence. */
+  --font-display: "Playfair Display", "Noto Serif Devanagari", "Georgia", serif;
+  --font-head: "Poppins", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
 
   /* --- Elevation --- */
   --sh-xs: 0 1px 2px rgba(45, 45, 45, .05);
@@ -240,10 +243,11 @@ p { margin: 0; }
   border-radius: var(--r-lg); box-shadow: var(--sh-sm);
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
   position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
 }
 .card--hover:hover { transform: translateY(-6px); box-shadow: var(--sh-lg); border-color: var(--gold); }
 .card--cream { background: var(--ivory); }
-.card-body { padding: 20px; }
+.card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
 .card-pad { padding: 26px; }
 
 /* stars */
@@ -268,9 +272,9 @@ p { margin: 0; }
   opacity: .55;
 }
 .header-inner { height: var(--header-h); display: flex; align-items: center; gap: 28px; }
-.brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-head); }
-.brand img { width: 40px; height: 40px; }
-.brand-name { font-size: 1.42rem; font-weight: 700; letter-spacing: -.5px; }
+.brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-head); flex-shrink: 0; white-space: nowrap; }
+.brand img { width: 40px; height: 40px; flex: none; }
+.brand-name { font-size: 1.42rem; font-weight: 700; letter-spacing: -.5px; white-space: nowrap; }
 .brand-name span { color: var(--gold); }
 .main-nav { margin-left: auto; display: flex; align-items: center; gap: 6px; }
 .main-nav a {
@@ -285,12 +289,121 @@ p { margin: 0; }
   height: 2.5px; border-radius: 2px; background: var(--gold-grad);
 }
 .header-cta { display: flex; align-items: center; gap: 10px; }
-.nav-toggle {
-  display: none; width: 44px; height: 44px; border: 1.5px solid var(--border);
-  background: var(--white); border-radius: var(--r-md); cursor: pointer; color: var(--gold-deep);
-  align-items: center; justify-content: center;
+/* Desktop: left mobile hamburger hidden, profile circle hidden */
+.nav-toggle--left { display: none; }
+.hdr-profile-btn { display: none; }
+
+/* ══════════════ LANGUAGE SWITCHER — Astrotalk "अA" style ══════════════ */
+.ls-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
 }
+
+/* Compact circle "अA" trigger — exactly like Astrotalk */
+.ls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  line-height: 1;
+  gap: 0;
+  padding: 0;
+  transition: border-color .18s, box-shadow .18s;
+}
+.ls-btn:hover { border-color: var(--gold); box-shadow: 0 2px 10px rgba(212,160,23,0.15); }
+
+.ls-btn__hi {
+  font-family: var(--font-head);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+  line-height: 1;
+}
+.ls-btn__en {
+  font-family: var(--font-head);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* Dropdown panel */
+.ls-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 160px;
+  background: var(--white);
+  border: 1.5px solid rgba(212,160,23,0.2);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(212,160,23,0.1);
+  list-style: none;
+  padding: 6px;
+  margin: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+/* Each option row */
+.ls-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s;
+  user-select: none;
+}
+.ls-option:hover { background: rgba(212,160,23,0.07); }
+.ls-option--active { background: rgba(212,160,23,0.1); }
+
+.ls-option__flag { font-size: 1.1rem; line-height: 1; flex: none; }
+.ls-option__label {
+  flex: 1;
+  font-family: var(--font-head);
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.ls-option__check {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+  flex: none;
+}
+
+.nav-toggle {
+  width: 40px; height: 40px; border: 1.5px solid var(--border);
+  background: var(--white); border-radius: 50%; cursor: pointer; color: var(--gold-deep);
+  display: none; align-items: center; justify-content: center; flex: none;
+  transition: border-color .18s;
+}
+.nav-toggle:hover { border-color: var(--gold); }
 .nav-toggle svg { width: 22px; height: 22px; }
+
+/* Profile circle button — right side mobile */
+.hdr-profile-btn {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  align-items: center; justify-content: center;
+  color: var(--text); flex: none;
+  transition: border-color .18s;
+}
+.hdr-profile-btn:hover { border-color: var(--gold); }
+
+/* Desktop-only: visible on desktop, hidden on mobile */
+.hdr-desktop-only { display: inline-flex; }
 
 /* mobile drawer */
 .drawer {
@@ -398,8 +511,9 @@ p { margin: 0; }
   background: var(--gold-grad); border-radius: 2px; opacity: .8;
 }
 .card-foot {
-  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-soft);
   display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding-top: 14px;
 }
 .card-foot .btn { flex: none; }
 
@@ -574,6 +688,38 @@ p { margin: 0; }
   flex-wrap: wrap; margin-bottom: 22px;
 }
 .result-bar strong { font-family: var(--font-head); }
+
+/* mobile filters drawer: the sidebar becomes an off-canvas panel below
+   1080px (same width the grid already collapses to a single column at),
+   opened by .filters-toggle and closed via the scrim, the X, or Escape. */
+.filters-toggle, .filters-close, .filters-scrim, .filters-apply { display: none; }
+@media (max-width: 1080px) {
+  .filters {
+    position: fixed; inset: 0 0 0 auto; width: min(86vw, 340px); max-width: 340px;
+    height: 100vh; z-index: 130; border-radius: 0; border: 0; margin: 0;
+    box-shadow: var(--sh-lg); overflow-y: auto;
+    transform: translateX(100%); transition: transform .32s cubic-bezier(.22, 1, .36, 1);
+  }
+  .filters.is-open { transform: translateX(0); }
+  .filters-scrim {
+    display: block; position: fixed; inset: 0; background: rgba(45, 45, 45, .42); z-index: 120;
+  }
+  .filters-close {
+    display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-pill); cursor: pointer;
+  }
+  .filters-toggle {
+    display: inline-flex; align-items: center; gap: 7px; position: relative;
+    background: var(--white); border: 1.5px solid var(--gold); color: var(--gold-deep);
+    font-weight: 600; font-size: .88rem; padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+  }
+  .filters-toggle__badge {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+    padding: 0 4px; border-radius: var(--r-pill); background: var(--gold-grad); color: #fff;
+    font-size: .72rem; font-weight: 700;
+  }
+  .filters-apply { display: block; width: 100%; margin-top: 24px; }
+}
 
 /* search row on listing pages */
 .search-row {
@@ -949,14 +1095,24 @@ table.tbl tr:last-child td { border-bottom: 0; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .layout-side, .layout-side--right, .dash,
   .split, .split--narrow, .split--wide { grid-template-columns: 1fr; }
-  .filters, .inquiry, .dash-nav, .profile-id { position: static; }
+  .inquiry, .dash-nav, .profile-id { position: static; }
   .profile-hero { grid-template-columns: 1fr; }
   .g-4 { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 900px) {
-  .main-nav, .header-cta .btn { display: none; }
-  .nav-toggle { display: flex; }
+  /* Hide desktop nav and desktop-only CTA buttons */
+  .main-nav { display: none; }
+  .hdr-desktop-only { display: none !important; }
+
+  /* LEFT hamburger — visible on mobile */
+  .nav-toggle--left { display: flex; }
+  /* RIGHT hamburger — hidden on mobile (only for desktop) */
+  .nav-toggle--right { display: none; }
+
+  /* Profile circle — visible on mobile */
+  .hdr-profile-btn { display: flex; }
+
   .bottom-nav { display: block; }
   body { padding-bottom: 68px; }
   .g-3 { grid-template-columns: repeat(2, 1fr); }
@@ -968,10 +1124,18 @@ table.tbl tr:last-child td { border-bottom: 0; }
   .banner-card { left: 0; right: 0; bottom: 18px; padding: 18px 20px; max-width: none; }
   .section { padding: 60px 0; }
   .cta-band { padding: 32px 26px; }
+  /* Keep brand on ONE row — reduce size + gap on small headers */
+  .header-inner { gap: 10px; }
+  .brand { gap: 8px; }
+  .brand img { width: 34px; height: 34px; }
+  .brand-name { font-size: 1.18rem; }
+  /* header-cta: just LangSwitch + profile circle, no gap bloat */
+  .header-cta { gap: 8px; }
 }
 
 @media (max-width: 620px) {
   .shell { padding: 0 18px; }
+  .btn { white-space: normal; height: auto; line-height: 1.4; padding: 12px 20px; }
   .g-2, .g-3, .g-4 { grid-template-columns: 1fr; }
   .stat-strip { grid-template-columns: 1fr; }
   .stat { justify-content: flex-start; }

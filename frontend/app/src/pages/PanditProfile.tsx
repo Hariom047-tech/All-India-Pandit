@@ -7,16 +7,37 @@ import { PanditCard } from "../components/ui/PanditCard";
 import { DecorativeQr } from "../lib/qr";
 import { onImgError, telLink, waLink } from "../lib/format";
 import { useToast } from "../components/ui/Toast";
-import { pandits, temple, serviceName, reviews } from "../data/content";
+import { pandits, temple, serviceName, reviews, panditDisplayName } from "../data/content";
+import { api } from "../lib/api";
+import { useAuth } from "../lib/Auth";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useLang } from "../lib/i18n";
 
 export default function PanditProfile() {
   const { id } = useParams();
   const p = pandits.find((x) => x.id === id) || pandits[0];
   const toast = useToast();
+  const { t, lang } = useLang();
+  const displayName = panditDisplayName(p, lang);
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleAction = (e: React.MouseEvent, type: "whatsapp" | "call") => {
+    e.stopPropagation();
+    if (!user) {
+      e.preventDefault();
+      navigate("/login", { state: { from: location } });
+      return;
+    }
+    api.trackClick(p.id, type).catch(() => {});
+  };
 
   useEffect(() => {
-    document.title = `${p.name} — PanditConnect`;
-  }, [p]);
+    document.title = `${displayName} — PanditSuggest`;
+    api.trackView(p.id).catch(()=>{});
+  }, [p, displayName]);
 
   const availability = useMemo(() => {
     const today = new Date();
@@ -33,7 +54,7 @@ export default function PanditProfile() {
 
   function copyLink() {
     const url = window.location.href;
-    if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => toast("Profile link copied"));
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => toast(t("panditProfile.profileLinkCopiedToast")));
     else toast(url);
   }
 
@@ -47,91 +68,91 @@ export default function PanditProfile() {
             <div className="profile-id">
               <img src="/assets/img/mandala.svg" className="mandala-bg" alt="" />
               <div className="avatar-ring avatar-ring--lg">
-                <img src={p.img} alt={p.name} onError={onImgError("pandit")} />
+                <img src={p.img} alt={displayName} onError={onImgError("pandit")} />
               </div>
               <h1>
-                {p.name}{" "}
+                {displayName}{" "}
                 {p.verified && (
-                  <span className="verified-dot" title="Verified pandit"><Icon name="verified" size={28} /></span>
+                  <span className="verified-dot" title={t("panditProfile.verifiedPandit")}><Icon name="verified" size={28} /></span>
                 )}
               </h1>
               <div className="row" style={{ justifyContent: "center", marginTop: 10 }}>
                 <StarRow rating={p.rating} size={21} />
                 <span className="rating-num" style={{ fontSize: "1.05rem" }}>({p.rating.toFixed(1)}/5)</span>
-                <span className="muted">{p.reviews} reviews</span>
+                <span className="muted">{p.reviews} {t("panditProfile.reviewsCount")}</span>
               </div>
               <div className="row" style={{ justifyContent: "center", marginTop: 14, flexWrap: "wrap" }}>
                 <span className="meta-line"><Icon name="map-pin" size={17} /> {p.city}, {p.state}</span>
-                <span className="tag">{p.exp}+ Years Experience</span>
+                <span className="tag">{t("panditProfile.yearsExperience", { exp: p.exp })}</span>
               </div>
               <div className="row" style={{ justifyContent: "center", marginTop: 22, gap: 16, flexWrap: "wrap" }}>
-                <a className="btn-icon btn-3d-wa" href={waLink(p)} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp ${p.name}`}>
+                <a className="btn-icon btn-3d-wa" href={user ? waLink(p) : "#"} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp ${displayName}`} onClick={(e) => handleAction(e, "whatsapp")}>
                   <Icon name="whatsapp" size={24} />
                 </a>
-                <a className="btn btn-3d-call btn-lg" href={telLink(p)}>
-                  <Icon name="phone" size={20} /> Call Now
+                <a className="btn btn-3d-call btn-lg" href={user ? telLink(p) : "#"} onClick={(e) => handleAction(e, "call")}>
+                  <Icon name="phone" size={20} /> {t("panditProfile.callNow")}
                 </a>
               </div>
               <p className="muted" style={{ marginTop: 14, fontSize: ".84rem" }}>
-                <Icon name="shield-check" size={14} /> Verified profile · You contact pandit ji directly — we charge no commission
+                <Icon name="shield-check" size={14} /> {t("panditProfile.verifiedProfileNote")}
               </p>
             </div>
 
             <div className="stack" style={{ gap: 20 }}>
               <div className="grid g-2" style={{ gap: 20, alignItems: "start" }}>
                 <div className="card card-pad info-card">
-                  <h3>Services Offered</h3>
+                  <h3>{t("panditProfile.servicesOffered")}</h3>
                   <div className="tag-row" style={{ justifyContent: "flex-start" }}>
                     {p.services.map((s) => <Link className="tag" to={`/services/${s}`} key={s}>{serviceName(s)}</Link>)}
                   </div>
                 </div>
                 <div className="card card-pad info-card">
-                  <h3>Associated Temples</h3>
+                  <h3>{t("panditProfile.associatedTemples")}</h3>
                   <ul className="dot-list">
                     {p.temples.map((tid) => {
-                      const t = temple(tid);
-                      return t ? <li key={tid}><Link to={`/temples/${t.id}`}>{t.name}</Link></li> : null;
+                      const tm = temple(tid);
+                      return tm ? <li key={tid}><Link to={`/temples/${tm.id}`}>{tm.name}</Link></li> : null;
                     })}
                   </ul>
                 </div>
               </div>
 
               <div className="card card-pad info-card">
-                <h3>About {p.name.replace("Pandit ", "Pandit ji — ")}</h3>
+                <h3>{t("panditProfile.aboutTitle", { name: displayName })}</h3>
                 <p style={{ color: "#4d4a45" }}>{p.about}</p>
               </div>
 
               <div className="card card-pad info-card">
-                <h3>60-second video introduction</h3>
+                <h3>{t("panditProfile.videoIntroTitle")}</h3>
                 <div
                   className="video-ph"
                   style={{ marginTop: 12 }}
                   role="button"
                   tabIndex={0}
-                  aria-label="Play video introduction"
-                  onClick={() => toast("Video intros go live once the pandit uploads from the dashboard.")}
-                  onKeyDown={(e) => { if (e.key === "Enter") toast("Video intros go live once the pandit uploads from the dashboard."); }}
+                  aria-label={t("panditProfile.playVideoIntro")}
+                  onClick={() => toast(t("panditProfile.videoComingSoon"))}
+                  onKeyDown={(e) => { if (e.key === "Enter") toast(t("panditProfile.videoComingSoon")); }}
                 >
                   <span className="play"><Icon name="play" size={26} fill /></span>
-                  <span>Video intro by {p.name}</span>
+                  <span>{t("panditProfile.videoIntroBy", { name: displayName })}</span>
                 </div>
               </div>
 
               <div className="card card-pad info-card">
-                <h3>Qualifications &amp; Verification</h3>
+                <h3>{t("panditProfile.qualificationsTitle")}</h3>
                 <div className="grid g-2" style={{ gap: 14, marginTop: 6 }}>
                   {[
-                    ["Vedic education", p.edu],
-                    ["Gotra / tradition", p.gotra],
-                    ["Languages spoken", p.langs.join(", ")],
-                    ["Experience", `${p.exp} years`],
+                    [t("panditProfile.vedicEducation"), p.edu],
+                    [t("panditProfile.gotraTradition"), p.gotra],
+                    [t("panditProfile.languagesSpoken"), p.langs.join(", ")],
+                    [t("panditProfile.experience"), t("panditProfile.yearsSuffix", { exp: p.exp })],
                   ].map(([k, v]) => (
                     <div className="pg-item" key={k}><div className="k">{k}</div><div className="v" style={{ fontSize: ".98rem" }}>{v}</div></div>
                   ))}
                 </div>
                 <div className="usp-band" style={{ marginTop: 18, padding: "18px 20px" }}>
                   <div className="row" style={{ gap: 14, flexWrap: "wrap" }}>
-                    {["Documents verified", "Video KYC completed", "Certificate checked", "Temple confirmed"].map((v) => (
+                    {[t("panditProfile.docVerified"), t("panditProfile.videoKyc"), t("panditProfile.certChecked"), t("panditProfile.templeConfirmed")].map((v) => (
                       <span className="meta-line" style={{ fontWeight: 500, color: "var(--text)" }} key={v}>
                         <Icon name="check-circle" size={16} /> {v}
                       </span>
@@ -141,36 +162,36 @@ export default function PanditProfile() {
               </div>
 
               <div className="card card-pad info-card">
-                <h3>Availability — next 14 days</h3>
+                <h3>{t("panditProfile.availabilityTitle")}</h3>
                 <div className="grid" style={{ gridTemplateColumns: "repeat(7,1fr)", gap: 8, marginTop: 14 }}>
                   {availability.map(({ d, free }) => (
-                    <div className="cal-d" key={d.toISOString()} style={!free ? { opacity: 0.42, background: "var(--cream-deep)" } : undefined} title={free ? "Available" : "Booked"}>
+                    <div className="cal-d" key={d.toISOString()} style={!free ? { opacity: 0.42, background: "var(--cream-deep)" } : undefined} title={free ? t("panditProfile.available") : t("panditProfile.booked")}>
                       <strong style={{ fontSize: ".95rem" }}>{d.getDate()}</strong>
-                      <span style={{ fontSize: ".62rem", color: free ? "var(--success)" : "var(--text-2)" }}>{free ? "Free" : "Busy"}</span>
+                      <span style={{ fontSize: ".62rem", color: free ? "var(--success)" : "var(--text-2)" }}>{free ? t("panditProfile.free") : t("panditProfile.busy")}</span>
                     </div>
                   ))}
                 </div>
-                <p className="form-note">Indicative only — always confirm the date on call or WhatsApp.</p>
+                <p className="form-note">{t("panditProfile.availabilityNote")}</p>
               </div>
 
               <div className="card card-pad info-card">
-                <h3>Reviews</h3>
+                <h3>{t("panditProfile.reviewsTitle")}</h3>
                 <div className="scroll-x" style={{ marginTop: 14 }}>
                   {reviews.map((r) => <ReviewCard r={r} key={r.name} />)}
                 </div>
               </div>
 
               <div className="card card-pad info-card">
-                <h3>Share this profile</h3>
+                <h3>{t("panditProfile.shareProfileTitle")}</h3>
                 <div className="row" style={{ gap: 18, marginTop: 14, flexWrap: "wrap", alignItems: "flex-start" }}>
                   <div className="qr-box">
                     <DecorativeQr seed={p.id} />
-                    <p className="muted" style={{ fontSize: ".76rem", marginTop: 8 }}>Scan for profile</p>
+                    <p className="muted" style={{ fontSize: ".76rem", marginTop: 8 }}>{t("panditProfile.scanForProfile")}</p>
                   </div>
                   <div className="stack" style={{ gap: 10, flex: 1, minWidth: 200 }}>
-                    <button className="btn btn-outline" onClick={copyLink}><Icon name="share" size={17} /> Copy profile link</button>
-                    <a className="btn btn-outline" href={waLink(p)} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={17} /> Share on WhatsApp</a>
-                    <p className="muted" style={{ fontSize: ".82rem" }}>Every pandit gets a printable QR code — paste it at the temple counter so devotees can find the profile offline.</p>
+                    <button className="btn btn-outline" onClick={copyLink}><Icon name="share" size={17} /> {t("panditProfile.copyProfileLink")}</button>
+                    <a className="btn btn-outline" href={user ? waLink(p) : "#"} target="_blank" rel="noopener noreferrer" onClick={(e) => handleAction(e, "whatsapp")}><Icon name="whatsapp" size={17} /> {t("panditProfile.shareOnWhatsapp")}</a>
+                    <p className="muted" style={{ fontSize: ".82rem" }}>{t("panditProfile.qrNote")}</p>
                   </div>
                 </div>
               </div>
@@ -181,9 +202,12 @@ export default function PanditProfile() {
 
       <section className="section section--cream">
         <div className="shell">
-          <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginBottom: 26 }}>Similar Pandit Ji nearby</h2>
-          <div className="grid g-2">
-            {similar.map((sp, i) => <PanditCard p={sp} key={sp.id} index={i} />)}
+          <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginBottom: 26 }}>{t("panditProfile.similarPanditsTitle")}</h2>
+          <div className="grid g-2 grid-2up-mobile">
+            {similar.slice(0, 6).map((sp, i) => <PanditCard p={sp} key={sp.id} index={i} />)}
+          </div>
+          <div className="text-c" style={{ marginTop: 32 }}>
+            <Link className="btn btn-outline" to="/pandits">{t("panditProfile.seeAllPandits")}</Link>
           </div>
         </div>
       </section>

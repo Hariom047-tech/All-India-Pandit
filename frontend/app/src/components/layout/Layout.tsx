@@ -17,7 +17,7 @@ export function Layout() {
       <main id="main">
         <Outlet />
       </main>
-      <Footer />
+      {location.pathname !== "/login" && <Footer />}
     </>
   );
 }

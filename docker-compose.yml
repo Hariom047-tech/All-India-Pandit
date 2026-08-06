@@ -52,10 +52,12 @@ services:
       # backend/src/utils/crypto.js, docs/ADMIN.md). Same posture as
       # POSTGRES_PASSWORD above: a committed placeholder, not a production
       # secret. Changing it invalidates every admin's existing TOTP secret.
-      ENCRYPTION_KEY: "1001480ac2400463a4eadd40a3f49b4f68534e13470a319e0f2a071f0327405a"
+      ENCRYPTION_KEY: "${ENCRYPTION_KEY}"
       # Obscurity only, not real access control — see docs/ADMIN.md. Actual
       # admin auth is TOTP + Row-Level Security, same as everywhere else.
-      ADMIN_SECRET_PATH: "ambitious-person"
+      ADMIN_SECRET_PATH: "${ADMIN_SECRET_PATH}"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_SECRET_KEY: "${GOOGLE_SECRET_KEY}"
     ports:
       - "4000:4000" # exposed directly too, handy for `curl`/Postman while developing
     depends_on:
@@ -71,6 +73,11 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        # Google OAuth client ID is a public identifier — safe in the bundle.
+        # VITE_ADMIN_SECRET_PATH removed (security fix C3): admin panel is now
+        # at /admin-panel; backend secret path resolved at runtime, not build time.
+        VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
     container_name: panditconnect-frontend
     restart: unless-stopped
     ports:

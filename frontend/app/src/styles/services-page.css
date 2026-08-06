@@ -745,8 +745,8 @@
 
 @media (max-width: 768px) {
   .sp-hero { padding: 40px 0 0; }
-  .sp-hero__grid { grid-template-columns: 1fr; text-align: center; min-height: auto; }
-  .sp-hero__content { max-width: none; padding: 10px 0 20px; }
+  .sp-hero__grid { display: flex; flex-direction: column-reverse; text-align: center; gap: 24px; }
+  .sp-hero__content { max-width: none; padding: 0 0 20px; }
   .sp-hero__search { max-width: none; justify-content: center; }
   .sp-hero__img-wrap { width: 200px; height: 200px; margin: 0 auto; }
   .pp-hero__stats { justify-content: center; }

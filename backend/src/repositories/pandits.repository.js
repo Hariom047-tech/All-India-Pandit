@@ -166,4 +166,17 @@ async function addEnquiry({ panditId, templeId, serviceSlug, name, phone, date, 
   return id;
 }
 
-module.exports = { list, hydrate, getBySlug, findIdBySlug, exists, forService, forTemple, pickForTemple, addEnquiry };
+async function addContactClick({ panditId, method }) {
+  const dbMethod = method === 'call' ? 'phone_call' : method;
+  await query(
+    `INSERT INTO contact_clicks (pandit_id, contact_method) VALUES ($1, $2)`,
+    [panditId, dbMethod]
+  );
+  await query(`SELECT increment_pandit_stats($1, 'click', $2)`, [panditId, dbMethod]);
+}
+
+async function addView(panditId) {
+  await query(`SELECT increment_pandit_stats($1, 'view')`, [panditId]);
+}
+
+module.exports = { list, hydrate, getBySlug, findIdBySlug, exists, forService, forTemple, pickForTemple, addEnquiry, addContactClick, addView };

@@ -5,8 +5,11 @@ import type { Temple } from "../../data/types";
 import { Icon } from "../../lib/icons";
 import { RatingCompact } from "./StarRating";
 import { onImgError } from "../../lib/format";
+import { useLang } from "../../lib/i18n";
 
 export function TempleCard({ t, index = 0 }: { t: Temple; index?: number }) {
+  // aliased: this component's prop is already named `t` (the temple object)
+  const { t: tr } = useLang();
   const [fav, setFav] = useState(false);
   return (
     <motion.article
@@ -20,7 +23,7 @@ export function TempleCard({ t, index = 0 }: { t: Temple; index?: number }) {
       <div className="thumb">
         <img src={t.img} alt={t.name} loading="lazy" onError={onImgError("temple")} />
         <span className="thumb-badge badge-gold">
-          <Icon name="user" size={13} /> {t.pandits} Pandits Available
+          <Icon name="user" size={13} /> {t.pandits} {tr("temples.pandits")}
         </span>
         <button
           className={`thumb-fav${fav ? " is-on" : ""}`}
@@ -38,7 +41,7 @@ export function TempleCard({ t, index = 0 }: { t: Temple; index?: number }) {
         <p className="meta-line" style={{ marginTop: 4 }}><Icon name="clock" size={15} /> {t.timings}</p>
         <div className="card-foot">
           <RatingCompact rating={t.rating} />
-          <Link className="btn btn-outline btn-sm" to={`/temples/${t.id}`}>View Pandits</Link>
+          <Link className="btn btn-outline btn-sm" to={`/temples/${t.id}`}>{tr("common.viewPandits")}</Link>
         </div>
       </div>
     </motion.article>

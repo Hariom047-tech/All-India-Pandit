@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Icon } from "../lib/icons";
 import { temples, cities, serviceName } from "../data/content";
 import { TempleCard } from "../components/ui/TempleCard";
@@ -7,10 +7,12 @@ import { EmptyState } from "../components/ui/ReviewCard";
 import { Pager, paginate, countBy } from "../components/ui/Pager";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { HeroTicker } from "../components/ui/HeroTicker";
+import { useLang } from "../lib/i18n";
 
 const PER_PAGE = 9;
 
 export default function Temples() {
+  const { t } = useLang();
   const [params] = useSearchParams();
   const [query] = useState(params.get("q") || "");
   const [cityFilter, setCityFilter] = useState<string[]>(params.get("city") ? [params.get("city")!] : []);
@@ -45,7 +47,15 @@ export default function Temples() {
     return list;
   }, [query, cityFilter, stateFilter, svcFilter, minRating, sort]);
 
-  const pg = paginate(filtered, page, PER_PAGE);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 620);
+  
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 620);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const pg = paginate(filtered, page, isMobile ? 10 : PER_PAGE);
 
 
 
@@ -60,26 +70,26 @@ export default function Temples() {
           <div className="sp-hero__grid">
             <div className="sp-hero__content">
               <h1 className="sp-hero__title">
-                Every temple tells a <br />
-                <span className="gold-text">divine story</span>
+                {t("temples.heroTitle1")} <br />
+                <span className="gold-text">{t("temples.heroTitleGold")}</span>
               </h1>
               <ul className="sp-hero__list">
                 <li>
                   <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                  Darshan timings, sevas & festivals — all details at your fingertips
+                  {t("temples.heroCheck1")}
                 </li>
                 <li>
                   <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                  Find pandits associated with each temple for authentic rituals
+                  {t("temples.heroCheck2")}
                 </li>
                 <li>
                   <div className="sp-hero__check"><Icon name="check" size={14} /></div>
-                  From Varanasi to Rameshwaram — {temples.length}+ temples across India
+                  {t("temples.heroCheck3", { count: temples.length })}
                 </li>
               </ul>
               <div className="sp-hero__cta">
                 <a href="#gridTop" className="btn btn-gold btn-lg btn-pill">
-                  Explore Temples <Icon name="arrow-right" size={18} />
+                  {t("temples.heroCta")} <Icon name="arrow-right" size={18} />
                 </a>
               </div>
             </div>
@@ -101,7 +111,7 @@ export default function Temples() {
             <button
               className={`tp-filter-pill ${cityFilter.length === 0 ? "tp-filter-pill--active" : ""}`}
               onClick={() => { setCityFilter([]); setPage(1); }}
-            >All Cities</button>
+            >{t("temples.allCities")}</button>
             {usedCities.map((c) => (
               <button
                 key={c}
@@ -120,38 +130,27 @@ export default function Temples() {
       <section className="section" style={{ paddingTop: 30, paddingBottom: 50 }}>
         <div className="shell">
           <div id="gridTop" className="result-bar" style={{ marginBottom: 20 }}>
-            <span><strong>{filtered.length}</strong> temple{filtered.length === 1 ? "" : "s"} found</span>
+            <span><strong>{filtered.length}</strong> {filtered.length === 1 ? t("temples.temple") : t("temples.templesPlural")} {t("temples.found")}</span>
             <label className="row" style={{ gap: 8 }}>
-              <span className="muted">Sort by</span>
+              <span className="muted">{t("common.sortBy")}</span>
               <select className="select" style={{ width: "auto", padding: "9px 40px 9px 14px" }} value={sort} onChange={(e) => { setSort(e.target.value); setPage(1); }}>
-                <option value="rating">Highest rated</option>
-                <option value="reviews">Most reviewed</option>
-                <option value="pandits">Most pandits</option>
-                <option value="name">Name (A–Z)</option>
+                <option value="rating">{t("temples.sortRating")}</option>
+                <option value="reviews">{t("temples.sortReviews")}</option>
+                <option value="pandits">{t("temples.sortPandits")}</option>
+                <option value="name">{t("temples.sortName")}</option>
               </select>
             </label>
           </div>
-          <div className="grid g-3">
+          <div className="grid g-3 hp-cards-2up">
             {pg.slice.length
-              ? pg.slice.map((t, i) => <TempleCard t={t} key={t.id} index={i} />)
-              : <EmptyState msg="Try removing a filter, or search a different city." />}
+              ? pg.slice.map((tp, i) => <TempleCard t={tp} key={tp.id} index={i} />)
+              : <EmptyState msg={t("temples.emptyState")} />}
           </div>
           <Pager page={pg.page} pages={pg.pages} onChange={(p) => { setPage(p); document.getElementById("gridTop")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
         </div>
       </section>
 
-      <section className="section section--cream section--tight">
-        <div className="shell">
-          <div className="cta-band">
-            <img src="/assets/img/mandala.svg" className="watermark watermark--br" alt="" />
-            <div>
-              <h2>Is your temple not listed?</h2>
-              <p>Temple trusts can list for free — photos, timings, sevas and the pandits associated with the temple.</p>
-            </div>
-            <Link className="btn btn-outline btn-lg" to="/contact">Partner with us</Link>
-          </div>
-        </div>
-      </section>
+
       </div>
     </div>
   );

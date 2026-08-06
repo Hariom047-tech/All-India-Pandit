@@ -351,14 +351,92 @@
 }
 
 @media (max-width: 600px) {
-  .hero-astro__title { font-size: 2.2rem; }
-  .hero-astro__circles { display: none; /* Simplify on very small screens */ }
-  
-  .hero-astro__stats-inner {
-    gap: 24px;
-    justify-content: space-around;
+  .hero-astro { padding: 28px 0 0; }
+
+  /* Astrotalk's mobile order is: title → checklist → stats → photos →
+     ticker. Our checklist/CTA live inside .hero-astro__content, which sits
+     inside .shell > .hero-astro__grid, while stats-row/ticker are siblings
+     of that .shell — too far apart to reorder with plain CSS `order` since
+     `order` only works among children of the same flex/grid parent.
+     `display: contents` flattens the .shell and .grid wrappers (mobile
+     only) so content/visual become direct flex children of .hero-astro
+     right alongside stats-row/ticker, and can all be freely reordered. */
+  .hero-astro { display: flex; flex-direction: column; }
+  .hero-astro > .shell { display: contents; }
+  .hero-astro__grid { display: contents; }
+
+  .hero-astro__content {
+    order: 1;
+    padding: 0 18px 6px;
+    align-items: flex-start;
+    text-align: left;
   }
-  
-  .hero-astro__stat-num { font-size: 1.5rem; }
-  .hero-astro__stat-label { font-size: 0.8rem; }
+
+  .hero-astro__badge {
+    font-size: 0.78rem;
+    padding: 5px 14px 5px 10px;
+    margin-bottom: 18px;
+  }
+  .hero-astro__badge-avatars img { width: 20px; height: 20px; }
+
+  /* Astrotalk keeps its mobile headline to ~2 compact lines instead of
+     scaling desktop type down 1:1 — match that instead of clamp()'s 2.2rem,
+     which still wrapped this copy to 3 heavy lines. */
+  .hero-astro__title {
+    font-size: 1.85rem;
+    line-height: 1.28;
+    margin-bottom: 0;
+  }
+
+  /* Astrotalk replaces the checklist + CTA with the stats row at this
+     point in the mobile flow — drop both to match. */
+  .hero-astro__list, .hero-astro__cta { display: none; }
+
+  .hero-astro__stats-row {
+    order: 2;
+    margin-top: 22px;
+    padding: 0 18px 22px;
+  }
+  .hero-astro__stats-row .shell { padding: 0; }
+  /* astrotalk fits all 4 stats on one row — match that instead of letting
+     them wrap to a 2x2 grid: equal-width columns, small enough type that
+     even our longer labels ("Ceremonies Conducted") fit without truncating */
+  .hero-astro__stats-inner {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .hero-astro__stat { flex: 1 1 0; min-width: 0; }
+  /* CountUp renders the actual digits in a nested .stat-num span (global
+     class, 1.85rem by default) — target it directly, not just the wrapper */
+  .hero-astro__stat-num, .hero-astro__stat-num .stat-num { font-size: 0.85rem; white-space: nowrap; }
+  .hero-astro__stat-label { font-size: 0.6rem; line-height: 1.25; margin-top: 2px; }
+
+  /* Astrotalk-style photo trio: rounded-rectangle "squircle" cards in a
+     horizontal row (not perfect circles, not vertically stacked) — the
+     center card reads bigger/elevated, the side cards peek in from the
+     screen edges. The existing setInterval rotation + framer-motion
+     `layout` prop now animates pandits sliding horizontally between these
+     slots instead of swapping in an overlapping circle stack. */
+  .hero-astro__visual { order: 3; margin-top: 4px; }
+  .hero-astro__circles { width: 100%; max-width: 100%; height: 232px; margin: 0; }
+  .hero-astro__circle { border-radius: 44px; border-width: 3px; }
+  .pos-0 {
+    width: 152px; height: 218px;
+    margin-top: -109px; margin-left: -76px;
+    border-radius: 46px;
+  }
+  .pos-1 {
+    width: 104px; height: 150px;
+    margin-top: -75px; margin-left: -178px;
+    border-radius: 32px;
+    opacity: 0.92;
+  }
+  .pos-2 {
+    width: 104px; height: 150px;
+    margin-top: -75px; margin-left: 74px;
+    border-radius: 32px;
+    opacity: 0.92;
+  }
+
+  .hero-astro__ticker { order: 4; }
 }

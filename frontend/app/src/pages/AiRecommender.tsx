@@ -2,8 +2,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
 import { serviceEmoji } from "../lib/serviceEmoji";
-import { recommendRules, service, panditsForService } from "../data/content";
+import { recommendRules, service, panditsForService, panditDisplayName } from "../data/content";
 import { onImgError } from "../lib/format";
+import { useLang, type Lang } from "../lib/i18n";
 
 interface Bubble {
   id: number;
@@ -18,7 +19,7 @@ const PROMPTS = [
   "Kundali mein Shani dosh hai", "Navratri ki puja karani hai",
 ];
 
-function recommend(text: string): ReactNode {
+function recommend(text: string, lang: Lang): ReactNode {
   const q = text.toLowerCase();
   const hits = recommendRules.filter((r) => r.keys.some((k) => q.includes(k)));
 
@@ -62,7 +63,7 @@ function recommend(text: string): ReactNode {
                 <span className="avatar-ring" style={{ width: 38, height: 38, padding: 2 }}>
                   <img src={p.img} alt="" onError={onImgError("pandit")} />
                 </span>
-                <Link to={`/pandits/${p.id}`} style={{ fontWeight: 600, fontSize: ".92rem", color: "var(--gold-deep)" }}>{p.name}</Link>
+                <Link to={`/pandits/${p.id}`} style={{ fontWeight: 600, fontSize: ".92rem", color: "var(--gold-deep)" }}>{panditDisplayName(p, lang)}</Link>
                 <span className="muted" style={{ fontSize: ".82rem" }}>{p.city} · {p.exp}y</span>
               </span>
             ))}
@@ -77,6 +78,7 @@ function recommend(text: string): ReactNode {
 }
 
 export default function AiRecommender() {
+  const { lang } = useLang();
   const [bubbles, setBubbles] = useState<Bubble[]>([
     {
       id: 0,
@@ -103,7 +105,7 @@ export default function AiRecommender() {
     const typingId = meId + 1;
     setBubbles((prev) => [...prev, { id: meId, who: "me", content: text }, { id: typingId, who: "ai", content: null, typing: true }]);
     setTimeout(() => {
-      setBubbles((prev) => prev.map((b) => (b.id === typingId ? { ...b, content: recommend(text), typing: false } : b)));
+      setBubbles((prev) => prev.map((b) => (b.id === typingId ? { ...b, content: recommend(text, lang), typing: false } : b)));
     }, 620);
   }
 

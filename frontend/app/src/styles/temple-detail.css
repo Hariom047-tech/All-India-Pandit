@@ -357,9 +357,6 @@
     position: static;
     order: -1;
   }
-  .td-info-grid {
-    grid-template-columns: 1fr;
-  }
   .td-tab {
     padding: 14px 18px;
     font-size: 0.88rem;
@@ -372,5 +369,20 @@
   }
   .td-review-summary {
     flex-direction: column;
+  }
+  .td-info-grid {
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .td-info-card {
+    padding: 14px 12px;
+  }
+  .td-info-label {
+    font-size: 0.65rem;
+    margin-bottom: 4px;
+    letter-spacing: 0.8px;
+  }
+  .td-info-value {
+    font-size: 0.95rem;
   }
 }

@@ -16,6 +16,11 @@ router.get('/health', asyncHandler(async (req, res) => {
 // unlikely, but cheap insurance.
 router.use(`/${adminSecretPath}`, require('./admin'));
 
+// Expose the admin path to the frontend dynamically at runtime so the JS bundle
+// doesn't contain it. The route to the admin panel is a fixed "/admin-panel"
+// in the browser, but it calls this endpoint to know where to send API requests.
+router.get('/admin-config', (req, res) => res.json({ adminPath: adminSecretPath }));
+
 // Only meaningful at /api/* — nginx never forwards a bare "/admin" hit on
 // the public site to this backend at all (see docker/nginx/default.conf),
 // so these paths are the realistic attacker-facing surface, not top-level

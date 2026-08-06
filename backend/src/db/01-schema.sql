@@ -202,7 +202,7 @@ CREATE TABLE users (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email               VARCHAR(255) UNIQUE NOT NULL,
     phone               VARCHAR(15) UNIQUE,
-    password_hash       VARCHAR(255) NOT NULL,
+    password_hash       VARCHAR(255),
 
     full_name           VARCHAR(150) NOT NULL,
     display_name        VARCHAR(100),
@@ -796,6 +796,44 @@ CREATE INDEX idx_inquiries_status ON inquiries(status);
 CREATE INDEX idx_inquiries_created ON inquiries(created_at DESC);
 CREATE TRIGGER trg_inquiries_updated BEFORE UPDATE ON inquiries
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- inquiries has no public SELECT policy (phone numbers/messages must never
+-- be publicly readable — see inquiries_select_own_or_pandit/_admin below).
+-- The lead-distribution fairness engine (Module 15) still needs to know how
+-- many leads each pandit has received recently, from the *public*, anonymous
+-- pandits listing — same chicken-and-egg as auth_find_user_by_email/
+-- current_app_user_is_admin above, same fix: SECURITY DEFINER, scoped to
+-- return nothing but an id and a count, never the row itself.
+CREATE OR REPLACE FUNCTION get_pandit_lead_counts(p_since TIMESTAMPTZ, p_today_start TIMESTAMPTZ)
+RETURNS TABLE(pandit_id UUID, window_leads BIGINT, today_leads BIGINT) AS $$
+    SELECT p_id as pandit_id, SUM(cnt)::BIGINT AS window_leads, SUM(today_cnt)::BIGINT AS today_leads
+    FROM (
+      SELECT i.pandit_id as p_id, COUNT(*) as cnt, COUNT(*) FILTER (WHERE i.created_at >= p_today_start) as today_cnt 
+      FROM inquiries i WHERE i.created_at >= p_since GROUP BY i.pandit_id
+      UNION ALL
+      SELECT c.pandit_id as p_id, COUNT(*) as cnt, COUNT(*) FILTER (WHERE c.created_at >= p_today_start) as today_cnt 
+      FROM contact_clicks c WHERE c.created_at >= p_since GROUP BY c.pandit_id
+    ) sub
+    GROUP BY p_id;
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+REVOKE ALL ON FUNCTION get_pandit_lead_counts(TIMESTAMPTZ, TIMESTAMPTZ) FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION increment_pandit_stats(p_id UUID, p_type VARCHAR, p_method VARCHAR DEFAULT NULL)
+RETURNS VOID AS $$
+BEGIN
+    IF p_type = 'view' THEN
+        UPDATE pandits SET total_profile_views = total_profile_views + 1 WHERE id = p_id;
+    ELSIF p_type = 'click' THEN
+        UPDATE pandits SET total_contact_clicks = total_contact_clicks + 1 WHERE id = p_id;
+        IF p_method = 'whatsapp' THEN
+            UPDATE pandits SET total_whatsapp_clicks = total_whatsapp_clicks + 1 WHERE id = p_id;
+        ELSIF p_method = 'phone_call' THEN
+            UPDATE pandits SET total_call_clicks = total_call_clicks + 1 WHERE id = p_id;
+        END IF;
+    END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+REVOKE ALL ON FUNCTION increment_pandit_stats(UUID, VARCHAR, VARCHAR) FROM PUBLIC;
 
 CREATE TABLE contact_clicks (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),

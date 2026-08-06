@@ -82,6 +82,8 @@ export const iconPaths: Record<string, string> = {
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   lotus:
     '<path d="M12 4c2 3 2 6 0 9-2-3-2-6 0-9z"/><path d="M12 13c-3-2-6-1.5-8 1 3 2 6 2 8-1zM12 13c3-2 6-1.5 8 1-3 2-6 2-8-1z"/><path d="M12 13c-1.5 3-5 5-8 5 2 2 6 2.5 8-5zM12 13c1.5 3 5 5 8 5-2 2-6 2.5-8-5z"/>',
+  "play-circle": '<circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/>',
+  "package": '<path d="M16.5 9.4l-9-5.2M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
 };
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, "fill"> {

@@ -27,14 +27,18 @@ async function findById(id, q = query) {
 // CHECK (true) passed. Pre-generating the id and setting it as
 // app.current_user_id before the INSERT makes it visible to itself via
 // users_select_self, since a user can always read their own row.
-async function create({ email, phone, passwordHash, fullName, role }) {
+async function create({ email, phone, passwordHash, fullName, role, googleId }) {
   const id = crypto.randomUUID();
   const { rows } = await withUserContext(id, (q) => q(
-    `INSERT INTO users (id, email, phone, password_hash, full_name, role, status)
-     VALUES ($1, $2, $3, $4, $5, $6, 'pending_verification') RETURNING *`,
-    [id, email, phone || null, passwordHash, fullName, role || 'devotee'],
+    `INSERT INTO users (id, email, phone, password_hash, full_name, role, status, google_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+    [id, email, phone || null, passwordHash || null, fullName, role || 'devotee', googleId ? 'active' : 'pending_verification', googleId || null],
   ));
   return rows[0];
+}
+
+async function linkGoogleId(userId, googleId, q = query) {
+  await q('UPDATE users SET google_id = $1, email_verified = TRUE WHERE id = $2', [googleId, userId]);
 }
 
 /** Creates the pandit row + user row a fresh pandit registration needs, in
@@ -177,5 +181,5 @@ async function markTargetVerified(userId, targetType, q = query) {
 module.exports = {
   findByEmail, findById, create, createPandit, createSession, findActiveSessionByTokenHash,
   revokeSession, revokeAllSessions, touchLogin, createOtp, findLatestOtp, markOtpVerified,
-  incrementOtpAttempts, markTargetVerified, softDeleteAccount, exportAccountData,
+  incrementOtpAttempts, markTargetVerified, softDeleteAccount, exportAccountData, linkGoogleId,
 };

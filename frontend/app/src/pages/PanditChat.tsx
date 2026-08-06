@@ -19,6 +19,7 @@ export default function PanditChat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const sessionIdRef = useRef<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -86,11 +87,14 @@ export default function PanditChat() {
       const res = await fetch(`${API}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, sessionId })
+        body: JSON.stringify({ message: msg, sessionId: sessionIdRef.current || sessionId })
       });
       const data = await res.json();
       
-      if (data.sessionId) setSessionId(data.sessionId);
+      if (data.sessionId) {
+        setSessionId(data.sessionId);
+        sessionIdRef.current = data.sessionId;
+      }
       
       const panditMsg: Message = {
         id: genId(),

@@ -6,7 +6,10 @@ const router = Router();
 router.use(requireAdmin);
 
 router.get('/', adminHandler(ctrl.list));
+router.post('/', adminHandler(ctrl.create));
 router.get('/verification-queue', adminHandler(ctrl.verificationQueue));
+router.get('/:id', adminHandler(ctrl.getById));
+router.put('/:id', adminHandler(ctrl.update));
 router.post('/:id/verify', adminHandler(ctrl.verify));
 router.post('/:id/toggle-featured', adminHandler(ctrl.toggleFeatured));
 router.get('/:id/analytics', adminHandler(ctrl.analytics));

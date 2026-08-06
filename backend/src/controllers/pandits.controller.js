@@ -1,9 +1,10 @@
 const repo = require('../repositories/pandits.repository');
+const leadDistributionRepo = require('../repositories/leadDistribution.repository');
 const { readPaging, paginationEnvelope } = require('../utils/paginate');
 
 /** GET /api/pandits — filterable, sortable, paginated list */
 async function list(req, res) {
-  const paging = readPaging(req.query, 8);
+  const paging = readPaging(req.query, 12);
   const { city, service, lang, minExp, minRating, verified, sort, q } = req.query;
   const { data, total } = await repo.list({
     q,
@@ -18,6 +19,21 @@ async function list(req, res) {
     perPage: paging.perPage,
   });
   res.json(paginationEnvelope(data, paging, total));
+}
+
+/** GET /api/pandits/ranked-order — lightweight {slug, tier, displayScore}[]
+ *  for every active verified pandit, ordered by the lead-distribution
+ *  fairness engine. No auth, no per-pandit private data — see
+ *  leadDistribution.repository.js for the algorithm. The frontend fetches
+ *  this once and uses it to order the (locally-bundled) pandit list, so
+ *  "who shows at the top" actually reflects fair rotation, not just a
+ *  frozen client-side sort. */
+async function rankedOrder(req, res) {
+  const { pandits } = await leadDistributionRepo.computeFairRanking();
+  res.json({
+    generatedAt: new Date().toISOString(),
+    order: pandits.map((p) => ({ slug: p.slug, tier: p.tier, displayScore: p.displayScore })),
+  });
 }
 
 /** GET /api/pandits/:id — :id is the pandit's slug (unchanged from the old
@@ -42,4 +58,24 @@ async function inquire(req, res) {
   res.status(201).json({ ok: true, id });
 }
 
-module.exports = { list, getById, inquire };
+async function trackClick(req, res) {
+  const panditId = await repo.findIdBySlug(req.params.id);
+  if (!panditId) return res.status(404).json({ error: 'Pandit not found' });
+
+  const { method } = req.body;
+  if (method !== 'call' && method !== 'whatsapp') {
+    return res.status(400).json({ error: 'Method must be call or whatsapp' });
+  }
+
+  await repo.addContactClick({ panditId, method });
+  res.json({ ok: true });
+}
+
+async function trackView(req, res) {
+  const panditId = await repo.findIdBySlug(req.params.id);
+  if (!panditId) return res.status(404).json({ error: 'Pandit not found' });
+  await repo.addView(panditId);
+  res.json({ ok: true });
+}
+
+module.exports = { list, getById, inquire, rankedOrder, trackClick, trackView };

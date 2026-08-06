@@ -3,7 +3,7 @@ import type { Pandit } from "../data/types";
 
 export function waLink(p: Pandit, ctx?: string): string {
   const msg =
-    `Namaste ${p.name}, I found your profile on PanditConnect.` +
+    `Namaste ${p.name}, I found your profile on PanditSuggest.` +
     (ctx ? ` I would like to enquire about ${ctx}.` : " I would like to enquire about a puja.");
   return `https://wa.me/${p.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(msg)}`;
 }

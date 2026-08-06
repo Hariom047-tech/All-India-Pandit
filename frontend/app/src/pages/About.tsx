@@ -110,7 +110,7 @@ export default function About() {
           <div style={{ marginTop: 34, maxWidth: 900, marginLeft: "auto", marginRight: "auto" }}>
             <div className="table-wrap">
               <table className="tbl">
-                <thead><tr><th>PanditConnect</th><th>Typical booking platform</th></tr></thead>
+                <thead><tr><th>PanditSuggest</th><th>Typical booking platform</th></tr></thead>
                 <tbody>
                   {DIFF.map(([a, b]) => (
                     <tr key={a}>

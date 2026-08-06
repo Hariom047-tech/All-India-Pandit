@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PanditConnect — Connect with Trusted Pandits Across India</title>
+    <title>PanditSuggest — Connect with Trusted Pandits Across India</title>
     <meta name="description" content="Browse temples across India, view verified Pandit profiles and contact them directly on WhatsApp or call. No middleman, no commission on your puja." />
     <meta name="theme-color" content="#d4a017" />
     <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <!-- Noto Sans/Serif Devanagari cover the Hindi UI (लॉगिन इन fonts above
+         have no Devanagari glyphs at all) — appended to the stacks in
+         base.css so the browser only falls back to them per-character. -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>

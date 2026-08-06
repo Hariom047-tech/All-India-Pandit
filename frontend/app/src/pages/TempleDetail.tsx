@@ -57,7 +57,7 @@ export default function TempleDetail() {
   const toast = useToast();
 
   useEffect(() => {
-    document.title = `${t.name} — PanditConnect`;
+    document.title = `${t.name} — PanditSuggest`;
     setTab("overview");
     window.scrollTo({ top: 0 });
   }, [t]);
@@ -120,7 +120,7 @@ export default function TempleDetail() {
         <div className="shell td-content" style={{ position: "relative", zIndex: 1 }}>
 
           {/* ── LEFT COLUMN: tab panels ── */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <AnimatePresence mode="wait">
               {/* ━━━━━ OVERVIEW ━━━━━ */}
               {tab === "overview" && (
@@ -285,7 +285,7 @@ export default function TempleDetail() {
                     All Pandits at this temple
                     <span className="td-heading__ornament" />
                   </h2>
-                  <motion.div className="grid g-2" variants={stagger} initial="initial" animate="animate">
+                  <motion.div className="grid g-2 grid-2up-mobile" variants={stagger} initial="initial" animate="animate">
                     {pandits.map((p) => (
                       <motion.div key={p.id} variants={cardReveal}>
                         <PanditCard p={p} />
@@ -471,7 +471,7 @@ export default function TempleDetail() {
             <span className="td-heading__ornament" />
           </motion.h2>
           <motion.div
-            className="grid g-3"
+            className="grid g-3 hp-cards-2up"
             variants={stagger}
             initial="initial"
             whileInView="animate"

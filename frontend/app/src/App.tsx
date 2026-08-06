@@ -3,6 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { ToastProvider } from "./components/ui/Toast";
 import { EnquiryModalProvider } from "./components/ui/EnquiryModal";
+import { AuthProvider } from "./lib/Auth";
+import { I18nProvider } from "./lib/i18n";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+// ADMIN_BASE is now a fixed string in adminApi.ts ("/admin-panel") — no secret path in the bundle.
 import Home from "./pages/Home";
 
 const Temples = lazy(() => import("./pages/Temples"));
@@ -12,14 +16,17 @@ const PanditProfile = lazy(() => import("./pages/PanditProfile"));
 const Services = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Panchang = lazy(() => import("./pages/Panchang"));
+const Festivals = lazy(() => import("./pages/Festivals"));
 const TempleMap = lazy(() => import("./pages/TempleMap"));
 const AiRecommender = lazy(() => import("./pages/AiRecommender"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Login = lazy(() => import("./pages/Login"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PanditChat = lazy(() => import("./pages/PanditChat"));
+const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 function RouteFallback() {
   return (
@@ -54,10 +61,16 @@ function RouteFallback() {
 
 export default function App() {
   return (
-    <ToastProvider>
+    <GoogleOAuthProvider clientId={(import.meta.env.VITE_GOOGLE_CLIENT_ID as string) || ""}>
+      <I18nProvider>
+      <ToastProvider>
       <EnquiryModalProvider>
-        <Suspense fallback={<RouteFallback />}>
+        <AuthProvider>
+          <Suspense fallback={<RouteFallback />}>
           <Routes>
+            {/* Admin panel is at a fixed /admin-panel route.
+                Security is backend TOTP (requireAdmin) — not URL obscurity. */}
+            <Route path="admin-panel/*" element={<AdminApp />} />
             <Route element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="temples" element={<Temples />} />
@@ -67,6 +80,7 @@ export default function App() {
               <Route path="services" element={<Services />} />
               <Route path="services/:id" element={<ServiceDetail />} />
               <Route path="panchang" element={<Panchang />} />
+              <Route path="festivals" element={<Festivals />} />
               <Route path="temple-map" element={<TempleMap />} />
               <Route path="ai-recommender" element={<AiRecommender />} />
               <Route path="blog" element={<Blog />} />
@@ -74,11 +88,15 @@ export default function App() {
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
               <Route path="pandit-ji" element={<PanditChat />} />
+              <Route path="login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </Suspense>
+        </AuthProvider>
       </EnquiryModalProvider>
     </ToastProvider>
+      </I18nProvider>
+    </GoogleOAuthProvider>
   );
 }
