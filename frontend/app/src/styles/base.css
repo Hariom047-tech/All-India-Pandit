@@ -381,13 +381,13 @@ p { margin: 0; }
 }
 
 .nav-toggle {
-  width: 40px; height: 40px; border: 1.5px solid var(--border);
+  width: 34px; height: 34px; border: 1.5px solid var(--border);
   background: var(--white); border-radius: 50%; cursor: pointer; color: var(--gold-deep);
   display: none; align-items: center; justify-content: center; flex: none;
   transition: border-color .18s;
 }
 .nav-toggle:hover { border-color: var(--gold); }
-.nav-toggle svg { width: 22px; height: 22px; }
+.nav-toggle svg { width: 20px; height: 20px; }
 
 /* Profile circle button — right side mobile */
 .hdr-profile-btn {
@@ -407,8 +407,8 @@ p { margin: 0; }
 
 /* mobile drawer */
 .drawer {
-  position: fixed; inset: 0 0 0 auto; width: min(84vw, 340px); z-index: 120;
-  background: var(--white); border-left: 1px solid var(--border);
+  position: fixed; inset: 0 auto 0 0; width: min(84vw, 340px); z-index: 120;
+  background: var(--white); border-right: 1px solid var(--border);
   transform: translateX(105%); transition: transform .3s cubic-bezier(.4, 0, .2, 1);
   padding: 22px; overflow-y: auto; box-shadow: var(--sh-lg);
 }
@@ -441,6 +441,13 @@ p { margin: 0; }
 }
 .bottom-nav svg { width: 22px; height: 22px; }
 .bottom-nav a.is-active { color: var(--gold); font-weight: 600; }
+
+/* Hide bottom nav when mobile keyboard is open to prevent overlapping results */
+@media (max-width: 900px) {
+  body:has(input:focus, textarea:focus) .bottom-nav {
+    display: none !important;
+  }
+}
 
 /* ---------------------------------------------------------------- hero --- */
 /* Full-bleed animated slider lives in the React island (frontend/hero-widget);
@@ -1107,7 +1114,7 @@ table.tbl tr:last-child td { border-bottom: 0; }
   .hdr-desktop-only { display: none !important; }
 
   /* LEFT hamburger — visible on mobile */
-  .nav-toggle--left { display: flex; }
+  .nav-toggle--left { display: flex; margin-left: -8px; }
   /* RIGHT hamburger — hidden on mobile (only for desktop) */
   .nav-toggle--right { display: none; }
 
@@ -1120,9 +1127,13 @@ table.tbl tr:last-child td { border-bottom: 0; }
   .stat-strip { grid-template-columns: repeat(2, 1fr); gap: 18px 0; margin-top: -24px; }
   .stat + .stat { border-left: 0; }
   .stat:nth-child(2n) { border-left: 1px solid var(--border-soft); }
-  .detail-banner { height: 300px; }
+  .detail-banner { height: 360px; }
   /* stays absolute — going static would let .detail-banner's overflow:hidden clip it */
-  .banner-card { left: 0; right: 0; bottom: 18px; padding: 18px 20px; max-width: none; }
+  .banner-card { left: 0; right: 0; bottom: 16px; padding: 14px 16px; max-width: none; border-radius: 16px; }
+  .banner-card h1 { font-size: 1.5rem; line-height: 1.15; margin-bottom: 6px; }
+  .banner-card .row { gap: 6px; }
+  .banner-card .meta-line { font-size: 0.8rem; }
+  .banner-card .divider-v { height: 14px; }
   .section { padding: 60px 0; }
   .cta-band { padding: 32px 26px; }
   /* Keep brand on ONE row — reduce size + gap on small headers */

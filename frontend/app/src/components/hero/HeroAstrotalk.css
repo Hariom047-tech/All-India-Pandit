@@ -404,8 +404,9 @@
   .hero-astro__stats-inner {
     gap: 6px;
     flex-wrap: nowrap;
+    align-items: flex-start; /* Aligns all numbers to the top baseline */
   }
-  .hero-astro__stat { flex: 1 1 0; min-width: 0; }
+  .hero-astro__stat { flex: 1 1 0; min-width: 0; align-items: center; text-align: center; }
   /* CountUp renders the actual digits in a nested .stat-num span (global
      class, 1.85rem by default) — target it directly, not just the wrapper */
   .hero-astro__stat-num, .hero-astro__stat-num .stat-num { font-size: 0.85rem; white-space: nowrap; }

@@ -229,9 +229,9 @@ export function Header() {
               className="drawer is-open"
               id="drawer"
               aria-label="Menu"
-              initial={{ x: "100%" }}
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: "-100%" }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="row-between">

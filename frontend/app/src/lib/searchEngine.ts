@@ -298,6 +298,16 @@ export class SearchEngine {
 
     // --- Scoring Pandits ---
     scoredPandits.forEach(p => {
+      // Strict Location Filtering
+      if (state.entities.city && p.city.toLowerCase() !== state.entities.city) {
+        p.score = 0;
+        return;
+      }
+      if (state.entities.state && p.state.toLowerCase() !== state.entities.state) {
+        p.score = 0;
+        return;
+      }
+
       let score = 0;
       const pStr = `${p.name} ${p.nameHi} ${p.city} ${p.state}`.toLowerCase();
       
@@ -340,6 +350,16 @@ export class SearchEngine {
 
     // --- Scoring Temples ---
     scoredTemples.forEach(t => {
+      // Strict Location Filtering
+      if (state.entities.city && t.city.toLowerCase() !== state.entities.city) {
+        t.score = 0;
+        return;
+      }
+      if (state.entities.state && t.state.toLowerCase() !== state.entities.state) {
+        t.score = 0;
+        return;
+      }
+
       let score = 0;
       const tStr = `${t.name} ${t.city} ${t.state} ${t.deity}`.toLowerCase();
 

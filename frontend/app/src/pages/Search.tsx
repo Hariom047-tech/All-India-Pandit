@@ -218,9 +218,20 @@ export default function Search() {
                     <div className="search-grid">
                       {results.services.slice(0, 6).map((s) => (
                         <Link to={`/services/${s.id}`} key={s.id} className="search-card">
-                          <div className="search-card__icon">
-                            <Icon name={s.icon as any} size={24} />
-                          </div>
+                          {s.img ? (
+                            <img
+                              src={s.img.replace('.jpg', '_new.jpg')} // use new generated images if available
+                              alt={s.name}
+                              className="search-card__img search-card__img--rounded"
+                              onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'; }}
+                            />
+                          ) : (
+                            <img
+                              src={s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'}
+                              alt={s.name}
+                              className="search-card__img search-card__img--rounded"
+                            />
+                          )}
                           <div className="search-card__body">
                             <h3 className="search-card__title">{s.name}</h3>
                             <p className="search-card__sub">{s.tag}</p>

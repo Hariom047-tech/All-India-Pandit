@@ -126,29 +126,6 @@ export default function TempleDetail() {
               {tab === "overview" && (
                 <motion.div key="overview" {...fadeUp}>
 
-                  {/* Available Pandits */}
-                  <motion.div {...stagger} initial="initial" animate="animate">
-                    <div className="row-between" style={{ marginBottom: 18 }}>
-                      <h2 className="td-heading">
-                        <span className="td-heading__icon"><Icon name="users" size={20} /></span>
-                        Available Pandits
-                        <span className="td-heading__ornament" />
-                      </h2>
-                      <button className="row" style={{ color: "var(--gold-deep)", fontWeight: 600, fontSize: ".92rem", background: "none", border: 0, cursor: "pointer" }} onClick={() => setTab("pandits")}>
-                        All <Icon name="chevron-right" size={16} />
-                      </button>
-                    </div>
-                    <div className="scroll-x" style={{ gap: 16 }}>
-                      {pandits.map((p, i) => (
-                        <motion.div key={p.id} {...cardReveal} transition={{ ...cardReveal.transition, delay: i * 0.1 }}>
-                          <PanditCard p={p} />
-                        </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  <hr className="sacred-divider" />
-
                   {/* About the temple */}
                   <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
                     <h2 className="td-heading">
@@ -304,7 +281,7 @@ export default function TempleDetail() {
                     <span className="td-heading__ornament" />
                   </h2>
                   <p className="muted" style={{ marginBottom: 22 }}>Rituals regularly performed at {t.name}. Tap any service to see the samagri list and the pandits who offer it.</p>
-                  <motion.div className="grid g-3" variants={stagger} initial="initial" animate="animate">
+                  <motion.div className="grid g-3 grid-2up-mobile" variants={stagger} initial="initial" animate="animate">
                     {t.services.map((id2) => {
                       const s = service(id2);
                       return s ? (
@@ -351,13 +328,11 @@ export default function TempleDetail() {
                     </div>
                   </div>
 
-                  <motion.div className="grid g-2" variants={stagger} initial="initial" animate="animate">
+                  <div className="hp-reviews-carousel" style={{ margin: "16px -18px 0", padding: "10px 18px 20px" }}>
                     {reviews.map((r) => (
-                      <motion.div key={r.name} variants={cardReveal}>
-                        <ReviewCard r={r} />
-                      </motion.div>
+                      <ReviewCard key={r.name} r={r} />
                     ))}
-                  </motion.div>
+                  </div>
 
                   <motion.button
                     className="btn btn-outline"

@@ -549,7 +549,7 @@
   /* Hide description and timing on mobile — show only icon + name + button */
   .ohp-puja-desc { display: none; }
   .ohp-puja-meta { display: none; }
-  .ohp-puja-btn { margin-top: 12px; padding: 8px 12px; font-size: 0.78rem; }
+  .ohp-puja-btn { margin-top: auto; padding: 8px 12px; font-size: 0.78rem; }
   .ohp-sankalp-wrap { padding: 44px 0; }
   .ohp-sankalp-card { padding: 28px 20px 24px; }
   .ohp-sankalp-grid { grid-template-columns: 1fr; }

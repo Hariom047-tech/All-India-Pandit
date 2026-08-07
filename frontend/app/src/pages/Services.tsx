@@ -111,7 +111,12 @@ export default function Services() {
                     className="sp-all-card"
                     key={s.id}
                   >
-                    <img src="/assets/img/services/griha-pravesh-hero.jpg" alt={s.name} className="sp-all-card__img" />
+                    <img
+                      src={s.img ? s.img.replace('.jpg', '_new.jpg') : (s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg')}
+                      alt={s.name} 
+                      className="sp-all-card__img" 
+                      onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'; }}
+                    />
                     <div className="sp-all-card__overlay" />
                     <div className="sp-all-card__bottom">
                       <h4 className="sp-all-card__name">{s.name}</h4>
