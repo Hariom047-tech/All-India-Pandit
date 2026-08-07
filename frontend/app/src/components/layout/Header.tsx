@@ -26,7 +26,7 @@ const NAV_EXTRA = [
 const BOTTOM = [
   { to: "/", labelKey: "nav.home", icon: "diya" },
   { to: "/temples", labelKey: "nav.temples", icon: "temple" },
-  { to: "/services", labelKey: "common.search", icon: "search" },
+  { to: "/search", labelKey: "common.search", icon: "search" },
   { to: "/pandits", labelKey: "nav.pandits", icon: "users" },
   { to: "/dashboard", labelKey: "common.profile", icon: "user" },
 ];

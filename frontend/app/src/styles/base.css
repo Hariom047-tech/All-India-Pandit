@@ -1024,13 +1024,14 @@ table.tbl tr:last-child td { border-bottom: 0; }
 }
 
 /* ----------------------------------------------------------------- toast --- */
-.toast-host { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.toast-host { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; pointer-events: none; }
 .toast {
-  background: var(--text); color: #fff; padding: 13px 22px; border-radius: var(--r-pill);
-  font-size: .9rem; box-shadow: var(--sh-lg); animation: fadeUp .3s ease both;
-  display: flex; align-items: center; gap: 10px; max-width: 90vw;
+  background: var(--text); color: #fff; padding: 12px 20px; border-radius: 12px;
+  font-size: .95rem; box-shadow: var(--sh-lg); animation: fadeUp .3s ease both;
+  display: flex; align-items: center; gap: 12px; max-width: 90vw; text-align: left;
+  line-height: 1.4; pointer-events: auto; width: max-content;
 }
-.toast svg { width: 18px; height: 18px; color: var(--gold-bright); flex: none; }
+.toast svg { width: 20px; height: 20px; color: var(--gold-bright); flex: none; }
 
 /* ----------------------------------------------------------------- modal --- */
 .modal {

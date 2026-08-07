@@ -26,6 +26,8 @@ const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PanditChat = lazy(() => import("./pages/PanditChat"));
+const Search = lazy(() => import("./pages/Search"));
+const Legal = lazy(() => import("./pages/Legal"));
 const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 function RouteFallback() {
@@ -81,6 +83,7 @@ export default function App() {
               <Route path="services/:id" element={<ServiceDetail />} />
               <Route path="panchang" element={<Panchang />} />
               <Route path="festivals" element={<Festivals />} />
+              <Route path="search" element={<Search />} />
               <Route path="temple-map" element={<TempleMap />} />
               <Route path="ai-recommender" element={<AiRecommender />} />
               <Route path="blog" element={<Blog />} />
@@ -89,6 +92,8 @@ export default function App() {
               <Route path="contact" element={<Contact />} />
               <Route path="pandit-ji" element={<PanditChat />} />
               <Route path="login" element={<Login />} />
+              <Route path="privacy" element={<Legal />} />
+              <Route path="terms" element={<Legal />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

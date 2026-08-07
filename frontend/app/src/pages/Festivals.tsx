@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../lib/icons";
 import { festivals, panchang } from "../data/content";
 import { SacredBackground } from "../components/ui/SacredBackground";
@@ -13,27 +13,34 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+const MONTH_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+/** Category badge colors */
+const CAT_COLORS: Record<string, { bg: string; text: string }> = {
+  tyohar:  { bg: "linear-gradient(135deg, #FFF3E0, #FFE0B2)", text: "#E65100" },
+  vrat:    { bg: "linear-gradient(135deg, #E8F5E9, #C8E6C9)", text: "#2E7D32" },
+  jayanti: { bg: "linear-gradient(135deg, #E1F5FE, #B3E5FC)", text: "#01579B" },
+};
+
 export default function Festivals() {
   const [filter, setFilter] = useState<CatFilter>("all");
+  const monthRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
-  // Group festivals by month (YYYY-MM format)
+  // Group festivals by month
   const groupedFestivals = useMemo(() => {
     const grouped = new Map<number, typeof festivals>();
 
     festivals.forEach((f) => {
-      // Apply filter
       if (filter !== "all" && f.cat !== filter) return;
-
       const dateObj = new Date(f.date);
       const monthIndex = dateObj.getMonth();
-
-      if (!grouped.has(monthIndex)) {
-        grouped.set(monthIndex, []);
-      }
+      if (!grouped.has(monthIndex)) grouped.set(monthIndex, []);
       grouped.get(monthIndex)!.push(f);
     });
 
-    // Sort months, then sort within months
     const sortedMap = new Map(
       Array.from(grouped.entries()).sort((a, b) => a[0] - b[0])
     );
@@ -44,6 +51,13 @@ export default function Festivals() {
     return sortedMap;
   }, [filter]);
 
+  // All months that have festivals (for the horizontal month scroller)
+  const activeMonths = Array.from(groupedFestivals.keys());
+
+  const scrollToMonth = (mi: number) => {
+    monthRefs.current[mi]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="hp-sacred-section" style={{ minHeight: "100vh", position: "relative", overflow: "hidden" }}>
       <SacredBackground />
@@ -52,45 +66,58 @@ export default function Festivals() {
         {/* ======================== HERO ======================== */}
         <section className="fc-hero">
           <div className="shell">
-            <div className="fc-hero-inner text-c" style={{ padding: "80px 0 50px" }}>
-              <span className="eyebrow" style={{ display: "inline-block", marginBottom: 16 }}>Hindu Calendar 2026</span>
-              <h1 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(2.4rem, 5vw, 3.8rem)", color: "var(--text)", marginBottom: 16 }}>
-                Festivals & Vrats
-              </h1>
-              <p className="muted" style={{ fontSize: "1.1rem", maxWidth: 600, margin: "0 auto" }}>
-                Auspicious dates, muhurats, and vrat timings for the year 2026. Stay connected to your spiritual roots.
+            <div className="fc-hero-inner text-c" style={{ padding: "80px 0 36px" }}>
+              <span className="fc-eyebrow">Hindu Calendar 2026</span>
+              <h1 className="fc-title">Festivals & Vrats</h1>
+              <p className="fc-subtitle">
+                Auspicious dates, muhurats, and vrat timings for the year 2026.
               </p>
             </div>
           </div>
         </section>
 
         {/* ======================== MAIN CONTENT ======================== */}
-        <section className="section" style={{ paddingTop: 10, paddingBottom: 60 }}>
+        <section className="section" style={{ paddingTop: 0, paddingBottom: 60 }}>
           <div className="shell">
+
+            {/* HORIZONTAL MONTH SCROLLER — quick jump to any month */}
+            <div className="fc-month-scroller">
+              {activeMonths.map((mi) => (
+                <button
+                  key={mi}
+                  className="fc-month-pill"
+                  onClick={() => scrollToMonth(mi)}
+                >
+                  {MONTH_SHORT[mi]}
+                </button>
+              ))}
+            </div>
+
+            {/* CATEGORY FILTERS */}
+            <div className="fc-filters">
+              {[
+                { id: "all", label: "All", icon: "star" as const },
+                { id: "tyohar", label: "Tyohars", icon: "calendar" as const },
+                { id: "vrat", label: "Vrats", icon: "moon" as const },
+                { id: "jayanti", label: "Jayantis", icon: "user" as const },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  className={`fc-filter-btn ${filter === f.id ? "active" : ""}`}
+                  onClick={() => setFilter(f.id as CatFilter)}
+                >
+                  <Icon name={f.icon} size={14} />
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
             <div className="fc-layout">
               
               {/* LEFT: MAIN LIST */}
               <div className="fc-main">
-                
-                {/* FILTERS */}
-                <div className="fc-filters">
-                  {[
-                    { id: "all", label: "All" },
-                    { id: "tyohar", label: "Major Tyohars" },
-                    { id: "vrat", label: "Vrats & Fasts" },
-                    { id: "jayanti", label: "Jayantis" },
-                  ].map((f) => (
-                    <button
-                      key={f.id}
-                      className={`fc-filter-btn ${filter === f.id ? "active" : ""}`}
-                      onClick={() => setFilter(f.id as CatFilter)}
-                    >
-                      {f.label}
-                    </button>
-                  ))}
-                </div>
 
-                {/* FESTIVAL LIST BY MONTH */}
+                {/* FESTIVAL GRID BY MONTH */}
                 <div className="fc-months">
                   {Array.from(groupedFestivals.entries()).length === 0 ? (
                     <div className="text-c muted" style={{ padding: "60px 20px" }}>
@@ -98,50 +125,94 @@ export default function Festivals() {
                     </div>
                   ) : (
                     Array.from(groupedFestivals.entries()).map(([monthIndex, items]) => (
-                      <div className="fc-month-group" key={monthIndex} id={`month-${monthIndex}`}>
+                      <div
+                        className="fc-month-group"
+                        key={monthIndex}
+                        id={`month-${monthIndex}`}
+                        ref={(el) => { monthRefs.current[monthIndex] = el; }}
+                      >
                         <div className="fc-month-header">
+                          <div className="fc-month-icon">
+                            <Icon name="calendar" size={18} />
+                          </div>
                           <h2 className="fc-month-title">{MONTH_NAMES[monthIndex]} 2026</h2>
                           <div className="fc-month-line" />
+                          <span className="fc-month-count">{items.length}</span>
                         </div>
-                        
-                        <div className="fc-festival-list">
-                          {items.map((f, i) => {
-                            const dateObj = new Date(f.date);
-                            const dayName = dateObj.toLocaleDateString("en-IN", { weekday: "long" });
-                            const dayNum = dateObj.getDate();
-                            
-                            return (
-                              <motion.div 
-                                className="fc-fest-card" 
-                                key={f.name + i}
-                                initial={{ opacity: 0, y: 15 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                              >
-                                <div className="fc-fest-datebox">
-                                  <span className="fc-fest-dayname">{dayName}</span>
-                                  <span className="fc-fest-daynum">{dayNum}</span>
-                                </div>
-                                
-                                <div className="fc-fest-info">
-                                  <h3 className="fc-fest-name">{f.name}</h3>
-                                  <div className="fc-fest-meta">
-                                    {f.tithi && <span className="fc-meta-item"><Icon name="moon" size={14} /> {f.tithi}</span>}
-                                    {f.muhurat && <span className="fc-meta-item"><Icon name="clock" size={14} /> {f.muhurat}</span>}
-                                  </div>
-                                  <p className="fc-fest-note">{f.note}</p>
-                                </div>
 
-                                {f.serviceId && (
-                                  <div className="fc-fest-action">
-                                    <Link to={`/services/${f.serviceId}`} className="btn btn-outline btn-sm">
-                                      Book Pandit
-                                    </Link>
+                        {/* 2-COLUMN CARD GRID on mobile */}
+                        <div className="fc-card-grid">
+                          <AnimatePresence mode="popLayout">
+                            {items.map((f, i) => {
+                              const dateObj = new Date(f.date);
+                              const dayName = dateObj.toLocaleDateString("en-IN", { weekday: "short" });
+                              const dayNum = dateObj.getDate();
+                              const catColor = (f.cat ? CAT_COLORS[f.cat] : CAT_COLORS.tyohar) || CAT_COLORS.tyohar;
+
+                              return (
+                                <motion.div
+                                  className={`fc-card ${f.img ? "fc-card--has-img" : ""}`}
+                                  key={f.name + i}
+                                  layout
+                                  initial={{ opacity: 0, scale: 0.92 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.92 }}
+                                  transition={{ duration: 0.25, delay: i * 0.04 }}
+                                >
+                                  {/* Festival image (if any) */}
+                                  {f.img && (
+                                    <div className="fc-card__img-wrap">
+                                      <img src={f.img} alt={f.name} className="fc-card__img" loading="lazy" />
+                                      <div className="fc-card__img-overlay" />
+                                    </div>
+                                  )}
+
+                                  <div className="fc-card__body">
+                                    {/* Date badge */}
+                                    <div className="fc-card__date-badge">
+                                      <span className="fc-card__day-name">{dayName}</span>
+                                      <span className="fc-card__day-num">{dayNum}</span>
+                                    </div>
+
+                                    {/* Category tag */}
+                                    <span
+                                      className="fc-card__cat"
+                                      style={{ background: catColor.bg, color: catColor.text }}
+                                    >
+                                      {f.cat === "tyohar" ? "त्योहार" : f.cat === "vrat" ? "व्रत" : "जयंती"}
+                                    </span>
+
+                                    {/* Name */}
+                                    <h3 className="fc-card__name">{f.name}</h3>
+
+                                    {/* Meta info */}
+                                    {f.tithi && (
+                                      <p className="fc-card__tithi">
+                                        <Icon name="moon" size={12} />
+                                        {f.tithi}
+                                      </p>
+                                    )}
+
+                                    {f.muhurat && (
+                                      <p className="fc-card__muhurat">
+                                        <Icon name="clock" size={12} />
+                                        {f.muhurat}
+                                      </p>
+                                    )}
+
+                                    {f.note && <p className="fc-card__note">{f.note}</p>}
+
+                                    {/* Book button */}
+                                    {f.serviceId && (
+                                      <Link to={`/services/${f.serviceId}`} className="fc-card__book-btn">
+                                        Book Pandit
+                                      </Link>
+                                    )}
                                   </div>
-                                )}
-                              </motion.div>
-                            );
-                          })}
+                                </motion.div>
+                              );
+                            })}
+                          </AnimatePresence>
                         </div>
                       </div>
                     ))
@@ -151,8 +222,10 @@ export default function Festivals() {
 
               {/* RIGHT: SIDEBAR */}
               <aside className="fc-sidebar">
-                <div className="fc-sidebar-card">
-                  <h3 className="fc-sidebar-title">Today's Panchang</h3>
+                <div className="fc-sidebar-card glass">
+                  <h3 className="fc-sidebar-title">
+                    <Icon name="moon" size={18} /> Today's Panchang
+                  </h3>
                   <div className="fc-panchang-row">
                     <span>Tithi</span>
                     <strong>{panchang.tithi}</strong>
@@ -170,7 +243,7 @@ export default function Festivals() {
                   </Link>
                 </div>
 
-                <div className="fc-sidebar-card" style={{ background: "linear-gradient(135deg, #fffcf5, #fff8e7)", border: "1px dashed var(--gold)" }}>
+                <div className="fc-sidebar-card fc-sidebar-card--cta">
                   <h3 className="fc-sidebar-title" style={{ color: "var(--gold-deep)" }}>Need a Pandit Ji?</h3>
                   <p className="muted" style={{ fontSize: "0.85rem", marginBottom: 16 }}>
                     Book verified Vedic pandits for any festival, vrat, or special occasion.

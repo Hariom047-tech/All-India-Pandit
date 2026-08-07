@@ -743,18 +743,67 @@
   flex: 1;
 }
 
+/* ── Text with line-clamp (collapses on mobile) ── */
 .review-card__text {
   font-size: 0.95rem;
   line-height: 1.5;
   color: var(--text, #1a1714);
-  margin: 12px 0 20px 0;
+  margin: 12px 0 12px 0;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.35s ease;
+}
+.review-card__text--expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* ── Read More / Read Less button ── */
+.review-card__read-more {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  color: var(--gold, #b8860b);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  text-align: left;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.review-card__read-more:hover {
+  color: var(--gold-bright, #d4a017);
 }
 
 .review-card__author {
   align-items: center;
   gap: 10px;
   margin-top: auto;
+}
+.review-card__avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.review-card__avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.review-card__author-name {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  display: block;
+}
+.review-card__author-detail {
+  display: block;
+  font-size: 0.82rem;
 }
 
 /* ── Variants ── */
@@ -822,18 +871,64 @@
   width: 100%;
   justify-content: flex-start;
 }
+.review-card--short .review-card__read-more {
+  text-align: center;
+}
 
+/* ── Mobile: compact review cards ── */
 @media (max-width: 768px) {
+  .review-card {
+    border-radius: 18px;
+  }
+  .review-card:hover {
+    transform: none;
+  }
+  .review-card__content {
+    padding: 14px;
+  }
+  .review-card__text {
+    font-size: 0.85rem;
+    line-height: 1.45;
+    margin: 8px 0 8px 0;
+    -webkit-line-clamp: 3;
+  }
+  .review-card__avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .review-card__author-name {
+    font-size: 0.85rem;
+  }
+  .review-card__author-detail {
+    font-size: 0.75rem;
+  }
+
+  /* All card variants shrink on mobile */
+  .review-card--standard {
+    width: 260px;
+  }
+  .review-card--with-photo {
+    width: 270px;
+  }
+  .review-card--with-photo .review-card__photo-wrap {
+    height: 130px;
+  }
   .review-card--featured {
     flex-direction: column;
-    width: 340px;
+    width: 280px;
   }
   .review-card--featured .review-card__photo-wrap {
     width: 100%;
-    height: 180px;
+    height: 140px;
   }
-  .review-card--standard, .review-card--with-photo, .review-card--short {
-    width: 320px;
+  .review-card--featured .review-card__text {
+    font-size: 0.85rem;
+  }
+  .review-card--short {
+    width: 240px;
+  }
+  .review-card--short .review-card__text {
+    font-size: 0.95rem;
   }
 }
 

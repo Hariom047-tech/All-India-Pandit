@@ -1,10 +1,27 @@
+import { useState, useRef, useEffect } from "react";
 import type { Review } from "../../data/types";
 import { StarRow } from "./StarRating";
 import { onImgError } from "../../lib/format";
 
+/** Max visible lines before "Read more" kicks in on mobile */
+
+
 export function ReviewCard({ r }: { r: Review }) {
   const variant = r.variant || "standard";
-  
+  const [expanded, setExpanded] = useState(false);
+  const [needsClamp, setNeedsClamp] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  /* Check on mount (and resize) whether the text overflows the 3-line clamp */
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+    const check = () => setNeedsClamp(el.scrollHeight > el.clientHeight + 2);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [r.text]);
+
   return (
     <div className={`review-card review-card--${variant}`}>
       {/* Featured Photo Section (for 'with-photo' or 'featured' variants) */}
@@ -13,21 +30,35 @@ export function ReviewCard({ r }: { r: Review }) {
           <img src={r.photos[0]} alt="Puja ceremony" className="review-card__photo" />
         </div>
       )}
-      
+
       <div className="review-card__content">
-        <StarRow rating={r.rating} size={variant === "short" ? 22 : 18} />
-        
-        <p className="review-card__text">
+        <StarRow rating={r.rating} size={variant === "short" ? 20 : 16} />
+
+        <p
+          ref={textRef}
+          className={`review-card__text${expanded ? " review-card__text--expanded" : ""}`}
+        >
           {variant === "short" ? `"${r.text}"` : r.text}
         </p>
-        
+
+        {/* Read More / Read Less toggle — only shows when text is clamped */}
+        {(needsClamp || expanded) && (
+          <button
+            className="review-card__read-more"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+          >
+            {expanded ? "Read Less ▲" : "Read More ▼"}
+          </button>
+        )}
+
         <div className="review-card__author row">
-          <span className="avatar-ring avatar-ring--sm" style={{ width: 44, height: 44 }}>
+          <span className="avatar-ring avatar-ring--sm review-card__avatar">
             <img src={r.avatar || "/assets/img/pandit-placeholder.svg"} alt="" onError={onImgError("pandit")} />
           </span>
           <span>
-            <strong style={{ fontFamily: "var(--font-head)", fontSize: ".95rem" }}>{r.name}</strong>
-            <span className="muted" style={{ display: "block", fontSize: ".82rem" }}>
+            <strong className="review-card__author-name">{r.name}</strong>
+            <span className="muted review-card__author-detail">
               {r.city}{r.service ? ` · ${r.service}` : ""}
             </span>
           </span>

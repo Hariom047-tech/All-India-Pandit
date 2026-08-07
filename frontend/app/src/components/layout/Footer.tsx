@@ -96,7 +96,9 @@ export function Footer() {
       <div className="shell footer-bottom">
         <span>{t("footer.copyright")}</span>
         <span className="row" style={{ gap: 18 }}>
-          <a href="#">{t("footer.privacy")}</a><a href="#">{t("footer.terms")}</a><a href="#">{t("footer.sitemap")}</a>
+          <Link to="/privacy">{t("footer.privacy")}</Link>
+          <Link to="/terms">{t("footer.terms")}</Link>
+          <a href="#">{t("footer.sitemap")}</a>
         </span>
       </div>
     </footer>
