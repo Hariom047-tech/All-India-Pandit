@@ -34,7 +34,7 @@ const BOTTOM = [
 function Brand({ size }: { size?: string }) {
   return (
     <Link className="brand" to="/" aria-label="PanditSuggest home">
-      <img src="/assets/img/logo-suggest.svg" alt="PanditSuggest Logo" style={{ objectFit: 'contain' }} width={40} height={40} />
+      <img src="/assets/img/logo-new.png" alt="PanditSuggest Logo" style={{ objectFit: 'contain' }} />
       <span className="brand-name" style={size ? { fontSize: size } : undefined}>
         Pandit <span>Suggest</span>
       </span>
@@ -139,16 +139,7 @@ export function Header() {
       <header className="site-header">
         <div className="shell header-inner">
 
-          {/* ── MOBILE: hamburger on LEFT ── */}
-          <button
-            className="nav-toggle nav-toggle--left"
-            aria-label="Open menu"
-            aria-expanded={open}
-            aria-controls="drawer"
-            onClick={() => setOpen(true)}
-          >
-            <Icon name="menu" />
-          </button>
+          {/* ── MOBILE: hamburger on LEFT (Removed) ── */}
 
           <Brand />
 
@@ -192,14 +183,7 @@ export function Header() {
             {/* Language switcher — visible on all screen sizes */}
             <LangSwitch />
 
-            {/* Profile circle — mobile only */}
-            <Link
-              to={user ? "/dashboard" : "/login"}
-              className="hdr-profile-btn"
-              aria-label={user ? "My profile" : "Login"}
-            >
-              <Icon name="user" size={18} />
-            </Link>
+            {/* Profile circle (Removed) */}
 
             {/* Desktop hamburger (hidden on mobile, replaced by left toggle) */}
             <button

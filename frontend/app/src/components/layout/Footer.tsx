@@ -55,7 +55,7 @@ export function Footer() {
       <div className="shell footer-top">
         <div className="footer-col">
           <Link className="brand" to="/" aria-label="PanditSuggest home">
-            <img src="/assets/img/logo-suggest.svg" alt="PanditSuggest Logo" style={{ objectFit: 'contain' }} width={40} height={40} />
+            <img src="/assets/img/logo-new.png" alt="PanditSuggest Logo" style={{ objectFit: 'contain' }} />
             <span className="brand-name" style={{ fontSize: "1.3rem" }}>Pandit <span>Suggest</span></span>
           </Link>
           <p className="muted" style={{ marginTop: 14, maxWidth: 330 }}>
