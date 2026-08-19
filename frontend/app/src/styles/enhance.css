@@ -67,9 +67,13 @@
   font-weight: 700;
   color: var(--text);
   margin: 0;
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.25;
 }
 .astro-card__verified {
   color: #10b981; /* green */
@@ -84,13 +88,40 @@
   text-overflow: ellipsis;
 }
 
+/* Same single-line-clamp treatment as meta-short just above, so a long city
+   name can never grow the header taller on one card than its row-mates. */
+.astro-card__location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--text-2);
+}
+.astro-card__location svg { flex: none; color: var(--gold); }
+.astro-card__location span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ── Tags ── */
+/* min-height reserves space for 2 rows of chips regardless of whether THIS
+   card's services actually wrap that far. Without it, a card with short
+   service labels (1 row) sits inside a grid-stretched row next to a card
+   with long labels (2 rows) and ends up with a visibly larger gap before its
+   stats row/footer — same outer card height (grid already equalizes that),
+   but an inconsistent internal rhythm. Measured empirically: two chip rows
+   (28px each) plus the row gap is ~62px. */
 .astro-card__tags {
   padding: 0 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 14px;
+  min-height: 62px;
+  align-content: flex-start;
 }
 .astro-card__tag {
   background: var(--ivory);
@@ -365,7 +396,13 @@ a.card:hover .svc-ico--emoji {
   align-items: center;
   justify-content: center;
   padding: 40px;
+  /* Only ever mounted while open (Lightbox.tsx), so opacity:0 here is just
+     the first-frame state the mount-then-flip-to-open transition animates
+     away from — not a persistent hidden state. */
+  opacity: 0;
+  transition: opacity .2s;
 }
+.lightbox.is-open { opacity: 1; }
 .lightbox__figure {
   max-width: min(90vw, 1100px);
   max-height: 86vh;
@@ -402,8 +439,10 @@ a.card:hover .svc-ico--emoji {
   justify-content: center;
   border: 0;
   cursor: pointer;
+  transition: background 0.18s ease;
 }
 .lightbox__close:hover { background: rgba(255, 255, 255, 0.22); }
+.lightbox__close:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
 .lightbox__nav {
   position: absolute;
   top: 50%;
@@ -418,8 +457,10 @@ a.card:hover .svc-ico--emoji {
   justify-content: center;
   border: 0;
   cursor: pointer;
+  transition: background 0.18s ease;
 }
 .lightbox__nav:hover { background: rgba(255, 255, 255, 0.22); }
+.lightbox__nav:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
 .lightbox__nav--prev { left: 16px; }
 .lightbox__nav--next { right: 16px; }
 .lightbox__counter {

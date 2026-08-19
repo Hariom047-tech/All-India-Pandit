@@ -75,6 +75,19 @@ async function request<T>(path: string, opts: { method?: string; body?: unknown 
     if (res.status === 401) setToken(null);
     throw new AdminApiError((json && json.error) || `Request failed: ${res.status}`, res.status);
   }
+
+  // The backend wraps paginated results as { data, meta: { page, perPage,
+  // total, totalPages } } (see backend/src/utils/paginate.js), but every
+  // admin list page reads `rows.total` / `rows.totalPages` at the top level.
+  // The mismatch was silent — `undefined` renders as nothing, and
+  // `undefined > 1` is false — so record counts showed blank and pagination
+  // controls never appeared on ANY admin list. Flattening once here fixes all
+  // seven pages without changing their (perfectly reasonable) call sites.
+  if (json && typeof json === "object" && "data" in json && "meta" in json) {
+    const { data, meta } = json as { data: unknown; meta: Record<string, unknown> };
+    return { data, ...meta } as T;
+  }
+
   return json as T;
 }
 

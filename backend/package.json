@@ -9,7 +9,30 @@
     "dev": "node --watch src/server.js",
     "seed": "node scripts/sync-seed-data.js && node scripts/generate-seed-sql.js",
     "db:init": "node scripts/init-db.js",
-    "test": "node --test --test-concurrency=1 tests/*.test.js"
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "test:leads": "node --test tests/qualified-leads.test.js",
+    "test:pandit-auth": "node --test tests/pandit-auth.test.js",
+    "test:admin-create": "node --test tests/admin-pandit-create.test.js",
+    "db:migrate": "node scripts/migrate.js",
+    "diagnose": "node scripts/diagnose-pandit.js",
+    "verify:ai": "node scripts/verify-ai-setup.js",
+    "ai:whereis": "node scripts/find-ai-db.js",
+    "ai:ingest": "node scripts/ingest-knowledge.js",
+    "ai:search": "node scripts/ai-search.js",
+    "ai:calibrate": "node scripts/ai-calibrate.js",
+    "test:chunker": "node --test tests/ai-chunker.test.js",
+    "test:ranking": "node --test tests/ai-ranking.test.js",
+    "test:retrieval": "node --test tests/ai-retrieval-scoring.test.js",
+    "test:response": "node --test tests/ai-response.test.js",
+    "test:ai": "node --test tests/ai-chunker.test.js tests/ai-ranking.test.js tests/ai-retrieval-scoring.test.js tests/ai-response.test.js tests/ai-pipeline.test.js",
+    "test:pipeline": "node --test tests/ai-pipeline.test.js",
+    "seed:nalkheda": "node scripts/seed-nalkheda-500.js",
+    "sim:distribution": "node scripts/simulate-distribution.js",
+    "test:distribution": "node --test tests/distribution.test.js",
+    "verify:wiring": "node scripts/verify-distribution-wiring.js",
+    "trace:distribution": "node scripts/trace-distribution.js",
+    "bench:distribution": "node scripts/benchmark-distribution.js",
+    "audit:rotation": "node scripts/audit-rotation-metrics.js"
   },
   "engines": {
     "node": ">=18"
@@ -23,6 +46,7 @@
     "express-rate-limit": "^8.6.1",
     "google-auth-library": "^11.0.0",
     "helmet": "^8.3.0",
+    "multer": "^2.2.0",
     "openai": "^7.3.0",
     "pg": "^8.12.0"
   }

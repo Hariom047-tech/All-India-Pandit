@@ -1,4 +1,7 @@
 const repo = require('../../repositories/admin/services.repository');
+const { makeMediaUpload } = require('../../middleware/mediaUpload');
+
+const serviceImage = makeMediaUpload('services', { maxMb: 8 });
 const { readPaging, paginationEnvelope } = require('../../utils/paginate');
 const { logAdminAction } = require('../../utils/adminLog');
 
@@ -66,7 +69,56 @@ async function addSamagri(req, res) {
   res.status(201).json(await repo.addSamagri(req.db, serviceId, req.body));
 }
 
+/** GET <secret>/services/:slug — full record for the admin editor. */
+async function getBySlug(req, res) {
+  const service = await repo.getBySlug(req.db, req.params.id);
+  if (!service) return res.status(404).json({ error: 'Service not found' });
+  res.json(service);
+}
+
+/** POST <secret>/services/:slug/image — replaces the hero image. */
+async function uploadImage(req, res) {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
+  const imageUrl = serviceImage.urlFor(req.file.filename);
+
+  const existing = await repo.getBySlug(req.db, req.params.id);
+  if (!existing) {
+    serviceImage.removeFile(imageUrl);
+    return res.status(404).json({ error: 'Service not found' });
+  }
+
+  const updated = await repo.setImage(req.db, req.params.id, imageUrl);
+  // A service has one hero image, so the previous file is now unreachable.
+  if (existing.image_url && existing.image_url !== imageUrl) serviceImage.removeFile(existing.image_url);
+
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'SERVICE_IMAGE_UPDATED',
+    targetType: 'service', details: { slug: req.params.id }, ip: req.ip,
+  });
+  res.json({ ok: true, imageUrl: updated.image_url });
+}
+
+/** POST <secret>/service-categories/:id/image — tile image for the strip. */
+async function uploadCategoryImage(req, res) {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
+  const imageUrl = serviceImage.urlFor(req.file.filename);
+
+  const existing = await repo.findCategoryById(req.db, req.params.id);
+  if (!existing) { serviceImage.removeFile(imageUrl); return res.status(404).json({ error: 'Category not found' }); }
+
+  const updated = await repo.setCategoryImage(req.db, req.params.id, imageUrl);
+  if (existing.image_url && existing.image_url !== imageUrl) serviceImage.removeFile(existing.image_url);
+
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'SERVICE_CATEGORY_IMAGE_UPDATED',
+    targetType: 'service_category', targetId: req.params.id, ip: req.ip,
+  });
+  res.json({ ok: true, imageUrl: updated.image_url });
+}
+
 module.exports = {
+  uploadCategoryImage,
+  getBySlug, uploadImage, serviceImageUpload: serviceImage.handler,
   listCategories, createCategory, updateCategory, deleteCategory,
   list, create, update, remove, listSamagri, addSamagri,
 };

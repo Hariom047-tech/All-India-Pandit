@@ -22,10 +22,10 @@ export function Reveal({
     <motion.div
       className={className}
       style={style}
-      initial={{ opacity: 1, y: y > 0 ? Math.min(y, 10) : y }}
+      initial={{ opacity: 0, y: y > 0 ? Math.min(y, 10) : y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      transition={{ duration: 0.4, delay, ease: EASE }}
+      transition={{ duration: 0.5, delay, ease: EASE }}
     >
       {children}
     </motion.div>
@@ -58,6 +58,6 @@ export function RevealStagger({
 }
 
 export const revealItem: Variants = {
-  hidden: { opacity: 1, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE } },
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
 };

@@ -1,10 +1,14 @@
 const repo = require('../repositories/temples.repository');
 const panditsRepo = require('../repositories/pandits.repository');
 const { readPaging, paginationEnvelope } = require('../utils/paginate');
+const { browsingMarketFor } = require('../services/distribution/market');
 
-/** GET /api/temples — filterable, sortable, paginated list */
+/** GET /api/temples — filterable, sortable, paginated list.
+ *  maxPerPage raised so pages that fetch one batch for client-side
+ *  filtering (Search, TempleDetail, TempleMap) can get every temple —
+ *  see the matching comment on pandits.controller.js:list. */
 async function list(req, res) {
-  const paging = readPaging(req.query, 9);
+  const paging = readPaging(req.query, 9, 500);
   const { city, state, service, minRating, sort, q } = req.query;
   const { data, total } = await repo.list({
     q,
@@ -21,7 +25,8 @@ async function list(req, res) {
 
 /** GET /api/temples/:id — :id is the temple's slug */
 async function getById(req, res) {
-  const temple = await repo.getBySlug(req.params.id);
+  const { market } = browsingMarketFor(req, typeof req.query.country === 'string' ? req.query.country : null);
+  const temple = await repo.getBySlug(req.params.id, market);
   if (!temple) return res.status(404).json({ error: 'Temple not found' });
   res.json(temple);
 }
@@ -35,7 +40,8 @@ async function inquire(req, res) {
   const { name, phone, service, date, message } = req.body || {};
   if (!name || !phone) return res.status(400).json({ error: 'name and phone are required' });
 
-  const panditId = await panditsRepo.pickForTemple(templeId, service);
+  const { market } = browsingMarketFor(req, typeof req.query.country === 'string' ? req.query.country : null);
+  const panditId = await panditsRepo.pickForTemple(templeId, service, market);
   if (!panditId) return res.status(422).json({ error: 'This temple has no associated pandit to route the inquiry to' });
 
   const id = await repo.addInquiry({ templeId, panditId, serviceSlug: service, name, phone, date, message });

@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { pandits, cities, languages, services, panditsForService, serviceName } from "../data/content";
-import { useFairRanking } from "../lib/api";
+import { usePandits, useServices } from "../hooks/useData";
+import { normPandits, normServices } from "../lib/normalize";
+import { useFairRanking, useReportExposure } from "../lib/api";
 import { useLang } from "../lib/i18n";
 import { PanditCard } from "../components/ui/PanditCard";
 import { EmptyState } from "../components/ui/ReviewCard";
+
 import { Pager, paginate, countBy } from "../components/ui/Pager";
 import { CheckboxGroup, RadioGroup } from "../components/ui/CheckboxGroup";
 import { StarRow } from "../components/ui/StarRating";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { HeroTicker } from "../components/ui/HeroTicker";
+import { Seo } from "../lib/Seo";
 
-const PER_PAGE = 12;
+const PER_PAGE = 30;
 
 export default function Pandits() {
   const { t } = useLang();
@@ -30,6 +33,16 @@ export default function Pandits() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const fairScores = useFairRanking();
 
+  /* ── Fetch data from API ── */
+  // 600, not 100: "limit" was never a param the API recognized (silently
+  // ignored, falling back to a 12-row default) — this directory needs to
+  // cover a temple the size of Nalkheda (500 associated pandits) in one
+  // batch, since filtering/sorting happens client-side over what's fetched.
+  const { data: rawPandits } = usePandits({ perPage: 600 });
+  const { data: rawSvcs } = useServices();
+  const pandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
+  const allServices = useMemo(() => normServices(rawSvcs), [rawSvcs]);
+
   // mobile filter drawer: lock body scroll and close on Escape while open
   useEffect(() => {
     document.body.style.overflow = filtersOpen ? "hidden" : "";
@@ -45,16 +58,28 @@ export default function Pandits() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const cityCounts = useMemo(() => countBy(pandits, "city"), []);
-  const usedCities = cities.filter((c) => cityCounts[c]);
-  const svcUsed = useMemo(() => services.filter((s) => panditsForService(s.id).length), []);
-  const usedLangs = languages.filter((l) => pandits.some((p) => p.langs.includes(l)));
+  const cityCounts = useMemo(() => countBy(pandits, "city"), [pandits]);
+  const usedCities = useMemo(() => {
+    const allCities = [...new Set(pandits.map(p => p.city))].sort();
+    return allCities.filter(c => cityCounts[c]);
+  }, [pandits, cityCounts]);
+  const svcUsed = useMemo(() => allServices.filter(s => pandits.some(p => p.services.includes(s.id))), [allServices, pandits]);
+  // Arriving from a service page's "See all N pandits" link (?service=slug)
+  // should read as "Pandits who perform Rudrabhishek", not the generic
+  // directory heading — otherwise the destination looks like an unfiltered
+  // "all pandits" page even though the list itself is correctly filtered.
+  const preSvcName = useMemo(() => allServices.find((sv) => sv.id === preSvc)?.name, [allServices, preSvc]);
+  const usedLangs = useMemo(() => {
+    const langs = new Set<string>();
+    pandits.forEach(p => p.langs.forEach(l => langs.add(l)));
+    return [...langs].sort();
+  }, [pandits]);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
     let list = pandits.filter((p) => {
       if (q) {
-        const hay = `${p.name} ${p.nameHi || ""} ${p.city} ${p.state} ${p.langs.join(" ")} ${p.services.map(serviceName).join(" ")}`.toLowerCase();
+        const hay = `${p.name} ${p.nameHi || ""} ${p.city} ${p.state} ${p.langs.join(" ")} ${p.services.join(" ")}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       if (cityFilter.length && !cityFilter.includes(p.city)) return false;
@@ -76,9 +101,15 @@ export default function Pandits() {
       return b.rating - a.rating;
     });
     return list;
-  }, [query, cityFilter, svcFilter, langFilter, minExp, minRating, verifiedOnly, sort, fairScores]);
+  }, [pandits, query, cityFilter, svcFilter, langFilter, minExp, minRating, verifiedOnly, sort, fairScores]);
 
   const pg = paginate(filtered, page, PER_PAGE);
+
+  /* Exposure: only the cards on the current page, in the order shown. Not the
+     whole filtered set — a pandit on page 4 was not seen. This is what lets the
+     engine tell "shown and ignored" apart from "never shown", which is the
+     difference the whole fairness correction rests on. */
+  useReportExposure(pg.slice.map((p) => p.id), { enabled: sort === "recommended" });
 
   function toggle(list: string[], setter: (v: string[]) => void, value: string) {
     setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -95,6 +126,11 @@ export default function Pandits() {
 
   return (
     <div className="hp-sacred-section" style={{ minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      <Seo
+        title="Find a Pandit — Verified Profiles Across India"
+        description="Search verified Pandits by city, service and language. Compare profiles, ratings and experience, then contact directly on WhatsApp or call — no middleman, no commission."
+        path="/pandits"
+      />
       <SacredBackground />
       {/* the mobile filters drawer is position:fixed with a high z-index, but
           this wrapper's own z-index:1 stacking context otherwise traps it
@@ -106,8 +142,12 @@ export default function Pandits() {
           <div className="sp-hero__grid">
             <div className="sp-hero__content">
               <h1 className="sp-hero__title">
-                {t("pandits.heroTitle1")} <br />
-                <span className="gold-text">{t("pandits.heroTitleGold")}</span>
+                {preSvcName ? (
+                  <>Pandits who perform <span className="gold-text">{preSvcName}</span></>
+                ) : (
+                  <>{t("pandits.heroTitle1")} <br />
+                    <span className="gold-text">{t("pandits.heroTitleGold")}</span></>
+                )}
               </h1>
               <ul className="sp-hero__list">
                 <li>
@@ -164,7 +204,7 @@ export default function Pandits() {
                   <label className="check" key={s.id}>
                     <input type="checkbox" checked={svcFilter.includes(s.id)} onChange={() => toggle(svcFilter, setSvcFilter, s.id)} />
                     <span>{s.name}</span>
-                    <span className="check-count">({panditsForService(s.id).length})</span>
+                    <span className="check-count">({pandits.filter((p) => p.services.includes(s.id)).length})</span>
                   </label>
                 ))}
               </div>
@@ -228,7 +268,7 @@ export default function Pandits() {
             </div>
             <div className="grid g-3 grid-2up-mobile">
               {pg.slice.length
-                ? pg.slice.map((p, i) => <PanditCard p={p} key={p.id} index={i} />)
+                ? pg.slice.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="pandit_directory" />)
                 : <EmptyState msg={t("pandits.emptyState")} />}
             </div>
             <Pager page={pg.page} pages={pg.pages} onChange={(p) => { setPage(p); document.getElementById("gridTop")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />

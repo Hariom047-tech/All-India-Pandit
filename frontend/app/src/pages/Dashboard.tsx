@@ -3,7 +3,9 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 import { Icon } from "../lib/icons";
 import { useAuth } from "../lib/Auth";
 import { useToast } from "../components/ui/Toast";
+import { api } from "../lib/api";
 import { motion, AnimatePresence } from "framer-motion";
+import { Seo } from "../lib/Seo";
 
 const SECTIONS = [
   { id: "profile", label: "My Profile", icon: "user" },
@@ -34,10 +36,12 @@ export default function Dashboard() {
     e.preventDefault();
     setSaving(true);
     try {
-      updateUser({ ...user!, full_name: name, phone });
-      toast("Profile & Astrology details saved successfully!");
+      // Save to backend — PATCH /api/auth/me updates full_name and phone
+      const updated = await api.patch<any>("/auth/me", { full_name: name, phone: phone || null });
+      updateUser({ ...user!, ...updated });
+      toast("Profile saved successfully! ✓");
     } catch (err: any) {
-      toast("Failed to save profile: " + err.message);
+      toast("Failed to save profile: " + (err.message || "Please try again."));
     } finally {
       setSaving(false);
     }
@@ -45,6 +49,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ background: "#f8f9fa", minHeight: "100vh", paddingBottom: 60 }}>
+      <Seo title="My Dashboard" path="/dashboard" noindex />
       {/* Premium Gradient Hero */}
       <div style={{ 
         background: "linear-gradient(135deg, #1e1e1e 0%, #3a3a3a 100%)", 
@@ -188,12 +193,20 @@ export default function Dashboard() {
                         />
                       </div>
                       <div>
-                        <label style={{ display: "block", fontSize: "0.85rem", color: "#555", marginBottom: 6, fontWeight: 500 }}>Phone Number</label>
+                        <label style={{ display: "block", fontSize: "0.85rem", color: "#555", marginBottom: 6, fontWeight: 500 }}>
+                          Phone Number
+                          {!user.phone && <span style={{ color: "#e53e3e", fontSize: "0.78rem", marginLeft: 8 }}>* Add to write reviews</span>}
+                        </label>
                         <input 
-                          value={phone} 
-                          disabled 
-                          style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: "1px solid #ddd", fontSize: "0.95rem", background: "#f9f9f9", color: "#888" }} 
+                          type="tel"
+                          value={phone}
+                          onChange={e => setPhone(e.target.value)}
+                          placeholder="e.g. +91 98765 43210"
+                          style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: `1px solid ${!user.phone ? "#f5a623" : "#ddd"}`, fontSize: "0.95rem", outline: "none" }} 
                         />
+                        {!user.phone && (
+                          <p style={{ margin: "4px 0 0", fontSize: "0.78rem", color: "#888" }}>Add your phone number to enable writing reviews</p>
+                        )}
                       </div>
                       <div style={{ gridColumn: "1 / -1" }}>
                         <label style={{ display: "block", fontSize: "0.85rem", color: "#555", marginBottom: 6, fontWeight: 500 }}>Email Address</label>

@@ -5,7 +5,11 @@ import { Icon } from "../lib/icons";
 import { onImgError } from "../lib/format";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { SearchEngine } from "../lib/searchEngine";
+import { useFairRanking, useReportExposure } from "../lib/api";
+import { usePandits, useTemples, useServices } from "../hooks/useData";
+import { normPandits, normTemples, normServices } from "../lib/normalize";
 import "../styles/search.css";
+import { Seo } from "../lib/Seo";
 
 const POPULAR_SEARCHES = [
   "Griha Pravesh",
@@ -23,6 +27,19 @@ export default function Search() {
   const q = searchParams.get("q") || "";
   const [query, setQuery] = useState(q);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  /* ── Fetch data from API ── */
+  // 600: "limit" was never a real API param (silently ignored, falling back
+  // to a 12-row default) — see Pandits.tsx for the full explanation.
+  const { data: rawPandits } = usePandits({ perPage: 600 });
+  const { data: rawTemples } = useTemples({ perPage: 50 });
+  const { data: rawServices } = useServices();
+  const pandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
+  const temples = useMemo(() => normTemples(rawTemples), [rawTemples]);
+  const services = useMemo(() => normServices(rawServices), [rawServices]);
+
+  const engine = useMemo(() => new SearchEngine(pandits, temples, services), [pandits, temples, services]);
+  const fairScores = useFairRanking();
 
   // Auto-focus on mount
   useEffect(() => {
@@ -54,10 +71,31 @@ export default function Search() {
   };
 
   const results = useMemo(() => {
-    return SearchEngine.search(query);
-  }, [query]);
+    return engine.search(query);
+  }, [engine, query]);
 
-  const hasResults = results.pandits.length > 0 || results.temples.length > 0 || results.services.length > 0 || (results.festivals && results.festivals.length > 0);
+  /**
+   * Relevance first, then fair rotation WITHIN the relevant band — never the
+   * other way round. results.pandits is already filtered/sorted by
+   * searchEngine's own relevance score; this only reorders among the top
+   * candidates that are already comparably relevant, the same "eligible
+   * pool -> rotate" shape every other marketplace surface uses. A result
+   * outside the top 12 by relevance can never be promoted into the visible
+   * 6 just because it's under-exposed.
+   */
+  const shownPandits = useMemo(() => {
+    const relevant = results.pandits;
+    if (!fairScores || relevant.length === 0) return relevant.slice(0, 6);
+    const bandSize = Math.min(relevant.length, 12);
+    const band = [...relevant.slice(0, bandSize)].sort((a, b) => {
+      const diff = (fairScores.get(b.id) ?? -Infinity) - (fairScores.get(a.id) ?? -Infinity);
+      return diff || b.score - a.score;
+    });
+    return band.slice(0, 6);
+  }, [results.pandits, fairScores]);
+  useReportExposure(shownPandits.map((p) => p.id), { enabled: shownPandits.length > 0 });
+
+  const hasResults = results.pandits.length > 0 || results.temples.length > 0 || results.services.length > 0;
   const showSuggestions = !query.trim();
 
   // Helper for inline stars
@@ -72,6 +110,17 @@ export default function Search() {
 
   return (
     <div className="hp-sacred-section search-page" style={{ minHeight: "100vh", position: "relative" }}>
+      {/* Internal search results are not curated landing pages — noindex so
+          the infinite ?q= variations never compete with the real temple/
+          pandit/service pages for the same queries (master SEO prompt §52).
+          Canonical points at the bare path (no query string) for the same
+          reason. Still "follow" so a crawler that lands here anyway can
+          still reach the real pages linked from the results. */}
+      <Seo
+        title="Search PanditSuggest"
+        path="/search"
+        noindex
+      />
       <SacredBackground />
 
       <div className="search-page__content">
@@ -144,7 +193,7 @@ export default function Search() {
                       <Icon name="users" size={18} /> Pandits ({results.pandits.length})
                     </h2>
                     <div className="search-grid">
-                      {results.pandits.slice(0, 6).map((p) => (
+                      {shownPandits.map((p) => (
                         <Link to={`/pandits/${p.id}`} key={p.id} className="search-card">
                           <img
                             src={p.img}
@@ -247,38 +296,6 @@ export default function Search() {
                   </motion.div>
                 )}
 
-                {/* ── Festivals ── */}
-                {results.festivals && results.festivals.length > 0 && (
-                  <motion.div
-                    className="search-group"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: 0.15 }}
-                  >
-                    <h2 className="search-group__title">
-                      <Icon name="calendar" size={18} /> Festivals ({results.festivals.length})
-                    </h2>
-                    <div className="search-grid">
-                      {results.festivals.slice(0, 6).map((f) => (
-                        <Link to="/festivals" key={f.name} className="search-card">
-                          <div className="search-card__icon" style={{ background: 'var(--gold)', color: '#fff' }}>
-                            <Icon name="calendar" size={24} />
-                          </div>
-                          <div className="search-card__body">
-                            <h3 className="search-card__title">{f.name}</h3>
-                            <p className="search-card__sub">{new Date(f.date).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                            <div className="search-card__meta">
-                              <span className="search-card__badge">
-                                {f.note}
-                              </span>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
               </AnimatePresence>
 
               {/* ── No Results ── */}

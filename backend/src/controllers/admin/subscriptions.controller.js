@@ -5,17 +5,34 @@ const { logAdminAction } = require('../../utils/adminLog');
 
 const listPlans = async (req, res) => res.json(await repo.listPlans(req.db));
 
+const VALID_TIERS = ['free', 'silver', 'gold', 'diamond'];
+
 async function createPlan(req, res) {
   const { name, tier, priceMonthly } = req.body || {};
   if (!name || !tier || priceMonthly === undefined) return res.status(400).json({ error: 'name, tier and priceMonthly are required' });
+  if (!VALID_TIERS.includes(tier)) return res.status(400).json({ error: `tier must be one of: ${VALID_TIERS.join(', ')}` });
+  if (Number(priceMonthly) < 0) return res.status(400).json({ error: 'priceMonthly cannot be negative' });
+  if (req.body.features !== undefined && !Array.isArray(req.body.features)) {
+    return res.status(400).json({ error: 'features must be an array of inclusion strings' });
+  }
   const plan = await repo.createPlan(req.db, req.body);
   await logAdminAction({ adminUserId: req.adminUser.id, action: 'SUBSCRIPTION_PLAN_CREATED', targetType: 'subscription_plan', targetId: plan.id, ip: req.ip });
   res.status(201).json(plan);
 }
 
 async function updatePlan(req, res) {
+  if (req.body?.features !== undefined && !Array.isArray(req.body.features)) {
+    return res.status(400).json({ error: 'features must be an array of inclusion strings' });
+  }
+  if (req.body?.priceMonthly !== undefined && Number(req.body.priceMonthly) < 0) {
+    return res.status(400).json({ error: 'priceMonthly cannot be negative' });
+  }
   const plan = await repo.updatePlan(req.db, req.params.id, req.body || {});
   if (!plan) return res.status(404).json({ error: 'Plan not found' });
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'SUBSCRIPTION_PLAN_UPDATED',
+    targetType: 'subscription_plan', targetId: plan.id, ip: req.ip,
+  });
   res.json(plan);
 }
 

@@ -8,6 +8,7 @@ import { I18nProvider } from "./lib/i18n";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 // ADMIN_BASE is now a fixed string in adminApi.ts ("/admin-panel") — no secret path in the bundle.
 import Home from "./pages/Home";
+import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 
 const Temples = lazy(() => import("./pages/Temples"));
 const TempleDetail = lazy(() => import("./pages/TempleDetail"));
@@ -15,20 +16,22 @@ const Pandits = lazy(() => import("./pages/Pandits"));
 const PanditProfile = lazy(() => import("./pages/PanditProfile"));
 const Services = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
-const Panchang = lazy(() => import("./pages/Panchang"));
-const Festivals = lazy(() => import("./pages/Festivals"));
+const ServicePandits = lazy(() => import("./pages/ServicePandits"));
 const TempleMap = lazy(() => import("./pages/TempleMap"));
 const AiRecommender = lazy(() => import("./pages/AiRecommender"));
 const Blog = lazy(() => import("./pages/Blog"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./pages/Login"));
 const About = lazy(() => import("./pages/About"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const PanditChat = lazy(() => import("./pages/PanditChat"));
 const Search = lazy(() => import("./pages/Search"));
 const Legal = lazy(() => import("./pages/Legal"));
 const AdminApp = lazy(() => import("./admin/AdminApp"));
+const PanditApp = lazy(() => import("./pandit/PanditApp"));
+const PanditLogin = lazy(() => import("./pages/PanditLogin"));
+const PanditForgotPassword = lazy(() => import("./pages/PanditForgotPassword"));
 
 function RouteFallback() {
   return (
@@ -68,11 +71,18 @@ export default function App() {
       <ToastProvider>
       <EnquiryModalProvider>
         <AuthProvider>
-          <Suspense fallback={<RouteFallback />}>
-          <Routes>
+          {/* Catches render errors so one broken component shows a message
+              instead of unmounting the whole app to a blank white page. */}
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
             {/* Admin panel is at a fixed /admin-panel route.
                 Security is backend TOTP (requireAdmin) — not URL obscurity. */}
             <Route path="admin-panel/*" element={<AdminApp />} />
+            {/* Pandit dashboard lives outside the public Layout: it has its own
+                sidebar shell. The public /dashboard route below is left in place
+                so existing links keep working. */}
+            <Route path="pandit/*" element={<PanditApp />} />
             <Route element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="temples" element={<Temples />} />
@@ -81,23 +91,29 @@ export default function App() {
               <Route path="pandits/:id" element={<PanditProfile />} />
               <Route path="services" element={<Services />} />
               <Route path="services/:id" element={<ServiceDetail />} />
-              <Route path="panchang" element={<Panchang />} />
-              <Route path="festivals" element={<Festivals />} />
+              <Route path="services/:id/pandits" element={<ServicePandits />} />
               <Route path="search" element={<Search />} />
               <Route path="temple-map" element={<TempleMap />} />
               <Route path="ai-recommender" element={<AiRecommender />} />
               <Route path="blog" element={<Blog />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="about" element={<About />} />
+              <Route path="how-it-works" element={<HowItWorks />} />
               <Route path="contact" element={<Contact />} />
-              <Route path="pandit-ji" element={<PanditChat />} />
+              {/* /pandit-ji removed — the AI Pooja Guide at /ai-recommender is
+                  the single AI surface. PanditChat.tsx and the /api/chat
+                  backend are left in place, unrouted, so nothing else breaks
+                  and the code can be deleted deliberately later. */}
               <Route path="login" element={<Login />} />
+              <Route path="pandit-login" element={<PanditLogin />} />
+              <Route path="pandit-forgot-password" element={<PanditForgotPassword />} />
               <Route path="privacy" element={<Legal />} />
               <Route path="terms" element={<Legal />} />
               <Route path="*" element={<NotFound />} />
             </Route>
-          </Routes>
-        </Suspense>
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </AuthProvider>
       </EnquiryModalProvider>
     </ToastProvider>

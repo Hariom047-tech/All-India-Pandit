@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { posts } from "../data/content";
+import { useBlogPosts } from "../hooks/useData";
+import { normBlogPosts } from "../lib/normalize";
 import { EmptyState } from "../components/ui/ReviewCard";
 import { motion } from "framer-motion";
+import { Seo } from "../lib/Seo";
 
-function PostCard({ p, featured = false, index = 0 }: { p: (typeof posts)[number]; featured?: boolean; index?: number }) {
+function PostCard({ p, featured = false, index = 0 }: { p: any; featured?: boolean; index?: number }) {
   return (
     <motion.article
       className="card card--hover"
@@ -31,7 +33,10 @@ function PostCard({ p, featured = false, index = 0 }: { p: (typeof posts)[number
 }
 
 export default function Blog() {
-  const cats = useMemo(() => ["All", ...Array.from(new Set(posts.map((p) => p.cat)))], []);
+  const { data: rawPosts } = useBlogPosts();
+  const posts = useMemo(() => normBlogPosts(rawPosts), [rawPosts]);
+
+  const cats = useMemo(() => ["All", ...Array.from(new Set(posts.map((p) => p.cat)))], [posts]);
   const [active, setActive] = useState("All");
   const [query, setQuery] = useState("");
 
@@ -43,6 +48,11 @@ export default function Blog() {
 
   return (
     <>
+      <Seo
+        title="Spiritual Blog"
+        description="Rituals explained without mystique — practical puja guides, samagri explainers and honest notes on how PanditSuggest works."
+        path="/blog"
+      />
       <section className="page-hero">
         <img src="/assets/img/mandala.svg" className="watermark watermark--tl" alt="" />
         <img src="/assets/img/lotus.svg" className="watermark watermark--tr" alt="" style={{ width: 220 }} />
@@ -83,8 +93,8 @@ export default function Blog() {
           <div className="cta-band">
             <img src="/assets/img/mandala.svg" className="watermark watermark--br" alt="" />
             <div>
-              <h2>Weekly panchang in your inbox</h2>
-              <p>Festival dates, shubh muhurat and one ritual explained — every Monday morning.</p>
+              <h2>One ritual, explained weekly</h2>
+              <p>Practical puja and ceremony guides — one topic explained in full, every Monday morning.</p>
             </div>
             <Link className="btn btn-outline btn-lg" to="/contact">Subscribe</Link>
           </div>

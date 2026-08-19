@@ -1,0 +1,199 @@
+/* =====================================================================
+   Review Form  —  3-zone flex layout
+   .review-form          flex column (fills the modal-box)
+     .review-form__header  flex-shrink: 0  (pinned top)
+     .review-form__body    flex: 1, overflow-y: auto  (SCROLLS)
+     .review-form__footer  flex-shrink: 0  (pinned bottom, submit btn)
+   ===================================================================== */
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;          /* fill the modal-box height */
+  min-height: 0;    /* critical: allows flex child to shrink below content */
+  overflow: hidden; /* the __body child handles scroll, not this element */
+}
+
+/* ── Header (pinned) ── */
+.review-form__header {
+  flex-shrink: 0;
+  padding: 24px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  padding-right: 48px; /* space for the modal close (X) button */
+}
+
+.review-form h3 {
+  color: var(--gold-deep, #8b6914);
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.review-form__hint {
+  font-size: 0.8rem;
+  color: var(--text-2, #777);
+  margin: 0;
+}
+
+/* ── Scrollable body (the only scrolling part) ── */
+.review-form__body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth momentum on iOS */
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0; /* allows it to shrink */
+}
+
+/* ── Stars ── */
+.rating-selector {
+  display: flex;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* Stars are real buttons — reset button chrome */
+.review-form .rating-selector .star {
+  background: none; border: 0; padding: 0 2px; cursor: pointer;
+  font-size: 2rem; line-height: 1; color: #d8d2c4;
+  transition: color 0.15s, transform 0.1s;
+}
+.review-form .rating-selector .star.filled { color: var(--gold, #d4a017); }
+.review-form .rating-selector .star:hover { transform: scale(1.15); }
+.review-form .rating-selector .star:focus-visible {
+  outline: 2px solid var(--gold, #d4a017); outline-offset: 2px; border-radius: 4px;
+}
+
+/* ── Inputs ── */
+.review-form input,
+.review-form textarea,
+.review-form select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.review-form input:focus,
+.review-form textarea:focus,
+.review-form select:focus {
+  border-color: var(--gold, #d4a017);
+  box-shadow: 0 0 0 3px rgba(212,160,23,0.12);
+}
+
+.review-form textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+@media (max-width: 520px) {
+  .review-form textarea { min-height: 70px; }
+}
+
+/* ── Photo upload ── */
+.photo-upload {
+  border: 2px dashed var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.photo-upload input { display: none; }
+
+.photo-upload label span {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--cream, #fef9ee);
+  color: var(--gold-deep, #8b6914);
+  border: 1px solid var(--gold, #d4a017);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.photo-previews {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.preview {
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview button {
+  background: none;
+  border: none;
+  color: var(--sacred-red, #c0392b);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ── Footer (pinned) ── */
+.review-form__footer {
+  flex-shrink: 0;
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--white);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #c9960f 0%, #f5c842 100%);
+  color: #1a1000;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.2px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Error ── */
+.error-message {
+  color: #c0392b;
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+
+/* ── Write-review trigger + gating hints ── */
+.wr-trigger { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; }
+.wr-hint { font-size: .8rem; color: var(--text-2, #6b6b6b); margin: 8px 0 0; }
+.wr-thanks {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #eaf7f0; color: #1d6b38; border: 1px solid #b9e3ca;
+  border-radius: 10px; padding: 10px 14px; font-size: .9rem; margin: 0;
+}

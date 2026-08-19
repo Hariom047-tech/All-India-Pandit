@@ -2,6 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import type { Review } from "../../data/types";
 import { StarRow } from "./StarRating";
 import { onImgError } from "../../lib/format";
+import { Lightbox } from "./Lightbox";
+
+/** "12 Aug 2026" — short, unambiguous, and locale-correct for India. */
+function reviewDate(iso?: string) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? ""
+    : d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+}
 
 /** Max visible lines before "Read more" kicks in on mobile */
 
@@ -9,6 +19,8 @@ import { onImgError } from "../../lib/format";
 export function ReviewCard({ r }: { r: Review }) {
   const variant = r.variant || "standard";
   const [expanded, setExpanded] = useState(false);
+  const [lightboxAt, setLightboxAt] = useState<number | null>(null);
+  const photos = r.photos ?? [];
   const [needsClamp, setNeedsClamp] = useState(false);
   const textRef = useRef<HTMLParagraphElement>(null);
 
@@ -24,15 +36,22 @@ export function ReviewCard({ r }: { r: Review }) {
 
   return (
     <div className={`review-card review-card--${variant}`}>
-      {/* Featured Photo Section (for 'with-photo' or 'featured' variants) */}
-      {r.photos && r.photos.length > 0 && (
+      {/* Hero photo, only for the variants whose layout is built around one.
+          A standard card shows its photos as a thumbnail strip instead, so a
+          five-photo review does not become a five-screen-tall card. */}
+      {photos.length > 0 && (variant === "featured" || variant === "with-photo") && (
         <div className="review-card__photo-wrap">
-          <img src={r.photos[0]} alt="Puja ceremony" className="review-card__photo" />
+          <img src={photos[0]} alt={`Photo from ${r.name}'s review`} className="review-card__photo" loading="lazy" />
         </div>
       )}
 
       <div className="review-card__content">
-        <StarRow rating={r.rating} size={variant === "short" ? 20 : 16} />
+        <div className="review-card__head">
+          <StarRow rating={r.rating} size={variant === "short" ? 20 : 16} />
+          {r.date && <time className="review-card__date" dateTime={r.date}>{reviewDate(r.date)}</time>}
+        </div>
+
+        {r.title && <h4 className="review-card__title">{r.title}</h4>}
 
         <p
           ref={textRef}
@@ -52,6 +71,33 @@ export function ReviewCard({ r }: { r: Review }) {
           </button>
         )}
 
+        {/* Thumbnails for the standard card. Tapping opens the shared
+            lightbox, which already handles Escape and arrow-key paging. */}
+        {photos.length > 0 && variant !== "featured" && variant !== "with-photo" && (
+          <div className="review-card__thumbs">
+            {photos.slice(0, 5).map((src, i) => (
+              <button
+                type="button"
+                key={src}
+                className="review-card__thumb"
+                onClick={() => setLightboxAt(i)}
+                aria-label={`Open photo ${i + 1} of ${photos.length} from ${r.name}'s review`}
+              >
+                <img src={src} alt="" loading="lazy" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {lightboxAt !== null && (
+          <Lightbox
+            images={photos.map((src) => ({ src, alt: `Photo from ${r.name}'s review` }))}
+            index={lightboxAt}
+            onClose={() => setLightboxAt(null)}
+            onIndexChange={setLightboxAt}
+          />
+        )}
+
         <div className="review-card__author row">
           <span className="avatar-ring avatar-ring--sm review-card__avatar">
             <img src={r.avatar || "/assets/img/pandit-placeholder.svg"} alt="" onError={onImgError("pandit")} />
@@ -59,7 +105,7 @@ export function ReviewCard({ r }: { r: Review }) {
           <span>
             <strong className="review-card__author-name">{r.name}</strong>
             <span className="muted review-card__author-detail">
-              {r.city}{r.service ? ` · ${r.service}` : ""}
+              {[r.city, r.service].filter(Boolean).join(" · ")}
             </span>
           </span>
         </div>

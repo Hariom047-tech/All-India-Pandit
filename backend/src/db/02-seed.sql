@@ -963,43 +963,6 @@ INSERT INTO blog_posts (author_id, title, slug, excerpt, body, category, status,
 INSERT INTO blog_posts (author_id, title, slug, excerpt, body, category, status, published_at)
        VALUES ('d7943536-ef8b-5d7f-aeac-7bc0e2ac13ed', 'How temple sevas are verified before a listing goes live', 'temple-seva', 'Our four-step process: document check, video KYC, temple confirmation and a review-integrity audit every six months.', 'Our four-step process: document check, video KYC, temple confirmation and a review-integrity audit every six months.', 'PanditConnect', 'published', '2026-05-13T18:30:00.000Z');
 
--- panchang_data (single "today" snapshot — illustrative, not an ephemeris calc; see README)
-INSERT INTO panchang_data (date, tithi_name, paksha, nakshatra, yoga, karana, sunrise, sunset, moonrise, moonset, hindu_month)
-     VALUES (CURRENT_DATE, 'Shukla Paksha Dwadashi', 'Shukla', 'Anuradha', 'Siddhi', 'Balava',
-             '05:58 AM'::time, '07:04 PM'::time, '04:12 PM'::time, '03:26 AM'::time, 'Shravan');
-
--- muhurat_data (auspicious + inauspicious windows for today)
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Brahma Muhurat', (CURRENT_DATE + '04:24 AM'::time)::timestamptz, (CURRENT_DATE + '05:11 AM'::time)::timestamptz, 'Shubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Abhijit Muhurat', (CURRENT_DATE + '11:58 AM'::time)::timestamptz, (CURRENT_DATE + '12:52 PM'::time)::timestamptz, 'Shubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Vijaya Muhurat', (CURRENT_DATE + '02:42 PM'::time)::timestamptz, (CURRENT_DATE + '03:35 PM'::time)::timestamptz, 'Shubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Godhuli Muhurat', (CURRENT_DATE + '07:02 PM'::time)::timestamptz, (CURRENT_DATE + '07:26 PM'::time)::timestamptz, 'Shubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Amrit Kaal', (CURRENT_DATE + '09:14 PM'::time)::timestamptz, (CURRENT_DATE + '10:48 PM'::time)::timestamptz, 'Shubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Rahu Kaal', (CURRENT_DATE + '02:06 PM'::time)::timestamptz, (CURRENT_DATE + '03:44 PM'::time)::timestamptz, 'Ashubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Yamaganda', (CURRENT_DATE + '05:58 AM'::time)::timestamptz, (CURRENT_DATE + '07:36 AM'::time)::timestamptz, 'Ashubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Gulika Kaal', (CURRENT_DATE + '09:14 AM'::time)::timestamptz, (CURRENT_DATE + '10:52 AM'::time)::timestamptz, 'Ashubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Dur Muhurat', (CURRENT_DATE + '10:14 AM'::time)::timestamptz, (CURRENT_DATE + '11:06 AM'::time)::timestamptz, 'Ashubh');
-INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES ((SELECT id FROM panchang_data WHERE date = CURRENT_DATE), 'Varjyam', (CURRENT_DATE + '06:38 PM'::time)::timestamptz, (CURRENT_DATE + '08:12 PM'::time)::timestamptz, 'Ashubh');
-
--- festivals
-INSERT INTO festivals (name, slug, description, date) VALUES ('Raksha Bandhan', 'raksha-bandhan-2026-08-09', 'Shravan Purnima', '2026-08-09');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Krishna Janmashtami', 'krishna-janmashtami-2026-08-16', 'Nishith puja muhurat', '2026-08-16');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Ganesh Chaturthi', 'ganesh-chaturthi-2026-09-04', 'Sthapana muhurat', '2026-09-04');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Pitru Paksha begins', 'pitru-paksha-begins-2026-09-26', 'Shradh & tarpan', '2026-09-26');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Navratri Ghatasthapana', 'navratri-ghatasthapana-2026-10-11', 'Kalash sthapana', '2026-10-11');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Vijayadashami', 'vijayadashami-2026-10-20', 'Shastra puja', '2026-10-20');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Diwali — Lakshmi Puja', 'diwali-lakshmi-puja-2026-11-08', 'Pradosh muhurat', '2026-11-08');
-INSERT INTO festivals (name, slug, description, date) VALUES ('Chhath Puja', 'chhath-puja-2026-11-15', 'Sandhya arghya', '2026-11-15');
-
 -- faqs
 INSERT INTO faqs (question, answer, display_order) VALUES ('Do you charge commission on my puja?', 'No. PanditConnect is a directory, not a booking agent. You contact the pandit ji directly on WhatsApp or call, and you settle dakshina and samagri arrangements with them. We never sit in the middle of that transaction and take nothing from it.', 0);
 INSERT INTO faqs (question, answer, display_order) VALUES ('Then how does PanditConnect earn?', 'Pandits may optionally subscribe to a paid tier (Silver, Gold or Diamond) for a verified badge, more listings and better placement. Temples can promote events. We also run relevant ads on content pages. Your connection with a pandit ji is always free.', 1);

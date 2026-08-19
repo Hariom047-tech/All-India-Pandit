@@ -9,6 +9,11 @@ export interface Service {
   desc: string;
   samagri: string[];
   priority?: number;
+  /** Admin "Mark as popular" — drives the homepage services grid. */
+  popular?: boolean;
+  /** Ritual can be performed remotely (video call / live stream). */
+  onlineAvailable?: boolean;
+  onlineNote?: string | null;
   img?: string;
 }
 
@@ -30,6 +35,12 @@ export interface Temple {
   album?: boolean;
   about: string;
   history: string;
+  /**
+   * Religious significance — rendered under history on the temple page.
+   * Optional: the bundled temples in content.ts predate this field, and it is
+   * genuinely optional content an admin may leave blank.
+   */
+  significance?: string;
   gallery: string[];
   highlights: string[];
 }
@@ -54,27 +65,23 @@ export interface Pandit {
   phone: string;
   edu: string;
   gotra: string;
+  tradition?: string;
+  respondsWithin?: string;
+  acceptsOnline?: boolean;
   about: string;
   img: string;
-}
-
-export interface Festival {
-  date: string;
-  label: string;
-  name: string;
-  note: string;
-  img?: string;
-  cat?: "tyohar" | "vrat" | "jayanti";
-  tithi?: string;
-  muhurat?: string;
-  serviceId?: string; // Optional link to book a specific puja
 }
 
 export interface Review {
   name: string;
   city: string;
   rating: number;
+  /** Headline the reviewer typed. Collected by the form since day one but
+   *  never modelled here, so it was dropped before it reached the card. */
+  title?: string;
   text: string;
+  /** ISO timestamp — a review with no date reads as stale or fake. */
+  date?: string;
   service?: string;
   variant?: "standard" | "with-photo" | "featured" | "short";
   avatar?: string;
@@ -88,30 +95,6 @@ export interface BlogPost {
   date: string;
   read: string;
   excerpt: string;
-}
-
-export interface AuspiciousWindow {
-  k: string;
-  v: string;
-}
-
-export interface Panchang {
-  tithi: string;
-  nakshatra: string;
-  yoga: string;
-  karana: string;
-  paksha: string;
-  vaar: string;
-  sunrise: string;
-  sunset: string;
-  moonrise: string;
-  moonset: string;
-  vikram: string;
-  shaka: string;
-  masa: string;
-  ritu: string;
-  auspicious: AuspiciousWindow[];
-  inauspicious: AuspiciousWindow[];
 }
 
 export interface Plan {

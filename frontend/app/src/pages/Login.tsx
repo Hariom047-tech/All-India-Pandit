@@ -8,6 +8,9 @@ import { GoogleLogin } from "@react-oauth/google";
 import { allCountries } from "../data/countries";
 import { AsYouType, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
+import { Seo } from "../lib/Seo";
+
+const googleConfigured = Boolean((import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim());
 
 export default function Login() {
   const [phone, setPhone] = useState("");
@@ -90,7 +93,11 @@ export default function Login() {
     }
   };
 
-  const handleGetOtp = (e: React.FormEvent) => {
+  // E.164-ish: "+91" + digits only — matches what the backend's
+  // countryFromPhone()/country_from_phone() and users.phone expect.
+  const fullPhone = () => selectedCountry.code + phone.replace(/\D/g, "");
+
+  const handleGetOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isPhoneValid()) {
       setError("Please enter a valid mobile number for " + selectedCountry.name);
@@ -98,12 +105,15 @@ export default function Login() {
     }
     setError(null);
     setLoading(true);
-    // Mock API call to send OTP
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await api.post("/auth/otp/request", { target: fullPhone(), targetType: "phone" });
       setOtpSent(true);
       toast("OTP sent to " + selectedCountry.code + " " + phone);
-    }, 1000);
+    } catch (err: any) {
+      setError(err.message || "Could not send OTP. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
@@ -115,14 +125,19 @@ export default function Login() {
     }
     setError(null);
     setLoading(true);
-    // Mock login success
-    setTimeout(() => {
-      setLoading(false);
-      // Dummy user for demo purposes
-      login("mock_token_123", { id: "1", full_name: "Devotee", phone: selectedCountry.code + phone, role: "devotee", email: phone+"@mock.com" });
+    try {
+      const res = await api.post<{ token: string; user: any }>("/auth/otp/login", {
+        phone: fullPhone(),
+        otp: otpString,
+      });
+      login(res.token, res.user);
       toast("Verified successfully!");
       navigate(from, { replace: true });
-    }, 1500);
+    } catch (err: any) {
+      setError(err.message || "Incorrect or expired OTP");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
@@ -147,10 +162,12 @@ export default function Login() {
   };
 
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      display: "flex", 
-      alignItems: "center", 
+    <>
+    <Seo title="Login" path="/login" noindex />
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
       justifyContent: "center",
       background: "rgba(0,0,0,0.5)", // Dark overlay mimicking modal backdrop
       padding: 20
@@ -348,7 +365,7 @@ export default function Login() {
                 {otp.map((digit, i) => (
                   <input 
                     key={i}
-                    ref={(el) => (otpRefs.current[i] = el)}
+                    ref={(el) => { otpRefs.current[i] = el; }}
                     type="text"
                     inputMode="numeric"
                     value={digit}
@@ -410,26 +427,33 @@ export default function Login() {
             </form>
           )}
 
-          {/* OR Divider */}
-          <div style={{ display: "flex", alignItems: "center", margin: "24px 0" }}>
-            <hr style={{ flex: 1, borderColor: "#eee", margin: 0 }} />
-            <span style={{ padding: "0 16px", color: "#aaa", fontSize: "0.85rem", fontWeight: 600 }}>OR</span>
-            <hr style={{ flex: 1, borderColor: "#eee", margin: 0 }} />
-          </div>
+          {/* Google sign-in needs a real configured OAuth client ID — without
+              one, Google itself rejects the request before reaching our
+              backend, so the button is hidden rather than offered broken. */}
+          {googleConfigured && (
+            <>
+              {/* OR Divider */}
+              <div style={{ display: "flex", alignItems: "center", margin: "24px 0" }}>
+                <hr style={{ flex: 1, borderColor: "#eee", margin: 0 }} />
+                <span style={{ padding: "0 16px", color: "#aaa", fontSize: "0.85rem", fontWeight: 600 }}>OR</span>
+                <hr style={{ flex: 1, borderColor: "#eee", margin: 0 }} />
+              </div>
 
-          {/* Google Auth Container */}
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap
-              shape="rectangular"
-              theme="outline"
-              size="large"
-              width="100%"
-              text="signin_with"
-            />
-          </div>
+              {/* Google Auth Container */}
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap
+                  shape="rectangular"
+                  theme="outline"
+                  size="large"
+                  width="100%"
+                  text="signin_with"
+                />
+              </div>
+            </>
+          )}
 
           {/* Footer Terms Text */}
           <p style={{ textAlign: "center", fontSize: "0.8rem", color: "#888", margin: 0, lineHeight: 1.6 }}>
@@ -440,5 +464,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   );
 }

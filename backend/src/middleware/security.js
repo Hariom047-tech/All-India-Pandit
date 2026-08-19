@@ -26,15 +26,27 @@ const apiLimiter = rateLimit({
 // bite — keyed by IP + the email/phone being targeted, so one attacker can't
 // spread guesses across many accounts to dodge a per-account limit, and one
 // noisy IP can't lock everyone else out of their own account either.
+//
+// TEST_RATE_LIMIT_SCALE: several routes this guards (notably /pandits/:id/click,
+// which carries no email/target and so keys on IP alone) see far more *distinct,
+// legitimate* scenarios in one test run than one real IP would generate in
+// production — the dedup/concurrency suites alone are 60+ requests from a
+// single process. Scaling the ceiling up (never removing it) when
+// NODE_ENV=test keeps the suite from failing on volume that has nothing to do
+// with the rule under test, while leaving production's actual threshold
+// completely untouched: this only ever fires for NODE_ENV=test specifically,
+// never for 'development' or an unset NODE_ENV, let alone 'production'.
+const TEST_RATE_LIMIT_SCALE = 50;
 function authLimiter(max) {
   return rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: max,
+    limit: process.env.NODE_ENV === 'test' ? max * TEST_RATE_LIMIT_SCALE : max,
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req) => `${req.ip}:${req.body?.email || req.body?.target || ''}`,
     handler: onLimited('AUTH_RATE_LIMIT_EXCEEDED'),
+    validate: false,
   });
 }
 
-module.exports = { apiLimiter, authLimiter };
+module.exports = { apiLimiter, authLimiter, TEST_RATE_LIMIT_SCALE };

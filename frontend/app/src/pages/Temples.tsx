@@ -1,13 +1,16 @@
 import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { temples, cities, serviceName } from "../data/content";
+import { useTemples } from "../hooks/useData";
+import { normTemples } from "../lib/normalize";
 import { TempleCard } from "../components/ui/TempleCard";
 import { EmptyState } from "../components/ui/ReviewCard";
+
 import { Pager, paginate, countBy } from "../components/ui/Pager";
 import { SacredBackground } from "../components/ui/SacredBackground";
 import { HeroTicker } from "../components/ui/HeroTicker";
 import { useLang } from "../lib/i18n";
+import { Seo } from "../lib/Seo";
 
 const PER_PAGE = 9;
 
@@ -22,8 +25,21 @@ export default function Temples() {
   const [sort, setSort] = useState("rating");
   const [page, setPage] = useState(1);
 
-  const cityCounts = useMemo(() => countBy(temples, "city"), []);
-  const usedCities = cities.filter((c) => cityCounts[c]);
+  /* ── Fetch temples from API ── */
+  const { data: rawTemples } = useTemples({
+    q: query || undefined,
+    city: cityFilter[0] || undefined,
+    state: stateFilter[0] || undefined,
+    sort,
+    limit: 50,
+  });
+  const temples = useMemo(() => normTemples(rawTemples), [rawTemples]);
+
+  const cityCounts = useMemo(() => countBy(temples, "city"), [temples]);
+  const usedCities = useMemo(() => {
+    const allCities = [...new Set(temples.map(t => t.city))].sort();
+    return allCities.filter(c => cityCounts[c]);
+  }, [temples, cityCounts]);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
@@ -32,10 +48,6 @@ export default function Temples() {
       if (cityFilter.length && !cityFilter.includes(t.city)) return false;
       if (stateFilter.length && !stateFilter.includes(t.state)) return false;
       if (minRating && t.rating < parseFloat(minRating)) return false;
-      if (svcFilter.length) {
-        const names = t.services.map(serviceName);
-        if (!svcFilter.some((s) => names.includes(s))) return false;
-      }
       return true;
     });
     list = [...list].sort((a, b) => {
@@ -45,7 +57,7 @@ export default function Temples() {
       return b.rating - a.rating;
     });
     return list;
-  }, [query, cityFilter, stateFilter, svcFilter, minRating, sort]);
+  }, [temples, query, cityFilter, stateFilter, svcFilter, minRating, sort]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 620);
   
@@ -57,10 +69,13 @@ export default function Temples() {
 
   const pg = paginate(filtered, page, isMobile ? 10 : PER_PAGE);
 
-
-
   return (
     <div className="hp-sacred-section" style={{ minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      <Seo
+        title="Temples Across India — Puja, Havan & Pandits"
+        description="Browse temples across India by city and deity. See available puja and havan services at each temple, and connect directly with verified Pandits associated with it."
+        path="/temples"
+      />
       <SacredBackground />
       <div style={{ position: "relative", zIndex: 1 }}>
 
@@ -149,7 +164,6 @@ export default function Temples() {
           <Pager page={pg.page} pages={pg.pages} onChange={(p) => { setPage(p); document.getElementById("gridTop")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
         </div>
       </section>
-
 
       </div>
     </div>

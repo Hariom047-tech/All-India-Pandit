@@ -7,6 +7,7 @@ router.use(requireAdmin);
 
 router.get('/', adminHandler(ctrl.list));
 router.get('/:id', adminHandler(ctrl.getById));
+router.get('/:id/activity', adminHandler(ctrl.activity));
 router.put('/:id', adminHandler(ctrl.update));
 router.post('/:id/suspend', adminHandler(ctrl.suspend));
 router.post('/:id/ban', adminHandler(ctrl.ban));

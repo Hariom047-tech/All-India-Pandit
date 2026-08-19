@@ -70,10 +70,8 @@ const SEED_PASSWORD_HASH = bcrypt.hashSync('PanditConnect@2026', 10);
 const services = load('services.json');
 const temples = load('temples.json');
 const pandits = load('pandits.json');
-const festivals = load('festivals.json');
 const reviews = load('reviews.json');
 const posts = load('posts.json');
-const panchang = load('panchang.json');
 const plans = load('plans.json');
 const faqs = load('faqs.json');
 const stats = load('stats.json');
@@ -85,7 +83,7 @@ const say = (s) => lines.push(s);
 
 say('-- GENERATED FILE — do not edit by hand.');
 say('-- Source: backend/src/data/*.json, via backend/scripts/generate-seed-sql.js');
-say(`-- Content hash: ${crypto.createHash('sha1').update(JSON.stringify({ services, temples, pandits, festivals, reviews, posts, panchang, plans, faqs, stats, taxonomy, recommendRules })).digest('hex')}`);
+say(`-- Content hash: ${crypto.createHash('sha1').update(JSON.stringify({ services, temples, pandits, reviews, posts, plans, faqs, stats, taxonomy, recommendRules })).digest('hex')}`);
 say('');
 
 // ---------------------------------------------------------- system users
@@ -255,33 +253,6 @@ posts.forEach((p) => {
   const iso = Number.isNaN(publishedAt.getTime()) ? null : publishedAt.toISOString();
   say(`INSERT INTO blog_posts (author_id, title, slug, excerpt, body, category, status, published_at)
        VALUES (${esc(ADMIN_USER_ID)}, ${esc(p.title)}, ${esc(p.id)}, ${esc(p.excerpt)}, ${esc(p.excerpt)}, ${esc(p.cat)}, 'published', ${iso ? esc(iso) : 'NOW()'});`);
-});
-say('');
-
-// ----------------------------------------------------------- panchang_data
-say('-- panchang_data (single "today" snapshot — illustrative, not an ephemeris calc; see README)');
-const panchangIdVar = "(SELECT id FROM panchang_data WHERE date = CURRENT_DATE)";
-say(`INSERT INTO panchang_data (date, tithi_name, paksha, nakshatra, yoga, karana, sunrise, sunset, moonrise, moonset, hindu_month)
-     VALUES (CURRENT_DATE, ${esc(panchang.tithi)}, ${esc(panchang.paksha)}, ${esc(panchang.nakshatra)}, ${esc(panchang.yoga)}, ${esc(panchang.karana)},
-             ${esc(panchang.sunrise)}::time, ${esc(panchang.sunset)}::time, ${esc(panchang.moonrise)}::time, ${esc(panchang.moonset)}::time, ${esc(panchang.masa)});`);
-say('');
-
-say('-- muhurat_data (auspicious + inauspicious windows for today)');
-[...(panchang.auspicious || []).map((m) => ({ ...m, quality: 'Shubh' })),
- ...(panchang.inauspicious || []).map((m) => ({ ...m, quality: 'Ashubh' }))].forEach((m) => {
-  const parts = m.v.split(/\s[–-]\s/);
-  if (parts.length !== 2) return;
-  const [start, end] = parts;
-  say(`INSERT INTO muhurat_data (panchang_id, activity_type, start_time, end_time, quality)
-       VALUES (${panchangIdVar}, ${esc(m.k)}, (CURRENT_DATE + ${esc(start)}::time)::timestamptz, (CURRENT_DATE + ${esc(end)}::time)::timestamptz, ${esc(m.quality)});`);
-});
-say('');
-
-// -------------------------------------------------------------- festivals
-say('-- festivals');
-festivals.forEach((f) => {
-  const slug = `${slugify(f.name)}-${f.date}`;
-  say(`INSERT INTO festivals (name, slug, description, date) VALUES (${esc(f.name)}, ${esc(slug)}, ${esc(f.note)}, ${esc(f.date)});`);
 });
 say('');
 

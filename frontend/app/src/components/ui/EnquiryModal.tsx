@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, type FormEvent, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Modal } from "./Modal";
 import { Icon } from "../../lib/icons";
-import { services, serviceName } from "../../data/content";
+import { useServices } from "../../hooks/useData";
+import { normServices } from "../../lib/normalize";
 import { api } from "../../lib/api";
 import { useToast } from "./Toast";
 import { useLang } from "../../lib/i18n";
@@ -23,6 +24,8 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
   const [opts, setOpts] = useState<EnquiryOptions | null>(null);
   const toast = useToast();
   const { t } = useLang();
+  const { data: rawServices } = useServices();
+  const services = useMemo(() => normServices(rawServices), [rawServices]);
 
   const open = (o?: EnquiryOptions) => setOpts(o || {});
   const close = () => setOpts(null);
@@ -50,7 +53,7 @@ export function EnquiryModalProvider({ children }: { children: ReactNode }) {
           name: payload.name,
           email: `${payload.phone}@enquiry.panditsuggest.in`,
           phone: payload.phone,
-          subject: `Service enquiry: ${serviceName(payload.service)}`,
+          subject: `Service enquiry: ${payload.service.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`,
           message: payload.message || "(no message)",
         });
     } catch {

@@ -109,3 +109,64 @@ to do that.
 | 8 | Data Integrity Failures | Webhook HMAC verification with `timingSafeEqual` |
 | 9 | Security Logging Failures | `security_audit_log`, append-only |
 | 10 | SSRF | No user-controlled outbound URLs anywhere in this backend (the one outbound call, to Razorpay, has a hardcoded URL) |
+
+---
+
+## Admin surface exposure (reviewed Aug 2026)
+
+### The honest position on `ADMIN_SECRET_PATH`
+
+`GET /api/admin-config` returns the admin API prefix to **any unauthenticated
+caller**:
+
+```
+$ curl https://panditsuggest.com/api/admin-config
+{"adminPath":"adm-…"}
+```
+
+This is not a bug that can be fixed while the admin panel is a public,
+same-origin SPA: it must learn the prefix before anyone logs in, and anything
+the browser can learn pre-auth, an attacker can learn pre-auth. Baking the
+path into the bundle instead just moves it from a one-line `curl` into a
+`grep` of a JS chunk.
+
+So: **the secret path is not a secret.** Its residual value is keeping
+automated scanners out of the admin routes and making their probes land in the
+honeypot instead. It is not, and never was, an access control. The controls
+that actually stop an attacker are:
+
+1. password + TOTP (`middleware/admin.js`), with a 4-hour absolute session cap
+2. Row-Level Security — an admin request that skips `withUserContext` sees nothing
+3. per-IP + per-account rate limiting on every auth endpoint
+4. the IP ban list and honeypot logging
+
+### What was hardened
+
+| Change | What it buys |
+|---|---|
+| `robots.txt` disallowing `/admin-panel`, `/pandit/*`, `/uploads/`, `/api/` | Keeps the admin URL out of search results — the most common way private surfaces get found |
+| `X-Robots-Tag: noindex` on `/admin-panel` and `/uploads/` in nginx | Same, for crawlers that ignore robots.txt but honour headers |
+| 404 handler no longer echoes the requested path | Stops reflecting an attacker's own probe back at them |
+| `/api/admin-config` rate-limited (30/15 min) and written to `security_audit_log` | Enumeration becomes visible instead of silent |
+| `sourcemap: false` set explicitly in `vite.config.ts`, `.map` returns 404 in nginx | A production source map publishes readable admin source |
+| `location ~ /\.` denied | `.env`, `.git`, editor swap files unreachable |
+
+### The one change that would actually hide it
+
+An **IP allow-list** on `/admin-panel` in `docker/nginx/default.conf` — the
+block is written and commented out, needing only your addresses:
+
+```nginx
+location ^~ /admin-panel {
+    allow 203.0.113.7;    # your static IP
+    allow 10.0.0.0/8;     # office / VPN
+    deny  all;
+    ...
+}
+```
+
+With that in place the admin panel is not reachable from the internet, and
+every item in the table above becomes redundant defence in depth rather than
+the primary control. If your admins do not have stable IPs, the equivalent is
+serving the panel from a separate host behind a VPN or an identity-aware
+proxy — not from the public bundle.

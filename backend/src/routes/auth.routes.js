@@ -15,7 +15,14 @@ router.post('/login', authLimiter(20), asyncHandler(ctrl.login));
 router.post('/google', authLimiter(20), asyncHandler(ctrl.googleAuth));
 router.post('/logout', requireAuth, asyncHandler(ctrl.logout));
 router.get('/me', requireAuth, asyncHandler(ctrl.me));
+router.patch('/me', requireAuth, asyncHandler(ctrl.updateMe));
 router.post('/otp/request', authLimiter(10), asyncHandler(ctrl.requestOtp));
 router.post('/otp/verify', authLimiter(20), optionalAuth, asyncHandler(ctrl.verifyOtp));
+router.post('/otp/login', authLimiter(20), asyncHandler(ctrl.phoneLogin));
+
+// Pandit-scoped auth (dedicated login + email/DOB password reset). Same
+// users/user_sessions tables underneath — this is a role-scoped door into
+// the existing auth system, not a parallel one.
+router.use('/pandit', require('./panditAuth.routes'));
 
 module.exports = router;

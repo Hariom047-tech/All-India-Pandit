@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Applies backend/src/db/01-schema.sql then 02-seed.sql against DATABASE_URL.
+ * Applies backend/src/db/01-schema.sql, 02-seed.sql then 03-qualified-leads.sql
+ * against DATABASE_URL, in that order.
  *
  * Docker Compose never needs this — the postgres image runs both files itself
  * via /docker-entrypoint-initdb.d/ on first container start. This script is
@@ -22,7 +23,7 @@ async function main() {
   const client = new Client({ connectionString: process.env.DATABASE_URL });
   await client.connect();
   try {
-    for (const file of ['01-schema.sql', '02-seed.sql']) {
+    for (const file of ['01-schema.sql', '02-seed.sql', '03-qualified-leads.sql', '04-dynamic-content.sql', '05-temple-content.sql', '06-service-categories.sql', '07-online-puja.sql', '08-pandit-credentials.sql', '09-platform-reviews.sql']) {
       const sql = fs.readFileSync(path.join(DB_DIR, file), 'utf8');
       console.log(`applying ${file}...`);
       await client.query(sql); // no params → simple query protocol → runs every ';'-separated statement

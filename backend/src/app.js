@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const { corsOrigin } = require('./config/env');
@@ -9,6 +10,8 @@ const routes = require('./routes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(helmet({
   // This is a JSON API with no HTML views of its own, so a page-oriented
@@ -39,6 +42,15 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+/*
+ * Visitor market detection, before the routes so every handler has req.geo.
+ *
+ * Reads CDN headers only — a client-supplied country is ignored, otherwise
+ * anyone could curl their way into the international pandit pool. See
+ * services/distribution/market.js for the trust boundary caveat.
+ */
+app.use('/api', require('./services/distribution/market').geoMiddleware);
 
 app.use('/api', routes);
 

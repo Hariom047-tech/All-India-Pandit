@@ -1,5 +1,4 @@
-import { pandits, temples, services, festivals } from "../data/content";
-import type { Pandit, Temple, Service, Festival } from "../data/types";
+import type { Pandit, Temple, Service } from "../data/types";
 
 // --- 1. Dictionaries & Maps ---
 
@@ -136,12 +135,7 @@ function fuzzyLookup(word: string, dictionary: Set<string> | string[]): string |
 }
 
 // Extract all valid names from our data to use as a dictionary
-const ALL_NAMES = new Set([
-  ...pandits.flatMap(p => p.name.toLowerCase().split(" ")),
-  ...temples.flatMap(t => t.name.toLowerCase().split(" ")),
-  ...services.flatMap(s => s.name.toLowerCase().split(" ")),
-  "baglamukhi", "satyanarayan", "rudrabhishek", "mahakaleshwar", "trimbakeshwar"
-]);
+// ALL_NAMES is now built dynamically in SearchEngine constructor
 
 // --- 3. Main Search Engine ---
 
@@ -164,12 +158,27 @@ export interface SearchResults {
   pandits: (Pandit & { score: number })[];
   temples: (Temple & { score: number })[];
   services: (Service & { score: number })[];
-  festivals: (Festival & { score: number })[];
   state: SearchState;
 }
 
 export class SearchEngine {
-  static parse(query: string): SearchState {
+  private pandits: Pandit[];
+  private temples: Temple[];
+  private services: Service[];
+  private allNames: Set<string>;
+
+  constructor(pandits: Pandit[], temples: Temple[], services: Service[]) {
+    this.pandits = pandits;
+    this.temples = temples;
+    this.services = services;
+    this.allNames = new Set([
+      ...pandits.flatMap(p => p.name.toLowerCase().split(" ")),
+      ...temples.flatMap(t => t.name.toLowerCase().split(" ")),
+      ...services.flatMap(s => s.name.toLowerCase().split(" ")),
+      "baglamukhi", "satyanarayan", "rudrabhishek", "mahakaleshwar", "trimbakeshwar"
+    ]);
+  }
+  parse(query: string): SearchState {
     const rawQuery = query.toLowerCase().trim();
     
     // Normalize and tokenize
@@ -226,7 +235,7 @@ export class SearchEngine {
       let corrected = word;
       // Skip very short words for correction to avoid weird jumps
       if (word.length > 3) {
-         const dictMatch = fuzzyLookup(word, ALL_NAMES);
+         const dictMatch = fuzzyLookup(word, this.allNames);
          if (dictMatch && dictMatch !== word) {
            corrected = dictMatch;
            hasCorrection = true;
@@ -252,7 +261,7 @@ export class SearchEngine {
       }
 
       // Check if word maps to a specific service slug (e.g. "havan" -> "havan-yagna")
-      const svcMatch = services.find(s => s.id.includes(corrected) || s.name.toLowerCase().includes(corrected));
+      const svcMatch = this.services.find(s => s.id.includes(corrected) || s.name.toLowerCase().includes(corrected));
       if (svcMatch && !state.entities.services.includes(svcMatch.id)) {
         state.entities.services.push(svcMatch.id);
       }
@@ -268,7 +277,7 @@ export class SearchEngine {
     if (state.intents.has("PANDIT")) uParts.push("Pandit");
     if (state.intents.has("TEMPLE")) uParts.push("Temple");
     if (state.entities.services.length > 0) {
-      const svcNames = state.entities.services.map(id => services.find(s => s.id === id)?.name).filter(Boolean);
+      const svcNames = state.entities.services.map(id => this.services.find(s => s.id === id)?.name).filter(Boolean);
       if (svcNames.length > 0) uParts.push(`for ${svcNames[0]}`);
     }
     if (state.entities.city) uParts.push(`in ${state.entities.city.charAt(0).toUpperCase() + state.entities.city.slice(1)}`);
@@ -281,16 +290,15 @@ export class SearchEngine {
     return state;
   }
 
-  static search(query: string): SearchResults {
+  search(query: string): SearchResults {
     const state = this.parse(query);
     
-    let scoredPandits = pandits.map(p => ({ ...p, score: 0 }));
-    let scoredTemples = temples.map(t => ({ ...t, score: 0 }));
-    let scoredServices = services.map(s => ({ ...s, score: 0 }));
-    let scoredFestivals = festivals.map(f => ({ ...f, score: 0 }));
+    let scoredPandits = this.pandits.map(p => ({ ...p, score: 0 }));
+    let scoredTemples = this.temples.map(t => ({ ...t, score: 0 }));
+    let scoredServices = this.services.map(s => ({ ...s, score: 0 }));
 
     if (state.tokens.length === 0 && !state.entities.state && state.entities.services.length === 0) {
-      return { pandits: [], temples: [], services: [], festivals: [], state };
+      return { pandits: [], temples: [], services: [], state };
     }
 
     const qLower = state.rawQuery;
@@ -334,7 +342,7 @@ export class SearchEngine {
       // Temple association
       if (state.entities.deity) {
         // Simple heuristic: if the pandit is associated with a temple of this deity
-        const panditTemples = p.temples.map(tid => temples.find(t => t.id === tid));
+        const panditTemples = p.temples.map(tid => this.temples.find(t => t.id === tid));
         if (panditTemples.some(t => t?.deity.toLowerCase() === state.entities.deity)) {
           score += 40;
         }
@@ -399,23 +407,6 @@ export class SearchEngine {
       s.score = score;
     });
 
-    // --- Scoring Festivals ---
-    scoredFestivals.forEach(f => {
-      let score = 0;
-      const fStr = `${f.name} ${f.note} ${f.tithi}`.toLowerCase();
-
-      if (fStr.includes(qLower)) score += 100;
-      
-      tokens.forEach(tok => {
-        if (fStr.includes(tok)) score += 30;
-      });
-
-      // If a service linked to this festival was matched
-      if (f.serviceId && state.entities.services.includes(f.serviceId)) score += 50;
-
-      f.score = score;
-    });
-
     // Contextual pruning (If looking specifically for a temple, demote pandits slightly unless high score)
     if (state.intents.has("TEMPLE") && !state.intents.has("PANDIT")) {
       scoredTemples.forEach(t => { if (t.score > 0) t.score += 50; });
@@ -428,7 +419,6 @@ export class SearchEngine {
       pandits: scoredPandits.filter(p => p.score > 40).sort((a, b) => b.score - a.score),
       temples: scoredTemples.filter(t => t.score > 40).sort((a, b) => b.score - a.score),
       services: scoredServices.filter(s => s.score > 40).sort((a, b) => b.score - a.score),
-      festivals: scoredFestivals.filter(f => f.score > 40).sort((a, b) => b.score - a.score),
       state
     };
   }

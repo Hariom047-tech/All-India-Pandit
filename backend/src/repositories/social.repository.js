@@ -26,8 +26,20 @@ async function unsavePandit(userId, panditSlug) {
 
 async function savedTemples(userId) {
   const { rows } = await query(
-    `SELECT t.id, t.slug, t.name, t.city, t.avg_rating AS rating, t.cover_image_url AS img, st.created_at AS saved_at
-     FROM saved_temples st JOIN temples t ON t.id = st.temple_id
+    // Same profile-picture resolution as temples.repository BASE_SELECT — a
+    // saved temple showing stock artwork while /temples shows the real photo
+    // looks like the save was of a different temple.
+    `SELECT t.id, t.slug, t.name, t.city, t.avg_rating AS rating,
+            COALESCE(cover.media_url, t.cover_image_url) AS img,
+            st.created_at AS saved_at
+     FROM saved_temples st
+     JOIN temples t ON t.id = st.temple_id
+     LEFT JOIN LATERAL (
+       SELECT tm.media_url FROM temple_media tm
+        WHERE tm.temple_id = t.id AND tm.media_type = 'photo'
+        ORDER BY tm.is_cover DESC, tm.display_order, tm.created_at
+        LIMIT 1
+     ) cover ON TRUE
      WHERE st.user_id = $1 ORDER BY st.created_at DESC`,
     [userId],
   );

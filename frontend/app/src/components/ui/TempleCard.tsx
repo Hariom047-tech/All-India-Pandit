@@ -1,24 +1,25 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import type { Temple } from "../../data/types";
 import { Icon } from "../../lib/icons";
 import { RatingCompact } from "./StarRating";
 import { onImgError } from "../../lib/format";
 import { useLang } from "../../lib/i18n";
+import { useInViewOnce } from "../../lib/useInViewOnce";
 
 export function TempleCard({ t, index = 0 }: { t: Temple; index?: number }) {
   // aliased: this component's prop is already named `t` (the temple object)
   const { t: tr } = useLang();
   const [fav, setFav] = useState(false);
+  const { ref, visible } = useInViewOnce<HTMLElement>();
   return (
-    <motion.article
-      className="card card--hover"
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
-      transition={{ duration: 0.45, delay: Math.min(index, 6) * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -4 }}
+    // .card--hover already has its own CSS-only :hover lift (base.css) —
+    // framer-motion's whileHover was redundant with it, same as this
+    // component's entrance animation (Phase 12, docs/SEO_ARCHITECTURE.md).
+    <article
+      ref={ref}
+      className={`card card--hover card-reveal${visible ? " is-visible" : ""}`}
+      style={{ transitionDelay: `${Math.min(index, 6) * 50}ms` }}
     >
       <div className="thumb">
         <img src={t.img} alt={t.name} loading="lazy" onError={onImgError("temple")} />
@@ -44,6 +45,6 @@ export function TempleCard({ t, index = 0 }: { t: Temple; index?: number }) {
           <Link className="btn btn-outline btn-sm" to={`/temples/${t.id}`}>{tr("common.viewPandits")}</Link>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

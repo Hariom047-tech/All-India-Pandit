@@ -1,0 +1,122 @@
+/* Vertical video reels — Flipkart-style review-video strip.
+   Sizing is driven by aspect-ratio + scroll-snap so no JS measures anything. */
+
+.reels {
+  --reel-radius: 14px;
+  --reel-gap: 14px;
+  background: #fff;
+  border: 1px solid var(--border, #e8d5b7);
+  border-radius: var(--reel-radius);
+  padding: 16px;
+}
+
+.reels__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
+}
+.reels__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.05rem, 3.4vw, 1.25rem);
+  margin: 0; display: flex; align-items: center; gap: 8px;
+}
+.reels__count {
+  font-family: inherit; font-size: .72rem; font-weight: 700;
+  background: var(--gold, #d4a017); color: #fff;
+  border-radius: 999px; padding: 2px 9px;
+}
+.reels__controls { display: flex; align-items: center; gap: 8px; }
+.reels__sound, .reels__arrow {
+  min-height: 40px; border: 1px solid var(--border, #e8d5b7); border-radius: 999px;
+  background: #fff; font: inherit; font-size: .82rem; cursor: pointer; padding: 6px 14px;
+}
+.reels__arrows { display: none; gap: 6px; }
+.reels__arrow { width: 40px; padding: 0; font-size: 1.3rem; line-height: 1; }
+.reels__sound:focus-visible, .reels__arrow:focus-visible, .reels__dot:focus-visible {
+  outline: 2px solid var(--gold, #d4a017); outline-offset: 2px;
+}
+.reels__arrow:disabled { opacity: .35; cursor: default; }
+
+.reels__track {
+  display: flex;
+  gap: var(--reel-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 4px;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.reels__track::-webkit-scrollbar { height: 6px; }
+.reels__track::-webkit-scrollbar-thumb { background: #e6dcc6; border-radius: 999px; }
+.reels__track:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
+
+.reel {
+  position: relative;
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  /* THE key line: reels are portrait, never letterboxed landscape. */
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #12100c;
+  /* MOBILE: one reel per screen. min() keeps a tall phone from producing a
+     reel taller than the viewport. */
+  width: min(74vw, 46vh);
+}
+.reel__video {
+  width: 100%; height: 100%;
+  object-fit: cover;          /* fill the 9:16 frame, never letterbox */
+  display: block; cursor: pointer; background: #12100c;
+}
+.reel__scrim {
+  position: absolute; inset: auto 0 0 0; height: 42%;
+  background: linear-gradient(to top, rgba(0,0,0,.72), transparent);
+  pointer-events: none;
+}
+.reel__meta {
+  position: absolute; left: 12px; right: 12px; bottom: 12px;
+  color: #fff; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,.6);
+}
+.reel__meta strong { display: block; font-size: .92rem; }
+.reel__meta span { display: block; font-size: .78rem; opacity: .9; margin-top: 2px; }
+.reel__live {
+  position: absolute; top: 10px; right: 10px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #34d17a; box-shadow: 0 0 0 3px rgba(52,209,122,.28);
+}
+
+.reels__dots { display: flex; justify-content: center; gap: 7px; margin-top: 12px; }
+.reels__dot {
+  width: 8px; height: 8px; padding: 0; border-radius: 50%;
+  border: 0; background: #e0d6c0; cursor: pointer;
+  transition: width .2s ease, background .2s ease;
+}
+.reels__dot.is-active { width: 22px; border-radius: 999px; background: var(--gold, #d4a017); }
+
+/* ── Tablet: two full reels + a peek of the third ───────────────── */
+@media (min-width: 600px) {
+  .reel { width: min(42%, 40vh); }
+  .reels__dots { display: none; }   /* arrows/scroll take over */
+}
+
+/* ── Desktop: three visible, arrows shown ───────────────────────── */
+@media (min-width: 1024px) {
+  .reels { padding: 20px; }
+  .reel { width: calc((100% - var(--reel-gap) * 2) / 3); max-width: 260px; }
+  .reels__arrows { display: flex; }
+  .reels__track { scroll-snap-type: x proximity; }  /* gentler on a mouse wheel */
+}
+
+@media (min-width: 1440px) {
+  .reel { max-width: 280px; }
+}
+
+/* A reel that fills a short laptop window is worse than a smaller one. */
+@media (min-height: 900px) and (min-width: 1024px) {
+  .reel { max-width: 300px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reels__track { scroll-behavior: auto; }
+  .reels__dot { transition: none; }
+}

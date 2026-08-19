@@ -9,10 +9,37 @@ const SORT_COLUMNS = {
   name: 'name ASC',
 };
 
+/**
+ * The list card image.
+ *
+ * This used to read `cover_image_url` alone, which is the legacy text column
+ * nothing writes to any more — so a temple with a freshly uploaded profile
+ * picture still showed stock artwork on /temples while the detail page showed
+ * the real photo. The LATERAL join resolves the uploaded profile picture and
+ * falls back, in order, to the first uploaded photo and then the legacy column.
+ *
+ * `temples` is deliberately left unaliased: list() composes WHERE fragments
+ * that reference `temples.id` by name, and aliasing the table would break them.
+ * The subquery exposes only `media_url`, so the bare column names in the
+ * SELECT list stay unambiguous.
+ */
+const COVER_JOIN = `
+  LEFT JOIN LATERAL (
+    SELECT tm.media_url
+      FROM temple_media tm
+     WHERE tm.temple_id = temples.id AND tm.media_type = 'photo'
+     ORDER BY tm.is_cover DESC, tm.display_order, tm.created_at
+     LIMIT 1
+  ) cover ON TRUE
+`;
+
 const BASE_SELECT = `
   SELECT id, slug, name, city, state, primary_deity AS deity, avg_rating AS rating,
-         review_count AS reviews, pandit_count AS pandits, cover_image_url AS img, short_description AS about
+         review_count AS reviews, pandit_count AS pandits,
+         COALESCE(cover.media_url, cover_image_url) AS img,
+         short_description AS about
   FROM temples
+  ${COVER_JOIN}
 `;
 
 /** Filterable, sortable, paginated temple list. Every filter is optional and
@@ -46,11 +73,22 @@ async function list({ q, city, state, service, minRating, sort, page, perPage })
   return { data: rows, total: countRows[0].total };
 }
 
-async function getBySlug(slug) {
+async function getBySlug(slug, market) {
+  // Defensive: check if migration-11 column exists before including it in the query
+  const { rows: colCheck } = await query(
+    `SELECT 1 FROM information_schema.columns
+     WHERE table_schema='public' AND table_name='temples' AND column_name='custom_services'`,
+  );
+  const hasCustomServices = colCheck.length > 0;
+
   const { rows } = await query(
     `SELECT id, slug, name, description, short_description AS about, primary_deity AS deity, city, state,
-            latitude AS lat, longitude AS lng, cover_image_url AS img, history, significance,
-            avg_rating AS rating, review_count AS reviews, pandit_count AS pandits, is_verified, is_featured
+            address_line1, latitude AS lat, longitude AS lng, cover_image_url AS img,
+            history, significance, established_year,
+            ${hasCustomServices ? 'custom_services,' : "('[]'::jsonb) AS custom_services,"}
+            highlights,
+            avg_rating AS rating, review_count AS reviews, pandit_count AS pandits, is_verified, is_featured,
+            meta_title, meta_description
      FROM temples WHERE slug = $1 AND deleted_at IS NULL`,
     [slug],
   );
@@ -61,9 +99,60 @@ async function getBySlug(slug) {
     `SELECT sv.slug FROM temple_services ts JOIN services sv ON sv.id = ts.service_id WHERE ts.temple_id = $1`,
     [temple.id],
   );
-  const availablePandits = await panditsRepo.forTemple(temple.id);
+  const availablePandits = await panditsRepo.forTemple(temple.id, market);
 
-  return { ...temple, services: services.map((r) => r.slug), availablePandits };
+  // Real uploaded gallery, replacing the bundled stock artwork the detail page
+  // fell back to. `gallery` is photos only (the lightbox grid); `videos` is
+  // kept separate so the page never tries to render an <img> for an mp4.
+  const { rows: media } = await query(
+    `SELECT id, media_url, media_type, title, caption, is_cover, show_in_hero
+       FROM temple_media WHERE temple_id = $1
+      ORDER BY display_order, created_at`,
+    [temple.id],
+  );
+
+  const photos = media.filter((m) => m.media_type === 'photo');
+  const cover = photos.find((m) => m.is_cover) || photos[0];
+
+  const shape = (m) => ({
+    id: m.id,
+    url: m.media_url,
+    type: m.media_type === 'video' ? 'video' : 'photo',
+    title: m.title,
+    caption: m.caption,
+  });
+
+  /**
+   * Hero slides, in the admin's order, photos and videos mixed.
+   *
+   * The banner used to hardcode "first uploaded video wins", which is how a
+   * pandit's portrait video ended up as the Maa Baglamukhi banner. Placement
+   * is now an explicit admin decision (temple_media.show_in_hero).
+   *
+   * The fallback chain matters: an admin who unticks everything should still
+   * get a banner rather than a blank strip, so fall back to the profile
+   * picture and finally to whatever the legacy column holds.
+   */
+  let hero = media.filter((m) => m.show_in_hero).map(shape);
+  if (hero.length === 0) {
+    const fallback = cover?.media_url || temple.img;
+    hero = fallback ? [{ id: 'fallback', url: fallback, type: 'photo', title: null, caption: null }] : [];
+  }
+
+  return {
+    ...temple,
+    // An uploaded profile picture wins over the legacy cover_image_url column.
+    img: cover?.media_url || temple.img,
+    services: services.map((r) => r.slug),
+    // Rituals particular to this temple, with no catalogue entry. Defensive
+    // Array.isArray: the column is guarded by a CHECK, but a temple row that
+    // predates migration 11 in a partially-migrated database would be null.
+    customServices: Array.isArray(temple.custom_services) ? temple.custom_services : [],
+    availablePandits,
+    hero,
+    gallery: photos.map(shape),
+    videos: media.filter((m) => m.media_type === 'video').map(shape),
+  };
 }
 
 async function findIdBySlug(slug) {

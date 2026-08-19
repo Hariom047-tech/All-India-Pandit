@@ -18,6 +18,16 @@ export default function CreatePandit() {
         fullName: data.get("fullName"),
         phone: data.get("phone") || undefined,
         slug: data.get("slug"),
+        // Account access — set by the admin, hashed server-side. The plaintext
+        // in this FormData never leaves this request and is never echoed back.
+        temporaryPassword: data.get("temporaryPassword"),
+        dateOfBirth: data.get("dateOfBirth") || undefined,
+        city: data.get("city") || undefined,
+        state: data.get("state") || undefined,
+        experienceYears: data.get("experienceYears") ? Number(data.get("experienceYears")) : undefined,
+        planTier: data.get("planTier") || "free",
+        planBillingCycle: data.get("planBillingCycle") || "monthly",
+        planExpiresAt: data.get("planExpiresAt") || undefined,
       });
       navigate(`${ADMIN_BASE}/pandits/${res.slug}`);
     } catch (err) {
@@ -62,6 +72,81 @@ export default function CreatePandit() {
               <div className="admin-field admin-field--full">
                 <label>Phone Number (Optional)</label>
                 <input className="input" name="phone" placeholder="e.g. 9876543210" />
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-panel__head" style={{ borderTop: "1px solid var(--admin-line, #e8d5b7)" }}>
+            <h2>Pandit Login Credentials</h2>
+            <p style={{ fontSize: ".85rem", opacity: .75, margin: "4px 0 0" }}>
+              Pandit Ji in details se <code>/pandit-login</code> par login karenge.
+              Password save hone ke baad dobara nahi dikhega — sirf reset kiya ja sakta hai.
+            </p>
+          </div>
+          <div className="admin-panel__body">
+            <div className="admin-form-grid">
+              <div className="admin-field">
+                <label htmlFor="temporaryPassword">Temporary Password</label>
+                <input
+                  className="input" id="temporaryPassword" name="temporaryPassword"
+                  type="text" required minLength={8} autoComplete="off"
+                  placeholder="min 8 chars, ek letter + ek number"
+                />
+                <small style={{ opacity: .7 }}>
+                  Note it down now and share it with the pandit over a trusted channel.
+                </small>
+              </div>
+              <div className="admin-field">
+                <label htmlFor="dateOfBirth">Date of Birth</label>
+                <input
+                  className="input" id="dateOfBirth" name="dateOfBirth" type="date"
+                  max={new Date().toISOString().slice(0, 10)}
+                />
+                <small style={{ opacity: .7 }}>
+                  Used as the second factor if the pandit forgets their password.
+                </small>
+              </div>
+              <div className="admin-field">
+                <label htmlFor="city">City</label>
+                <input className="input" id="city" name="city" placeholder="e.g. Ujjain" />
+              </div>
+              <div className="admin-field">
+                <label htmlFor="state">State</label>
+                <input className="input" id="state" name="state" placeholder="e.g. Madhya Pradesh" />
+              </div>
+              <div className="admin-field">
+                <label htmlFor="experienceYears">Experience (years)</label>
+                <input className="input" id="experienceYears" name="experienceYears" type="number" min={0} max={90} defaultValue={0} />
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-panel__head" style={{ borderTop: "1px solid var(--admin-line, #e8d5b7)" }}>
+            <h2>Subscription Plan</h2>
+          </div>
+          <div className="admin-panel__body">
+            <div className="admin-form-grid">
+              <div className="admin-field">
+                <label htmlFor="planTier">Plan</label>
+                <select className="input" id="planTier" name="planTier" defaultValue="free">
+                  <option value="free">Free</option>
+                  <option value="silver">Silver</option>
+                  <option value="gold">Gold</option>
+                  <option value="diamond">Diamond</option>
+                </select>
+              </div>
+              <div className="admin-field">
+                <label htmlFor="planBillingCycle">Billing Cycle</label>
+                <select className="input" id="planBillingCycle" name="planBillingCycle" defaultValue="monthly">
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+              <div className="admin-field">
+                <label htmlFor="planExpiresAt">Plan Valid Until (optional)</label>
+                <input className="input" id="planExpiresAt" name="planExpiresAt" type="date" />
+                <small style={{ opacity: .7 }}>Khali chhodne par billing cycle se calculate ho jaayega.</small>
               </div>
             </div>
 

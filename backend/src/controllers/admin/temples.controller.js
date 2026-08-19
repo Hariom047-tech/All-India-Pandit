@@ -13,15 +13,24 @@ async function list(req, res) {
 async function getById(req, res) {
   const temple = await repo.getBySlug(req.db, req.params.id);
   if (!temple) return res.status(404).json({ error: 'Temple not found' });
-  res.json(temple);
+  // The edit form needs the current catalogue links to pre-tick the picker.
+  // SELECT * does not reach across to temple_services, so fetch them here.
+  const serviceSlugs = await repo.linkedServiceSlugs(req.db, temple.id);
+  res.json({ ...temple, serviceSlugs });
 }
 
 async function create(req, res) {
-  const { name, slug, description, shortDescription, primaryDeity, addressLine1, city, state, latitude, longitude } = req.body || {};
+  const {
+    name, slug, description, shortDescription, primaryDeity, addressLine1, city, state,
+    latitude, longitude, establishedYear, history, significance, highlights,
+  } = req.body || {};
   if (!name || !slug || !addressLine1 || !city || !state || latitude === undefined || longitude === undefined) {
     return res.status(400).json({ error: 'name, slug, addressLine1, city, state, latitude and longitude are required' });
   }
-  const temple = await repo.create(req.db, { name, slug, description, shortDescription, primaryDeity, addressLine1, city, state, latitude, longitude });
+  const temple = await repo.create(req.db, {
+    name, slug, description, shortDescription, primaryDeity, addressLine1, city, state,
+    latitude, longitude, establishedYear, history, significance, highlights,
+  });
   await logAdminAction({ adminUserId: req.adminUser.id, action: 'TEMPLE_CREATED', targetType: 'temple', targetId: temple.id, details: { name }, ip: req.ip });
   res.status(201).json(temple);
 }
@@ -62,4 +71,32 @@ async function mapPandit(req, res) {
   res.json({ ok: true });
 }
 
-module.exports = { list, getById, create, update, deactivate, setTimings, mapPandit };
+/**
+ * Replace the temple's catalogue service links.
+ *
+ * Separate from update() because it writes a join table rather than columns on
+ * temples, and because an empty array is a meaningful value here ("this temple
+ * offers none") — update()'s "undefined means leave alone" convention cannot
+ * express that.
+ */
+async function setServices(req, res) {
+  const { serviceSlugs } = req.body || {};
+  if (!Array.isArray(serviceSlugs)) {
+    return res.status(400).json({ error: 'serviceSlugs must be an array of service slugs' });
+  }
+  const temple = await repo.getBySlug(req.db, req.params.id);
+  if (!temple) return res.status(404).json({ error: 'Temple not found' });
+
+  const { linked, unknown } = await repo.setServices(req.db, temple.id, serviceSlugs);
+
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'TEMPLE_SERVICES_SET',
+    targetType: 'temple', targetId: temple.id,
+    details: { linked, unknown }, ip: req.ip,
+  });
+  // 200 with `unknown` populated, not 400: the links that did match were saved,
+  // and the admin needs to know which ones did not rather than lose the lot.
+  res.json({ ok: true, linked, unknown });
+}
+
+module.exports = { list, getById, create, update, deactivate, setTimings, mapPandit, setServices };

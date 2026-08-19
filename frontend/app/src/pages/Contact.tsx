@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { faqs } from "../data/content";
+import { useFaqs } from "../hooks/useData";
 import { api } from "../lib/api";
 import { useToast } from "../components/ui/Toast";
 import { useLang } from "../lib/i18n";
+import { Seo } from "../lib/Seo";
+import { useStructuredData, faqPageSchema, organizationSchema, websiteSchema, webPageSchema, faqPageId } from "../lib/structuredData";
 
 function FaqItem({ q, a, defaultOpen = false }: { q: string; a: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -23,6 +25,14 @@ function FaqItem({ q, a, defaultOpen = false }: { q: string; a: string; defaultO
 export default function Contact() {
   const toast = useToast();
   const { t } = useLang();
+  const { data: faqs } = useFaqs();
+  const displayFaqs = faqs || [];
+  useStructuredData([
+    organizationSchema(),
+    websiteSchema(),
+    webPageSchema({ path: "/contact", name: "Contact Us", aboutId: displayFaqs.length ? faqPageId("/contact") : undefined }),
+    faqPageSchema(displayFaqs, "/contact"),
+  ]);
   const SUBJECTS = [
     t("contact.subjectGeneral"),
     t("contact.subjectPandit"),
@@ -50,6 +60,11 @@ export default function Contact() {
 
   return (
     <>
+      <Seo
+        title="Contact Us"
+        description="Get in touch with the PanditSuggest team, or browse frequently asked questions about finding and contacting a Pandit."
+        path="/contact"
+      />
       <section className="page-hero">
         <img src="/assets/img/mandala.svg" className="watermark watermark--tl" alt="" />
         <img src="/assets/img/lotus.svg" className="watermark watermark--tr" alt="" style={{ width: 220 }} />
@@ -115,7 +130,7 @@ export default function Contact() {
           <h2 className="section-title">{t("contact.faqTitle")}</h2>
           <svg className="ornament" viewBox="0 0 190 16" aria-hidden="true"><path d="M6 8h64M120 8h64" fill="none" stroke="#d4a017" strokeWidth="1.6" /><path d="M84 8l11-6 11 6-11 6z" fill="none" stroke="#d4a017" strokeWidth="1.6" /></svg>
           <div style={{ marginTop: 34 }}>
-            {faqs.map((f, i) => <FaqItem q={f.q} a={f.a} key={f.q} defaultOpen={i === 0} />)}
+            {displayFaqs.map((f, i) => <FaqItem q={f.q} a={f.a} key={f.q} defaultOpen={i === 0} />)}
           </div>
         </div>
       </section>

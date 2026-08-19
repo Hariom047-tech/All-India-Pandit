@@ -1,12 +1,12 @@
 const repo = require('../repositories/misc.repository');
+const heroRepo = require('../repositories/homeHero.repository');
 const servicesRepo = require('../repositories/services.repository');
 
-const panchang = async (req, res) => res.json(await repo.panchang());
-const festivals = async (req, res) => res.json(await repo.festivals());
-const faqs = async (req, res) => res.json(await repo.faqs());
 const plans = async (req, res) => res.json(await repo.plans());
 const stats = async (req, res) => res.json(await repo.stats());
 const taxonomy = async (req, res) => res.json(await repo.taxonomy());
+/** GET /api/home-hero — the three homepage hero images, admin-chosen. */
+const homeHero = async (req, res) => res.json(await heroRepo.listPublic());
 
 async function blogList(req, res) {
   const items = await repo.blogList({ q: req.query.q, cat: req.query.cat });
@@ -47,4 +47,5 @@ async function recommend(req, res) {
   res.json({ matched: true, why: hits[0].why, services: suggestions });
 }
 
-module.exports = { panchang, festivals, faqs, plans, stats, taxonomy, blogList, blogById, recommend };
+module.exports = {
+  homeHero, plans, stats, taxonomy, blogList, blogById, recommend };

@@ -3,23 +3,68 @@ async function listPlans(q) {
   return rows;
 }
 
+/**
+ * `features` is the plan's inclusion list — the bullet points a pandit sees
+ * on the plan card ("Verified badge", "Priority listing", ...). Stored as a
+ * JSON ARRAY, not an object: it is an ordered list for display, and the old
+ * `|| {}` default silently produced `{}` which rendered as nothing.
+ */
+function normalizeFeatures(features) {
+  if (Array.isArray(features)) {
+    return features.map((f) => String(f).trim()).filter(Boolean).slice(0, 40);
+  }
+  // Tolerates the legacy object shape so existing seeded rows keep working.
+  if (features && typeof features === 'object') {
+    return Object.entries(features).filter(([, v]) => v).map(([k]) => k);
+  }
+  return [];
+}
+
 async function createPlan(q, p) {
   const { rows } = await q(
-    `INSERT INTO subscription_plans (name, tier, price_monthly, price_quarterly, price_yearly, features, is_popular, display_order)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-    [p.name, p.tier, p.priceMonthly, p.priceQuarterly || null, p.priceYearly || null, JSON.stringify(p.features || {}), !!p.isPopular, p.displayOrder || 0],
+    `INSERT INTO subscription_plans
+       (name, tier, price_monthly, price_quarterly, price_yearly, features,
+        description, tagline, lead_credits_monthly,
+        max_temple_listings, max_service_listings, max_photos,
+        is_popular, display_order, is_active)
+     VALUES ($1, $2::subscription_tier, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11, $12, $13, $14, TRUE)
+     RETURNING *`,
+    [p.name, p.tier, p.priceMonthly, p.priceQuarterly || null, p.priceYearly || null,
+      JSON.stringify(normalizeFeatures(p.features)),
+      p.description || null, p.tagline || null,
+      p.leadCreditsMonthly ?? null,
+      p.maxTempleListings ?? 1, p.maxServiceListings ?? 5, p.maxPhotos ?? 5,
+      !!p.isPopular, p.displayOrder || 0],
   );
   return rows[0];
 }
 
 async function updatePlan(q, id, fields) {
+  // `tier` is deliberately NOT updatable: it is the join key the pandits
+  // table, the ranking function and the fairness engine all key off, and
+  // silently repointing it would rewrite history for every subscriber.
   const { rows } = await q(
     `UPDATE subscription_plans SET
-       name = COALESCE($2, name), price_monthly = COALESCE($3, price_monthly),
-       price_quarterly = COALESCE($4, price_quarterly), price_yearly = COALESCE($5, price_yearly),
-       is_popular = COALESCE($6, is_popular), is_active = COALESCE($7, is_active)
+       name                 = COALESCE($2, name),
+       price_monthly        = COALESCE($3, price_monthly),
+       price_quarterly      = COALESCE($4, price_quarterly),
+       price_yearly         = COALESCE($5, price_yearly),
+       features             = COALESCE($6::jsonb, features),
+       description          = COALESCE($7, description),
+       tagline              = COALESCE($8, tagline),
+       lead_credits_monthly = COALESCE($9, lead_credits_monthly),
+       max_temple_listings  = COALESCE($10, max_temple_listings),
+       max_service_listings = COALESCE($11, max_service_listings),
+       max_photos           = COALESCE($12, max_photos),
+       is_popular           = COALESCE($13, is_popular),
+       display_order        = COALESCE($14, display_order),
+       is_active            = COALESCE($15, is_active)
      WHERE id = $1 RETURNING *`,
-    [id, fields.name, fields.priceMonthly, fields.priceQuarterly, fields.priceYearly, fields.isPopular, fields.isActive],
+    [id, fields.name, fields.priceMonthly, fields.priceQuarterly, fields.priceYearly,
+      fields.features === undefined ? null : JSON.stringify(normalizeFeatures(fields.features)),
+      fields.description, fields.tagline, fields.leadCreditsMonthly,
+      fields.maxTempleListings, fields.maxServiceListings, fields.maxPhotos,
+      fields.isPopular, fields.displayOrder, fields.isActive],
   );
   return rows[0] || null;
 }

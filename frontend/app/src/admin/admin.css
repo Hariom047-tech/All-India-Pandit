@@ -196,6 +196,7 @@
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .admin-modal {
+  position: relative;
   width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto;
   background: var(--white); border-radius: var(--r-xl); box-shadow: var(--sh-lg); padding: 28px;
 }
@@ -213,4 +214,442 @@
   .admin-content { padding: 20px 16px 60px; }
   .admin-topbar { padding: 14px 16px; }
   .admin-form-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Location picker (admin temple form) ─────────────────────────── */
+.loc-picker {
+  grid-column: 1 / -1;
+  border: 1px solid var(--admin-line, #e8d5b7);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fffdf7;
+}
+.loc-picker__search { display: flex; gap: 8px; }
+.loc-picker__search .input { flex: 1; min-width: 0; }
+.loc-picker__search .btn { flex: none; white-space: nowrap; }
+.loc-picker__hint { font-size: .8rem; opacity: .75; margin: 6px 0 0; }
+.loc-picker__provider { opacity: .7; }
+.loc-picker__error { font-size: .82rem; color: #96231f; margin: 8px 0 0; }
+
+.loc-picker__results {
+  list-style: none; padding: 0; margin: 10px 0 0;
+  border: 1px solid var(--admin-line, #e8d5b7); border-radius: 10px;
+  overflow: hidden; max-height: 240px; overflow-y: auto; background: #fff;
+}
+.loc-picker__result {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  padding: 9px 12px; border: 0; border-bottom: 1px solid #f1e9d8;
+  background: transparent; font: inherit;
+}
+.loc-picker__results li:last-child .loc-picker__result { border-bottom: 0; }
+.loc-picker__result:hover, .loc-picker__result:focus-visible { background: #fdf6e3; }
+.loc-picker__result strong { display: block; font-size: .9rem; }
+.loc-picker__result small { display: block; opacity: .7; font-size: .78rem; margin-top: 2px; }
+
+.loc-picker__preview { margin-top: 12px; }
+.loc-picker__preview iframe {
+  width: 100%; height: 220px; border: 1px solid var(--admin-line, #e8d5b7);
+  border-radius: 10px; display: block;
+}
+.loc-picker__coords {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; font-size: .82rem; margin-top: 6px; opacity: .85;
+}
+.loc-picker__manual { margin-top: 12px; }
+.loc-picker__manual summary { cursor: pointer; font-size: .84rem; opacity: .8; }
+
+@media (max-width: 600px) {
+  .loc-picker__search { flex-direction: column; }
+  .loc-picker__search .btn { width: 100%; }
+  .loc-picker__preview iframe { height: 180px; }
+}
+
+/* ── Media manager ───────────────────────────────────────────────── */
+.media-subhead { margin: 18px 0 8px; font-size: .9rem; }
+.media-empty { font-size: .85rem; }
+.media-grid {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+}
+.media-grid--video { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.media-tile {
+  position: relative; border: 1px solid var(--admin-line, #e8d5b7);
+  border-radius: 10px; overflow: hidden; background: #faf7f0;
+}
+.media-tile img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.media-tile--video video {
+  width: 100%; aspect-ratio: 9 / 16; object-fit: cover; display: block; background: #12100c;
+}
+/* Badge stack — an item can be both the profile picture and a hero slide, so
+   the flags wrap instead of one overwriting the other. */
+.media-tile__flags {
+  position: absolute; top: 6px; left: 6px; right: 6px;
+  display: flex; flex-wrap: wrap; gap: 4px; pointer-events: none;
+}
+.media-tile__flag {
+  position: absolute; top: 6px; left: 6px;
+  background: var(--gold, #d4a017); color: #fff;
+  font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+}
+/* Inside the stack the pills flow instead of pinning to the corner. */
+.media-tile__flags .media-tile__flag { position: static; }
+.media-tile__flag--hero { background: #1c4f7c; }
+
+.media-tile__check {
+  display: inline-flex; align-items: center; gap: 5px;
+  min-height: 30px; padding: 3px 8px;
+  border: 1px solid var(--admin-line, #e8d5b7); border-radius: 8px;
+  font-size: .72rem; font-weight: 600; cursor: pointer; user-select: none;
+  background: #fff;
+}
+.media-tile__check:has(input:checked) {
+  background: #e7f3ff; border-color: #7fb7e8; color: #1c4f7c;
+}
+.media-tile__check input { margin: 0; accent-color: #1c4f7c; cursor: pointer; }
+.media-tile__check:focus-within { outline: 2px solid var(--gold, #d4a017); outline-offset: 1px; }
+
+/* ── AI Assistant screens ──────────────────────────────────────── */
+/* Only the handful of classes the existing admin CSS genuinely lacked. The
+   AI pages otherwise reuse admin-page-head / admin-stat-grid / admin-table /
+   admin-pill so the panel stays one design, not two. */
+
+.admin-notice {
+  padding: 9px 13px; margin: 0 0 14px;
+  border-radius: 8px;
+  background: #e7f3ff; border: 1px solid #7fb7e8;
+  color: #1c4f7c; font-size: .85rem;
+}
+
+.admin-row-actions {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end;
+}
+.admin-row-actions .btn { white-space: nowrap; }
+
+.admin-two-col {
+  display: grid; gap: 18px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  /* minmax(0, 1fr), not 1fr: a long category label would otherwise set the
+     column's min-content width and push the grid past its container. */
+  .admin-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.admin-barlist { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.admin-barlist li {
+  display: grid; grid-template-columns: minmax(0, 9rem) 1fr auto;
+  align-items: center; gap: 10px;
+}
+.admin-barlist__label {
+  font-size: .82rem; color: var(--text-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-barlist__bar {
+  height: 8px; border-radius: 999px;
+  background: #f1e9d8; overflow: hidden;
+}
+.admin-barlist__bar i {
+  display: block; height: 100%;
+  background: var(--gold, #d4a017); border-radius: 999px;
+}
+.admin-barlist__n { font-size: .82rem; font-weight: 700; min-width: 2.2rem; text-align: right; }
+
+/* "Not selected" state for the category picker chips. */
+.chip--off {
+  background: #fff; color: var(--text-2, #6d6a62); font-weight: 500;
+  cursor: pointer;
+}
+.chip--off:hover { border-color: var(--gold, #d4a017); }
+
+/* ── Chips: the linked-services picker ─────────────────────────── */
+.admin-hint {
+  font-size: .8rem; opacity: .75; margin: 2px 0 8px;
+}
+.chip-list {
+  list-style: none; padding: 0; margin: 10px 0 0;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 6px 5px 12px; border-radius: 999px;
+  background: #fdf4dd; border: 1px solid var(--admin-line, #e8d5b7);
+  font-size: .82rem; font-weight: 600; color: #6b4f0d;
+  /* A long ritual name wraps inside the chip instead of overflowing the row. */
+  max-width: 100%; overflow-wrap: anywhere;
+}
+.chip__x {
+  display: inline-flex; align-items: center; justify-content: center;
+  /* 24px is below the 44px touch target, so the chip row stays compact —
+     but this sits in a desktop-first admin panel with generous spacing. */
+  width: 22px; height: 22px; flex: none;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(0, 0, 0, .07); color: inherit;
+  font-size: 1rem; line-height: 1;
+}
+.chip__x:hover { background: rgba(0, 0, 0, .16); }
+.chip__x:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 1px; }
+
+.media-hero-warn {
+  font-size: .82rem; padding: 8px 12px; border-radius: 8px;
+  background: #fff5e0; border: 1px solid #f0c975; color: #7a5200;
+}
+.media-tile__actions {
+  display: flex; flex-wrap: wrap; gap: 4px; padding: 8px;
+  background: #fff; border-top: 1px solid var(--admin-line, #e8d5b7);
+}
+.media-tile__actions .btn { padding: 3px 8px; font-size: .72rem; min-height: 30px; }
+.media-progress {
+  position: relative; height: 22px; border-radius: 999px;
+  background: #f1e9d8; overflow: hidden; margin: 10px 0;
+}
+.media-progress span {
+  display: block; height: 100%; background: var(--gold, #d4a017); transition: width .2s ease;
+}
+.media-progress small {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: .72rem; font-weight: 700; color: #4a3a10;
+}
+
+/* ── List editor (benefits / steps / samagri / FAQs) ─────────────── */
+.list-editor { border: 1px solid var(--admin-line, #e8d5b7); border-radius: 12px; padding: 14px; background: #fffdf7; margin-bottom: 14px; }
+.list-editor__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.list-editor__head label { font-weight: 700; font-size: .9rem; }
+.list-editor__count { background: var(--gold, #d4a017); color: #fff; border-radius: 999px; padding: 1px 8px; font-size: .72rem; margin-left: 6px; }
+.list-editor__hint, .list-editor__empty { font-size: .8rem; opacity: .72; margin: 6px 0 0; }
+.list-editor__rows { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: le; }
+.list-editor__row { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid #f0e7d4; border-radius: 10px; background: #fff; margin-bottom: 8px; }
+.list-editor__index { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--gold, #d4a017); color: #fff; display: grid; place-items: center; font-size: .74rem; font-weight: 700; margin-top: 6px; }
+.list-editor__fields { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.list-editor__field { display: block; }
+.list-editor__field.is-full { grid-column: 1 / -1; }
+.list-editor__field span { display: block; font-size: .74rem; opacity: .7; margin-bottom: 3px; }
+.list-editor__actions { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.list-editor__actions .btn { padding: 2px 8px; min-height: 28px; font-size: .74rem; }
+@media (max-width: 640px) {
+  .list-editor__row { flex-wrap: wrap; }
+  .list-editor__actions { flex-direction: row; width: 100%; justify-content: flex-end; }
+}
+
+/* Online-puja allocation chip, paired with its service chip. */
+.admin-chip-wrap { display: inline-flex; align-items: stretch; gap: 3px; }
+.admin-chip--online {
+  padding-inline: 9px;
+  font-size: .95rem;
+  line-height: 1;
+}
+.admin-chip--online.is-on {
+  background: #e7f3ff;
+  border-color: #7fb7e8;
+  color: #1c4f7c;
+}
+
+/* ═══ Distribution Controls ═══════════════════════════════════════════════
+   Layout goal: the cost-per-lead cards are the first thing on the page and
+   the largest thing on it. Everything below is a control that changes them.
+   The earlier version put dense tables first and buried the number that
+   actually matters. */
+
+.dst { display: flex; flex-direction: column; gap: 18px; padding-bottom: 90px; }
+
+.dst-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-xs);
+  padding: 18px 20px 20px;
+}
+.dst-section__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.dst-section__head h3 {
+  margin: 0; font-family: var(--font-head); font-size: 1.05rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.dst-section__head svg { width: 18px; height: 18px; color: var(--gold-deep); }
+
+.dst-chip {
+  font-size: .74rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: var(--r-pill);
+  background: var(--gold-soft); color: var(--gold-deep);
+}
+.dst-chip.is-busy { opacity: .6; }
+
+/* ── the headline cards ────────────────────────────────────────────────── */
+.dst-cards {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+}
+.dst-card {
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: 16px; background: var(--ivory);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.dst-card.is-danger { border-color: var(--danger); background: #fef6f5; }
+
+.dst-card__name { font-family: var(--font-head); font-size: 1rem; }
+.dst-card__price { font-size: .82rem; color: var(--text-2); margin-top: -6px; }
+.dst-card__price span { opacity: .7; }
+
+/* The number the whole page exists to surface. */
+.dst-card__big {
+  font-family: var(--font-head); font-size: 1.85rem; line-height: 1.1;
+  font-variant-numeric: tabular-nums; color: var(--gold-deep);
+  display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+}
+.dst-card__big span { font-family: var(--font-body); font-size: .74rem; color: var(--text-2); }
+.dst-card.is-danger .dst-card__big { color: var(--danger); }
+
+.dst-card__row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: .84rem; gap: 8px;
+}
+.dst-card__row span { color: var(--text-2); }
+.dst-card__row strong { font-variant-numeric: tabular-nums; }
+.dst-card__seats { border-top: 1px solid var(--border-soft); padding-top: 10px; }
+.dst-card__seats small { font-size: .76rem; }
+.dst-card__seats small.is-warn { color: var(--danger); font-weight: 600; }
+
+.dst-bar { height: 6px; border-radius: 3px; background: var(--border-soft); overflow: hidden; margin: 6px 0 4px; }
+.dst-bar i { display: block; height: 100%; background: var(--gold); border-radius: 3px; }
+.dst-bar i.is-full { background: var(--gold-deep); }
+.dst-bar i.is-over { background: var(--danger); }
+
+/* ── alerts ────────────────────────────────────────────────────────────── */
+.dst-alert {
+  margin-top: 14px; padding: 11px 14px; border-radius: var(--r-md);
+  font-size: .87rem; line-height: 1.5; border: 1px solid transparent;
+}
+.dst-alert.is-error { background: #fdecea; border-color: #f3c0ba; color: var(--danger); font-weight: 500; }
+.dst-alert.is-warn  { background: var(--gold-soft); border-color: var(--gold); color: var(--gold-deep); }
+.dst-alert.is-ok    { background: #e3f6e9; border-color: #b9e2c6; color: var(--success); }
+
+/* ── the projection assumptions ────────────────────────────────────────── */
+.dst-assume {
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: .84rem;
+}
+.dst-assume > span { color: var(--text-2); }
+.dst-assume label { display: inline-flex; align-items: center; gap: 7px; color: var(--text-2); }
+.dst-assume input {
+  width: 6.5rem; padding: .38rem .5rem; text-align: right;
+  font-variant-numeric: tabular-nums; color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--white);
+}
+.dst-assume small { flex-basis: 100%; }
+
+/* ── mode picker ───────────────────────────────────────────────────────── */
+.dst-modes { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.dst-mode {
+  position: relative; text-align: left; cursor: pointer;
+  border: 1.5px solid var(--border); border-radius: var(--r-md);
+  background: var(--white); padding: 15px 16px 14px; font: inherit; color: inherit;
+  transition: border-color .15s, background .15s;
+}
+.dst-mode:hover { border-color: var(--gold); }
+.dst-mode.is-on { border-color: var(--gold-deep); background: var(--gold-soft); }
+.dst-mode strong { display: block; font-family: var(--font-head); font-size: .96rem; margin-bottom: 5px; padding-right: 26px; }
+.dst-mode p { margin: 0; font-size: .84rem; color: var(--text-2); line-height: 1.5; }
+.dst-mode__tick {
+  position: absolute; top: 14px; right: 14px;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: grid; place-items: center;
+}
+.dst-mode.is-on .dst-mode__tick { background: var(--gold-deep); border-color: var(--gold-deep); }
+.dst-mode__tick svg { width: 12px; height: 12px; color: var(--white); }
+
+/* ── plan editors ──────────────────────────────────────────────────────── */
+.dst-totals { display: flex; gap: 12px; flex-wrap: wrap; font-size: .8rem; font-variant-numeric: tabular-nums; }
+.dst-totals .is-ok { color: var(--success); }
+.dst-totals .is-bad { color: var(--danger); font-weight: 600; }
+
+.dst-plans { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }
+.dst-plan { border: 1px solid var(--border); border-radius: var(--r-md); padding: 15px 16px; background: var(--white); }
+.dst-plan.is-off { opacity: .55; }
+.dst-plan__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+.dst-plan__head strong { display: block; font-family: var(--font-head); font-size: .98rem; }
+.dst-plan__head small { color: var(--text-2); font-size: .78rem; }
+
+.dst-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--text-2); cursor: pointer; white-space: nowrap; }
+
+.dst-plan__grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); margin-bottom: 14px; }
+.dst-in { display: flex; flex-direction: column; gap: 4px; font-size: .76rem; color: var(--text-2); }
+.dst-in em { font-style: normal; opacity: .65; }
+.dst-in input {
+  padding: .45rem .55rem; font-size: .88rem; text-align: right;
+  font-variant-numeric: tabular-nums; color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--white); width: 100%;
+}
+.dst-in input:focus, .dst-mini:focus, .dst-assume input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+.dst-markets { display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-soft); padding-top: 12px; }
+.dst-market__name { display: flex; justify-content: space-between; font-size: .84rem; margin-bottom: 6px; }
+.dst-market__pct { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--gold-deep); }
+.dst-market__foot { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 7px; font-size: .74rem; color: var(--text-2); }
+.dst-market__foot label { display: inline-flex; align-items: center; gap: 6px; }
+.dst-mini {
+  width: 4.2rem; padding: .28rem .4rem; font-size: .82rem; text-align: right;
+  font-variant-numeric: tabular-nums; color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--white);
+}
+
+/* ── sliders: one consistent look, filled to the current value ─────────── */
+.dst input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; border-radius: 3px; cursor: pointer;
+  background: linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct, 50%), var(--border-soft) var(--pct, 50%), var(--border-soft) 100%);
+}
+.dst input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--white); border: 2px solid var(--gold-deep);
+  box-shadow: var(--sh-xs); cursor: grab;
+}
+.dst input[type="range"]::-moz-range-thumb {
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--white); border: 2px solid var(--gold-deep); box-shadow: var(--sh-xs); cursor: grab;
+}
+
+/* ── fairness knobs ────────────────────────────────────────────────────── */
+.dst-knobs { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.dst-knob__top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; gap: 8px; }
+.dst-knob__label { font-size: .86rem; }
+.dst-knob__val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--gold-deep); }
+.dst-knob__hint { margin: 6px 0 0; font-size: .75rem; color: var(--text-2); line-height: 1.45; }
+
+.dst-more { margin-top: 16px; }
+.dst-more > summary {
+  cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--gold-deep);
+  padding: 8px 0; list-style: none; display: flex; align-items: center; gap: 6px;
+}
+.dst-more > summary::-webkit-details-marker { display: none; }
+.dst-more > summary::before { content: "▸"; transition: transform .15s; }
+.dst-more[open] > summary::before { transform: rotate(90deg); }
+.dst-more > summary + * { margin-top: 12px; }
+
+.dst-note {
+  margin: 14px 0 0; padding-top: 13px; border-top: 1px solid var(--border-soft);
+  font-size: .82rem; color: var(--text-2); line-height: 1.55;
+}
+
+/* ── sticky save bar ───────────────────────────────────────────────────────
+   The page is long enough that the header button scrolls away. Losing edits
+   because the save button was off-screen is a real failure mode. */
+.dst-savebar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 12px 22px; flex-wrap: wrap;
+  background: var(--white); border-top: 1px solid var(--border); box-shadow: 0 -6px 20px rgb(0 0 0 / 8%);
+}
+.dst-savebar > span { font-size: .87rem; font-weight: 600; color: var(--gold-deep); }
+.dst-savebar > div { display: flex; gap: 10px; }
+
+@media (max-width: 640px) {
+  .dst-section { padding: 15px 14px 16px; }
+  .dst-card__big { font-size: 1.55rem; }
+  .dst-savebar { padding: 10px 14px; }
+  .dst-savebar > div { flex: 1; }
+  .dst-savebar .btn { flex: 1; }
 }

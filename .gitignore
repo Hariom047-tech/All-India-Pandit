@@ -14,3 +14,7 @@ frontend/app/dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Uploaded media (served from backend/public) — user content, not source.
+backend/public/uploads/**
+!backend/public/uploads/**/.gitkeep

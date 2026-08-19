@@ -163,6 +163,15 @@
   border: 4px solid #fff;
   background: var(--cream);
   box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  /* Was a framer-motion `layout` animation (Phase 12, docs/SEO_ARCHITECTURE.md)
+     — the exact same position/size interpolation as a plain CSS transition
+     on the properties .pos-0/1/2 actually change, at a fraction of the JS
+     cost, and it's the one thing keeping framer-motion in Home's eagerly-
+     loaded bundle. cubic-bezier here approximates the original spring's
+     slight overshoot rather than a flat ease. */
+  transition: top .5s cubic-bezier(.34, 1.56, .64, 1), left .5s cubic-bezier(.34, 1.56, .64, 1),
+    margin .5s cubic-bezier(.34, 1.56, .64, 1), width .5s cubic-bezier(.34, 1.56, .64, 1),
+    height .5s cubic-bezier(.34, 1.56, .64, 1), border-color .3s;
 }
 
 .hero-astro__circle img {
@@ -428,13 +437,13 @@
   }
   .pos-1 {
     width: 104px; height: 150px;
-    margin-top: -75px; margin-left: -178px;
+    margin-top: -75px; margin-left: -168px;
     border-radius: 32px;
     opacity: 0.92;
   }
   .pos-2 {
     width: 104px; height: 150px;
-    margin-top: -75px; margin-left: 74px;
+    margin-top: -75px; margin-left: 68px;
     border-radius: 32px;
     opacity: 0.92;
   }

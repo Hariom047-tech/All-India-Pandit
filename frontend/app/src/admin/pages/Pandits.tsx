@@ -156,7 +156,10 @@ export default function AdminPandits() {
                         <Icon name="sparkles" size={13} /> {p.is_featured ? "Featured" : "Feature"}
                       </button>
                     </td>
-                    <td><Link className="btn btn-outline btn-sm" to={`${ADMIN_BASE}/pandits/${p.slug}`}>Edit</Link></td>
+                    <td className="row" style={{ gap: 6 }}>
+                      <Link className="btn btn-outline btn-sm" to={`${ADMIN_BASE}/pandits/${p.slug}`}>Edit</Link>
+                      <Link className="btn btn-outline btn-sm" to={`${ADMIN_BASE}/pandits/${p.slug}/analytics`}>Analytics</Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

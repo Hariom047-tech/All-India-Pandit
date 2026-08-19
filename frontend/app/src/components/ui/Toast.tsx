@@ -1,5 +1,4 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { Icon } from "../../lib/icons";
 
 interface ToastItem {
@@ -13,34 +12,51 @@ export function useToast() {
   return useContext(ToastCtx);
 }
 
+const VISIBLE_MS = 3200;
+// Must match .toast--leaving's transition duration in base.css.
+const EXIT_MS = 250;
+
+/** CSS-only enter/exit (base.css's existing `fadeUp` keyframe for enter, a
+ *  `.toast--leaving` transition for exit) instead of framer-motion's
+ *  AnimatePresence — same visual result, but ToastProvider wraps every
+ *  route (App.tsx), so this was the one thing keeping framer-motion in
+ *  EVERY page's critical bundle, not just Home's (Phase 12,
+ *  docs/SEO_ARCHITECTURE.md). */
+function ToastEntry({ msg, onDone }: { msg: string; onDone: () => void }) {
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => {
+    const leaveTimer = setTimeout(() => setLeaving(true), VISIBLE_MS);
+    return () => clearTimeout(leaveTimer);
+  }, []);
+  useEffect(() => {
+    if (!leaving) return;
+    const removeTimer = setTimeout(onDone, EXIT_MS);
+    return () => clearTimeout(removeTimer);
+  }, [leaving, onDone]);
+
+  return (
+    <div className={`toast${leaving ? " toast--leaving" : ""}`} role="status">
+      <Icon name="check-circle" size={18} />
+      <span>{msg}</span>
+    </div>
+  );
+}
+
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<ToastItem[]>([]);
 
   const push = useCallback((msg: string) => {
     const id = Date.now() + Math.random();
     setItems((prev) => [...prev, { id, msg }]);
-    setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), 3200);
   }, []);
 
   return (
     <ToastCtx.Provider value={push}>
       {children}
       <div className="toast-host">
-        <AnimatePresence>
-          {items.map((t) => (
-            <motion.div
-              key={t.id}
-              className="toast"
-              role="status"
-              initial={{ opacity: 0, y: 12, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.25 } }}
-            >
-              <Icon name="check-circle" size={18} />
-              <span>{t.msg}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {items.map((t) => (
+          <ToastEntry key={t.id} msg={t.msg} onDone={() => setItems((prev) => prev.filter((x) => x.id !== t.id))} />
+        ))}
       </div>
     </ToastCtx.Provider>
   );

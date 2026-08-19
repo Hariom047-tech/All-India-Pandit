@@ -2,7 +2,9 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import { adminApi, ADMIN_BASE, type Paged } from "../lib/adminApi";
 import { Icon } from "../../lib/icons";
-import { languages as ALL_LANGUAGES } from "../../data/content";
+import { MediaManager } from "../components/MediaManager";
+
+const ALL_LANGUAGES = ["Hindi", "Sanskrit", "English", "Tamil", "Telugu", "Kannada", "Marathi", "Bengali", "Gujarati", "Odia", "Assamese", "Maithili", "Punjabi"];
 
 interface FullPandit {
   id: string;
@@ -25,10 +27,15 @@ interface FullPandit {
   city: string;
   state: string;
   languages: string[];
-  services: { slug: string; name: string }[];
+  services: { slug: string; name: string; offers_online?: boolean; is_online_available?: boolean }[];
+  vedic_education?: string | null;
+  gotra?: string | null;
+  tradition?: string | null;
+  responds_within?: string | null;
+  accepts_online?: boolean;
   temples: { slug: string; name: string; association_type: string; is_primary: boolean }[];
 }
-interface ServiceOpt { slug: string; name: string; }
+interface ServiceOpt { slug: string; name: string; is_online_available?: boolean; }
 interface TempleOpt { slug: string; name: string; city: string; }
 
 export default function PanditEdit() {
@@ -37,6 +44,8 @@ export default function PanditEdit() {
   const [allServices, setAllServices] = useState<ServiceOpt[]>([]);
   const [allTemples, setAllTemples] = useState<TempleOpt[]>([]);
   const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set());
+  /** Subset of selectedServices this pandit performs remotely. */
+  const [onlineServices, setOnlineServices] = useState<Set<string>>(new Set());
   const [selectedTemples, setSelectedTemples] = useState<Set<string>>(new Set());
   const [selectedLangs, setSelectedLangs] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
@@ -55,6 +64,7 @@ export default function PanditEdit() {
         setAllServices(s.data);
         setAllTemples(t.data);
         setSelectedServices(new Set(p.services.map((x) => x.slug)));
+        setOnlineServices(new Set(p.services.filter((x) => x.offers_online).map((x) => x.slug)));
         setSelectedTemples(new Set(p.temples.map((x) => x.slug)));
         setSelectedLangs(new Set(p.languages));
       })
@@ -89,7 +99,16 @@ export default function PanditEdit() {
         publicPhone: data.get("publicPhone"),
         isAvailable: data.get("isAvailable") === "on",
         languages: Array.from(selectedLangs),
-        services: Array.from(selectedServices),
+        // {slug, online} pairs so the backend can record who performs which
+        // ritual remotely. Plain slugs are still accepted server-side.
+        vedicEducation: (document.getElementById("vedicEducation") as HTMLInputElement)?.value ?? undefined,
+        gotra: (document.getElementById("gotra") as HTMLInputElement)?.value ?? undefined,
+        tradition: (document.getElementById("tradition") as HTMLInputElement)?.value ?? undefined,
+        respondsWithin: (document.getElementById("respondsWithin") as HTMLInputElement)?.value ?? undefined,
+        acceptsOnline: (document.getElementById("acceptsOnline") as HTMLInputElement)?.checked ?? undefined,
+        services: Array.from(selectedServices).map((slug) => ({
+          slug, online: onlineServices.has(slug),
+        })),
         temples: Array.from(selectedTemples),
       });
       setPandit(updated);
@@ -106,6 +125,37 @@ export default function PanditEdit() {
     await adminApi.post(`/pandits/${pandit.slug}/verify`, { action });
     const fresh = await adminApi.get<FullPandit>(`/pandits/${pandit.slug}`);
     setPandit(fresh);
+  }
+
+  const [newPassword, setNewPassword] = useState("");
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwNotice, setPwNotice] = useState("");
+  const [dob, setDob] = useState("");
+  const [dobBusy, setDobBusy] = useState(false);
+
+  async function resetPandinPassword() {
+    if (!pandit) return;
+    setPwBusy(true); setPwNotice("");
+    try {
+      await adminApi.post(`/pandits/${pandit.slug}/reset-password`, { temporaryPassword: newPassword });
+      // Cleared immediately: this value should not linger in component state
+      // or in React DevTools any longer than the request needs it.
+      setNewPassword("");
+      setPwNotice("Password reset ho gaya. Sessions revoke kar diye gaye.");
+    } catch (err) {
+      setPwNotice(err instanceof Error ? err.message : "Reset nahi ho paya.");
+    } finally { setPwBusy(false); }
+  }
+
+  async function saveDob() {
+    if (!pandit) return;
+    setDobBusy(true);
+    try {
+      await adminApi.put(`/pandits/${pandit.slug}/date-of-birth`, { dateOfBirth: dob });
+      setPwNotice("Date of birth save ho gayi.");
+    } catch (err) {
+      setPwNotice(err instanceof Error ? err.message : "Save nahi ho paya.");
+    } finally { setDobBusy(false); }
   }
 
   async function setTier(tier: string) {
@@ -180,12 +230,68 @@ export default function PanditEdit() {
               </div>
             </div>
 
+            <div className="admin-form-grid" style={{ marginTop: 18 }}>
+              <div className="admin-field">
+                <label htmlFor="vedicEducation">Vedic education</label>
+                <input className="input" id="vedicEducation" defaultValue={pandit.vedic_education || ""}
+                  placeholder="Acharya, Sanskrit &amp; Jyotish — Ujjain" />
+              </div>
+              <div className="admin-field">
+                <label htmlFor="gotra">Gotra</label>
+                <input className="input" id="gotra" defaultValue={pandit.gotra || ""} placeholder="Bharadwaj" />
+              </div>
+              <div className="admin-field">
+                <label htmlFor="tradition">Tradition / sampradaya</label>
+                <input className="input" id="tradition" defaultValue={pandit.tradition || ""} placeholder="Shakt" />
+              </div>
+              <div className="admin-field">
+                <label htmlFor="respondsWithin">Response time</label>
+                <input className="input" id="respondsWithin" defaultValue={pandit.responds_within || ""}
+                  placeholder="Usually replies within 2 hours" />
+                <small style={{ opacity: .7 }}>Free text. Blank = section hidden.</small>
+              </div>
+              <div className="admin-field">
+                <label className="row" style={{ gap: 8, marginTop: 22 }}>
+                  <input type="checkbox" id="acceptsOnline" defaultChecked={pandit.accepts_online} />
+                  Accepts online puja
+                </label>
+              </div>
+            </div>
+
             <div className="admin-field admin-field--full" style={{ marginTop: 18 }}>
               <label>Services offered <span className="hint">({selectedServices.size} selected)</span></label>
+              <p className="hint" style={{ margin: "0 0 8px" }}>
+                Service select karein. Jo ritual online ho sakta hai uske aage 🌐 dabakar
+                is Pandit ji ko online havan ke liye allocate karein.
+              </p>
               <div className="admin-chip-grid">
-                {allServices.map((s) => (
-                  <button type="button" key={s.slug} className={`admin-chip${selectedServices.has(s.slug) ? " is-on" : ""}`} onClick={() => toggle(selectedServices, setSelectedServices, s.slug)}>{s.name}</button>
-                ))}
+                {allServices.map((s) => {
+                  const on = selectedServices.has(s.slug);
+                  const online = onlineServices.has(s.slug);
+                  return (
+                    <span key={s.slug} className="admin-chip-wrap">
+                      <button
+                        type="button"
+                        className={`admin-chip${on ? " is-on" : ""}`}
+                        onClick={() => {
+                          toggle(selectedServices, setSelectedServices, s.slug);
+                          // Deselecting a service must clear its online flag,
+                          // otherwise a hidden true survives the next save.
+                          if (on && online) toggle(onlineServices, setOnlineServices, s.slug);
+                        }}
+                      >{s.name}</button>
+                      {on && s.is_online_available && (
+                        <button
+                          type="button"
+                          className={`admin-chip admin-chip--online${online ? " is-on" : ""}`}
+                          title={online ? "Online allocated — click to remove" : "Allocate for online puja"}
+                          aria-pressed={online}
+                          onClick={() => toggle(onlineServices, setOnlineServices, s.slug)}
+                        >🌐</button>
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -210,6 +316,52 @@ export default function PanditEdit() {
             {["free", "silver", "gold", "diamond"].map((t) => (
               <button key={t} className={`btn btn-sm ${pandit.current_tier === t ? "btn-gold" : "btn-outline"}`} onClick={() => setTier(t)} style={{ textTransform: "capitalize" }}>{t}</button>
             ))}
+          </div>
+        </div>
+
+        <MediaManager slug={pandit.slug} />
+
+        <div className="admin-panel">
+          <div className="admin-panel__head"><h2>Account access</h2></div>
+          <div className="admin-panel__body">
+            {/* A reset, never a reveal: the stored value is a bcrypt hash, so
+                the existing password cannot be displayed by design. */}
+            <label className="admin-field" style={{ display: "block" }}>
+              <span>New temporary password</span>
+              <input
+                className="input" type="text" autoComplete="off" minLength={8}
+                value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="min 8 chars, ek letter + ek number"
+              />
+            </label>
+            <button
+              className="btn btn-outline btn-block" style={{ marginTop: 10 }}
+              disabled={pwBusy || newPassword.length < 8}
+              onClick={resetPandinPassword}
+            >
+              {pwBusy ? "Resetting…" : "Reset Pandit Password"}
+            </button>
+            {pwNotice && <p style={{ marginTop: 8, fontSize: ".85rem" }}>{pwNotice}</p>}
+            <p className="muted" style={{ fontSize: ".8rem", marginTop: 8 }}>
+              Reset karte hi pandit ke saare active sessions logout ho jaayenge.
+              Purana password kabhi dikhaya nahi ja sakta.
+            </p>
+
+            <hr style={{ margin: "16px 0", border: 0, borderTop: "1px solid var(--admin-line, #e8d5b7)" }} />
+
+            <label className="admin-field" style={{ display: "block" }}>
+              <span>Date of birth (password-reset factor)</span>
+              <input
+                className="input" type="date" max={new Date().toISOString().slice(0, 10)}
+                value={dob} onChange={(e) => setDob(e.target.value)}
+              />
+            </label>
+            <button
+              className="btn btn-outline btn-block" style={{ marginTop: 10 }}
+              disabled={dobBusy || !dob} onClick={saveDob}
+            >
+              {dobBusy ? "Saving…" : "Save date of birth"}
+            </button>
           </div>
         </div>
 

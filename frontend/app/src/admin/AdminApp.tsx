@@ -9,12 +9,20 @@ import PanditEdit from "./pages/PanditEdit";
 import AdminTemples from "./pages/Temples";
 import AdminServices from "./pages/Services";
 import AdminReviews from "./pages/Reviews";
+import AdminFaqs from "./pages/Faqs";
 import AdminUsers from "./pages/Users";
+import AdminUserDetail from "./pages/UserDetail";
+import AdminUsersList from "./pages/AdminUsersList";
+import AdminPanditAnalytics from "./pages/PanditAnalytics";
 import AdminInquiries from "./pages/Inquiries";
 import AdminAnalytics from "./pages/Analytics";
 import AdminSecurity from "./pages/Security";
 import AdminSettings from "./pages/Settings";
-import LeadDistribution from "./pages/LeadDistribution";
+import Distribution from "./pages/Distribution";
+import AiKnowledge from "./pages/AiKnowledge";
+import AiAnalytics from "./pages/AiAnalytics";
+import Plans from "./pages/Plans";
+import HomeSettings from "./pages/HomeSettings";
 import "./admin.css";
 
 export default function AdminApp() {
@@ -27,13 +35,21 @@ export default function AdminApp() {
           <Route path="pandits" element={<AdminPandits />} />
           <Route path="pandits/new" element={<CreatePandit />} />
           <Route path="pandits/:id" element={<PanditEdit />} />
+          <Route path="pandits/:id/analytics" element={<AdminPanditAnalytics />} />
           <Route path="temples" element={<AdminTemples />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="reviews" element={<AdminReviews />} />
+          <Route path="faqs" element={<AdminFaqs />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:id" element={<AdminUserDetail />} />
+          <Route path="admin-users" element={<AdminUsersList />} />
           <Route path="inquiries" element={<AdminInquiries />} />
           <Route path="analytics" element={<AdminAnalytics />} />
-          <Route path="leads" element={<LeadDistribution />} />
+          <Route path="distribution" element={<Distribution />} />
+          <Route path="ai-knowledge" element={<AiKnowledge />} />
+          <Route path="ai-analytics" element={<AiAnalytics />} />
+          <Route path="plans" element={<Plans />} />
+          <Route path="home" element={<HomeSettings />} />
           <Route path="security" element={<AdminSecurity />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>

@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const ctrl = require('../../controllers/admin/pandits.controller');
 const { requireAdmin, adminHandler } = require('../../middleware/admin');
+const mediaCtrl = require('../../controllers/admin/media.controller');
+const { handlePanditMediaUpload } = require('../../middleware/panditMedia');
 
 const router = Router();
 router.use(requireAdmin);
@@ -13,6 +15,22 @@ router.put('/:id', adminHandler(ctrl.update));
 router.post('/:id/verify', adminHandler(ctrl.verify));
 router.post('/:id/toggle-featured', adminHandler(ctrl.toggleFeatured));
 router.get('/:id/analytics', adminHandler(ctrl.analytics));
+router.get('/:id/leads', adminHandler(ctrl.leads));
 router.post('/:id/subscription', adminHandler(ctrl.setSubscription));
+
+// Support path for a locked-out pandit. A reset, never a reveal: the stored
+// value is a bcrypt hash, so the old password cannot be recovered by design.
+router.post('/:id/reset-password', adminHandler(ctrl.resetPassword));
+// Maintains the second factor used by the pandit's own email+DOB reset.
+router.put('/:id/date-of-birth', adminHandler(ctrl.setDateOfBirth));
+
+// Profile photos and intro videos. handlePanditMediaUpload runs BEFORE
+// adminHandler so multer has parsed the multipart body (and rejected an
+// oversized or wrong-typed file) before a database transaction is opened.
+router.get('/:id/media', adminHandler(mediaCtrl.list));
+router.post('/:id/media', handlePanditMediaUpload, adminHandler(mediaCtrl.upload));
+router.delete('/:id/media/:mediaId', adminHandler(mediaCtrl.remove));
+router.put('/:id/media/reorder', adminHandler(mediaCtrl.reorder));
+router.post('/:id/media/:mediaId/primary', adminHandler(mediaCtrl.setPrimaryPhoto));
 
 module.exports = router;

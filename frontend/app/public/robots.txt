@@ -1,0 +1,23 @@
+# Search engines index whatever they can reach. An admin panel that appears in
+# Google is found by people who were never looking for it — this is the most
+# common way private surfaces get discovered, far more common than path guessing.
+#
+# This is NOT an access control. Disallow is a request, honoured by mainstream
+# crawlers and ignored by everything hostile. Real access control is the
+# password + TOTP gate on the API, plus (recommended) an IP allow-list in nginx.
+
+User-agent: *
+Disallow: /admin-panel
+Disallow: /admin-panel/
+Disallow: /pandit/
+Disallow: /pandit-login
+Disallow: /pandit-forgot-password
+Disallow: /dashboard
+Disallow: /uploads/
+Disallow: /api/
+Disallow: /login
+Disallow: /search
+
+Allow: /
+
+Sitemap: https://panditsuggest.com/sitemap.xml

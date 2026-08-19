@@ -21,15 +21,27 @@ const NAV: { group: string; items: { to: string; label: string; icon: string; en
     group: "Engagement",
     items: [
       { to: `${ADMIN_BASE}/reviews`, label: "Reviews", icon: "star" },
+      { to: `${ADMIN_BASE}/faqs`, label: "FAQs", icon: "help-circle" },
       { to: `${ADMIN_BASE}/inquiries`, label: "Inquiries", icon: "inbox" },
       { to: `${ADMIN_BASE}/users`, label: "Users", icon: "user" },
+    ],
+  },
+  {
+    // The assistant's own surface: what it is allowed to say, and what it is
+    // being asked that we cannot answer.
+    group: "AI Assistant",
+    items: [
+      { to: `${ADMIN_BASE}/ai-knowledge`, label: "AI Knowledge Base", icon: "sparkles" },
+      { to: `${ADMIN_BASE}/ai-analytics`, label: "AI Analytics", icon: "bar-chart" },
     ],
   },
   {
     group: "Platform",
     items: [
       { to: `${ADMIN_BASE}/analytics`, label: "Analytics", icon: "bar-chart" },
-      { to: `${ADMIN_BASE}/leads`, label: "Lead Distribution", icon: "trending-up" },
+      { to: `${ADMIN_BASE}/distribution`, label: "Distribution Controls", icon: "sliders" },
+      { to: `${ADMIN_BASE}/plans`, label: "Plans & Pricing", icon: "star" },
+      { to: `${ADMIN_BASE}/home`, label: "Home Page", icon: "home" },
       { to: `${ADMIN_BASE}/security`, label: "Security", icon: "shield-check" },
       { to: `${ADMIN_BASE}/settings`, label: "Settings", icon: "settings" },
     ],

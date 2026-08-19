@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useInViewOnce } from "../../lib/useInViewOnce";
 
 export function CountUp({ raw }: { raw: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const { ref, visible: inView } = useInViewOnce<HTMLSpanElement>();
   const [display, setDisplay] = useState(raw.replace(/[0-9,]/g, (c) => (c === "," ? "," : "0")));
 
   useEffect(() => {
@@ -29,14 +28,8 @@ export function CountUp({ raw }: { raw: string }) {
   }, [inView, raw]);
 
   return (
-    <motion.span
-      ref={ref}
-      className="stat-num"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={inView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.4 }}
-    >
+    <span ref={ref} className={`stat-num card-reveal${inView ? " is-visible" : ""}`}>
       {display}
-    </motion.span>
+    </span>
   );
 }

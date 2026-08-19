@@ -1,9 +1,14 @@
 services:
   db:
-    # postgis/postgis ships Postgres 16 + the PostGIS extension baked in
-    # (needed for the geospatial indexes in backend/src/db/01-schema.sql).
-    # Same docker-entrypoint-initdb.d mechanism as plain postgres:16-alpine.
-    image: postgis/postgis:16-3.4-alpine
+    # Built locally because we need PostGIS *and* pgvector in one image and no
+    # published image has both: 01-schema.sql uses PostGIS for the geospatial
+    # temple/pandit indexes, migration 12 uses pgvector for AI knowledge
+    # retrieval. See docker/postgres/Dockerfile.
+    # Rebuild with:  docker compose build db && docker compose up -d db
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
+    image: panditconnect-postgres:16-postgis-pgvector
     container_name: panditconnect-db
     restart: unless-stopped
     environment:
@@ -58,8 +63,22 @@ services:
       ADMIN_SECRET_PATH: "${ADMIN_SECRET_PATH}"
       GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
       GOOGLE_SECRET_KEY: "${GOOGLE_SECRET_KEY}"
+      # AI / RAG — required for embedding queries and generating answers.
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}"
     ports:
-      - "4000:4000" # exposed directly too, handy for `curl`/Postman while developing
+      # Loopback only. The distribution/fairness engine trusts a handful of
+      # geo headers (cloudfront-viewer-country etc.) as coming from the edge —
+      # see services/distribution/market.js's countryFromEdge(). Publishing
+      # this on every interface (the old "4000:4000") would let anyone bypass
+      # nginx/CloudFront entirely and forge that header straight at the
+      # origin, buying themselves the international pandit pool for free.
+      # `curl`/Postman access from the production host itself still works via
+      # this loopback binding or an SSH tunnel; docker-compose.override.yml
+      # re-publishes this on all interfaces for local development, where
+      # there is no CDN in front of it to bypass.
+      - "127.0.0.1:4000:4000"
     depends_on:
       db:
         condition: service_healthy
@@ -78,6 +97,9 @@ services:
         # VITE_ADMIN_SECRET_PATH removed (security fix C3): admin panel is now
         # at /admin-panel; backend secret path resolved at runtime, not build time.
         VITE_GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+        # Browser key for the admin temple location picker. Public by nature —
+        # protect it with an HTTP-referrer restriction, not by hiding it.
+        VITE_GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY:-}"
     container_name: panditconnect-frontend
     restart: unless-stopped
     ports:

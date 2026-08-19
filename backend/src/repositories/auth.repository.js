@@ -11,6 +11,12 @@ async function findByEmail(email) {
   return rows[0] || null;
 }
 
+/** Same chicken-and-egg as findByEmail, same fix — see 23-otp-phone-login.sql. */
+async function findByPhone(phone) {
+  const { rows } = await query('SELECT * FROM auth_find_user_by_phone($1)', [phone]);
+  return rows[0] || null;
+}
+
 /** Reads a user's own row. Requires RLS context — call via
  *  withUserContext(userId, (q) => repo.findById(userId, q)). */
 async function findById(id, q = query) {
@@ -30,9 +36,11 @@ async function findById(id, q = query) {
 async function create({ email, phone, passwordHash, fullName, role, googleId }) {
   const id = crypto.randomUUID();
   const { rows } = await withUserContext(id, (q) => q(
-    `INSERT INTO users (id, email, phone, password_hash, full_name, role, status, google_id)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-    [id, email, phone || null, passwordHash || null, fullName, role || 'devotee', googleId ? 'active' : 'pending_verification', googleId || null],
+    `INSERT INTO users (id, email, phone, password_hash, full_name, role, status, google_id, email_verified)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+    [id, email, phone || null, passwordHash || null, fullName, role || 'devotee',
+     googleId ? 'active' : 'pending_verification', googleId || null,
+     googleId ? true : false],  // Google users have their email verified by Google
   ));
   return rows[0];
 }
@@ -89,7 +97,8 @@ async function findActiveSessionByTokenHash(tokenHash) {
   // to that user's own active session first, via this setting.
   return withSetting('app.session_token_hash', tokenHash, async (q) => {
     const { rows } = await q(
-      `SELECT s.id AS session_id, u.id AS user_id, u.email, u.role, u.full_name, u.status
+      `SELECT s.id AS session_id, u.id AS user_id, u.email, u.role, u.full_name, u.status,
+              u.phone_verified, u.email_verified, u.phone
        FROM user_sessions s JOIN users u ON u.id = s.user_id
        WHERE s.token_hash = $1 AND s.revoked_at IS NULL AND s.expires_at > NOW() AND u.deleted_at IS NULL`,
       [tokenHash],
@@ -179,7 +188,7 @@ async function markTargetVerified(userId, targetType, q = query) {
 }
 
 module.exports = {
-  findByEmail, findById, create, createPandit, createSession, findActiveSessionByTokenHash,
+  findByEmail, findByPhone, findById, create, createPandit, createSession, findActiveSessionByTokenHash,
   revokeSession, revokeAllSessions, touchLogin, createOtp, findLatestOtp, markOtpVerified,
   incrementOtpAttempts, markTargetVerified, softDeleteAccount, exportAccountData, linkGoogleId,
 };

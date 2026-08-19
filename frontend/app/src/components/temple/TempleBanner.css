@@ -142,3 +142,38 @@
     0 0 60px rgba(212, 160, 23, 0.08);
 }
 
+
+/* ── Hero video ──────────────────────────────────────────────────
+   A video is now a slide inside the same slider as the photos, not a
+   separate layer over it, so it is pinned to the slide exactly the way
+   .detail-banner__img is. Banner geometry, title card and shimmer
+   overlay are unchanged either way. */
+.detail-banner__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* fill the banner; temple footage is usually landscape */
+  display: block;
+  background: #12100c;
+}
+.detail-banner__sound {
+  position: absolute;
+  top: 16px; right: 16px;
+  z-index: 4;
+  width: 42px; height: 42px;
+  border: 0; border-radius: 50%;
+  background: rgba(0, 0, 0, .45);
+  backdrop-filter: blur(4px);
+  color: #fff; font-size: 1rem; cursor: pointer;
+}
+.detail-banner__sound:hover { background: rgba(0, 0, 0, .62); }
+.detail-banner__sound:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 2px; }
+@media (max-width: 600px) {
+  .detail-banner__sound { width: 38px; height: 38px; top: 12px; right: 12px; }
+}
+/* Reduced motion is handled in TempleBanner.tsx now — the component skips
+   autoplay and auto-advance, so the video sits paused on its poster frame.
+   `display: none` was right when the video was a full-bleed layer with a photo
+   slider behind it; as a slide it would leave an empty black panel in the
+   rotation instead. */

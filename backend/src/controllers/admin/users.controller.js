@@ -4,8 +4,18 @@ const { logAdminAction } = require('../../utils/adminLog');
 
 async function list(req, res) {
   const paging = readPaging(req.query, 25, 100);
-  const { search, role, status, city, state } = req.query;
-  const { data, total } = await repo.list(req.db, { search, role, status, city, state, page: paging.page, perPage: paging.perPage });
+  const { search, status, city, state } = req.query;
+  const { data, total } = await repo.list(req.db, { search, status, city, state, page: paging.page, perPage: paging.perPage });
+  res.json(paginationEnvelope(data, paging, total));
+}
+
+/** GET /admin/admin-users — the separate screen for admin/super_admin
+ *  accounts, so they no longer need to leak into the devotee list to be
+ *  visible anywhere at all. */
+async function listAdmins(req, res) {
+  const paging = readPaging(req.query, 25, 100);
+  const { search } = req.query;
+  const { data, total } = await repo.listAdmins(req.db, { search, page: paging.page, perPage: paging.perPage });
   res.json(paginationEnvelope(data, paging, total));
 }
 
@@ -51,4 +61,14 @@ async function remove(req, res) {
   res.json({ ok: true });
 }
 
-module.exports = { list, getById, update, suspend, ban, remove };
+/** GET /admin/users/:id/activity — real timeline, real summary numbers, see
+ *  Section 13/55/71's exact required shape. */
+async function activity(req, res) {
+  const user = await repo.getById(req.db, req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const paging = readPaging(req.query, 30, 100);
+  const data = await repo.activity(req.db, req.params.id, { page: paging.page, perPage: paging.perPage });
+  res.json({ user: { id: user.id, name: user.full_name }, ...data, page: paging.page, perPage: paging.perPage });
+}
+
+module.exports = { list, listAdmins, getById, update, suspend, ban, remove, activity };

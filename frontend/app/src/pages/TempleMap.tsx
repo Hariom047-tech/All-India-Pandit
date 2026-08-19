@@ -1,8 +1,10 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { temples, states, services, templesForService } from "../data/content";
+import { useTemples, useServices } from "../hooks/useData";
+import { normTemples, normServices } from "../lib/normalize";
 import { RatingCompact, RatingRow } from "../components/ui/StarRating";
+import { Seo } from "../lib/Seo";
 
 const W = 620, H = 700, PAD = 20;
 const LAT0 = 37.2, LAT1 = 7.6, LNG0 = 67.6, LNG1 = 97.8;
@@ -28,9 +30,14 @@ const INDIA_OUTLINE: [number, number][] = [
 const path = INDIA_OUTLINE.map(([lat, lng], i) => {
   const [x, y] = proj(lat, lng);
   return `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
-}).join(" ") + " Z";
+}).join(" ") + "Z";
 
 export default function TempleMap() {
+  const { data: rawTemples } = useTemples({ perPage: 50 });
+  const { data: rawServices } = useServices();
+  const temples = useMemo(() => normTemples(rawTemples), [rawTemples]);
+  const services = useMemo(() => normServices(rawServices), [rawServices]);
+
   const [stateFilter, setStateFilter] = useState("");
   const [svcFilter, setSvcFilter] = useState("");
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -38,12 +45,12 @@ export default function TempleMap() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<Record<string, SVGGElement | null>>({});
 
-  const usedStates = states.filter((s) => temples.some((t) => t.state === s));
-  const usedServices = services.filter((s) => templesForService(s.id).length);
+  const usedStates = useMemo(() => [...new Set(temples.map(t => t.state))].sort(), [temples]);
+  const usedServices = useMemo(() => services.filter(s => temples.some(t => t.services.includes(s.id))), [services, temples]);
 
   const list = useMemo(
     () => temples.filter((t) => (!stateFilter || t.state === stateFilter) && (!svcFilter || t.services.includes(svcFilter))),
-    [stateFilter, svcFilter],
+    [temples, stateFilter, svcFilter],
   );
 
   const active = activeId ? temples.find((t) => t.id === activeId) : null;
@@ -60,6 +67,11 @@ export default function TempleMap() {
 
   return (
     <>
+      <Seo
+        title="Temple Map — Explore Temples Across India"
+        description="An interactive map of temples across India. Find one near you and see the Pandits and puja services associated with it."
+        path="/temple-map"
+      />
       <section className="page-hero">
         <img src="/assets/img/mandala.svg" className="watermark watermark--tr" alt="" />
         <div className="shell" style={{ position: "relative", zIndex: 1 }}>

@@ -19,7 +19,19 @@ async function identify(req) {
   if (!token) return null;
   const session = await repo.findActiveSessionByTokenHash(hashToken(token));
   if (!session) return null;
-  return { id: session.user_id, email: session.email, role: session.role, fullName: session.full_name };
+  // status + phone_verified travel with every request: the qualified-lead
+  // rule and the review gate both depend on them, and re-querying per check
+  // would be a second round trip on a hot path.
+  return {
+    id: session.user_id,
+    email: session.email,
+    role: session.role,
+    fullName: session.full_name,
+    status: session.status,
+    phone_verified: session.phone_verified,
+    email_verified: session.email_verified,  // needed for Google-user review gate
+    phone: session.phone,
+  };
 }
 
 /** Attaches req.user (or null) without rejecting the request. */

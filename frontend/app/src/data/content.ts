@@ -2,10 +2,8 @@ import type {
   Service,
   Temple,
   Pandit,
-  Festival,
   Review,
   BlogPost,
-  Panchang,
   Plan,
   Faq,
   Stat,
@@ -96,51 +94,6 @@ export const pandits: Pandit[] = [
   { id: "lakshman-acharya", name: "Pandit Lakshman Acharya", nameHi: "पंडित लक्ष्मण आचार्य", city: "Ujjain", state: "Madhya Pradesh", exp: 31, rating: 4.9, reviews: 268, verified: true, tier: "Diamond", langs: ["Hindi", "Sanskrit", "Gujarati"], services: ["mahamrityunjay", "durga-path", "havan-yagna", "pitru-dosh", "rudrabhishek"], temples: ["mahakaleshwar"], phone: "+919000000116", edu: "Mahamahopadhyaya (Veda), Ujjain", gotra: "Angiras", about: "Thirty-one years at Mahakal. Conducts large-scale Mahamrityunjay jaap anusthans (1.25 lakh) with a team of eleven pandits and full sankalp documentation.", img: "/assets/img/pandits/lakshman-acharya.jpg" },
 ];
 
-/* --------------------------------------------------------------- festivals */
-export const festivals: Festival[] = [
-  // January 2026
-  { date: "2026-01-14", label: "14 Jan 2026", name: "Makar Sankranti", note: "Surya Uttarayan", cat: "tyohar", tithi: "Pausha Shukla Purnima", muhurat: "Punya Kaal: 08:30 AM - 05:46 PM", img: "/assets/img/festivals/fest_raksha_bandhan_1785602630761.jpg" }, // Reuse image for now
-  { date: "2026-01-24", label: "24 Jan 2026", name: "Vasant Panchami", note: "Saraswati Puja", cat: "tyohar", tithi: "Magha Shukla Panchami", muhurat: "07:12 AM - 12:34 PM", serviceId: "satyanarayan-katha" },
-
-  // February 2026
-  { date: "2026-02-14", label: "14 Feb 2026", name: "Maha Shivaratri", note: "Nishita Kaal Puja", cat: "tyohar", tithi: "Phalguna Krishna Chaturdashi", muhurat: "Nishita Kaal: 12:09 AM - 01:00 AM", serviceId: "rudrabhishek" },
-  { date: "2026-02-27", label: "27 Feb 2026", name: "Phulera Dooj", note: "Auspicious day for marriage", cat: "tyohar", tithi: "Phalguna Shukla Dwitiya" },
-
-  // March 2026
-  { date: "2026-03-03", label: "03 Mar 2026", name: "Holika Dahan", note: "Choti Holi", cat: "tyohar", tithi: "Phalguna Purnima", muhurat: "06:26 PM - 08:52 PM", serviceId: "holika-dahan" },
-  { date: "2026-03-04", label: "04 Mar 2026", name: "Holi", note: "Festival of Colors", cat: "tyohar", tithi: "Chaitra Krishna Pratipada" },
-  { date: "2026-03-19", label: "19 Mar 2026", name: "Chaitra Navratri Starts", note: "Ghatasthapana", cat: "tyohar", tithi: "Chaitra Shukla Pratipada", muhurat: "06:20 AM - 10:16 AM", serviceId: "navratri-sthapana" },
-  { date: "2026-03-28", label: "28 Mar 2026", name: "Rama Navami", note: "Birth of Lord Rama", cat: "jayanti", tithi: "Chaitra Shukla Navami", muhurat: "11:15 AM - 01:40 PM", serviceId: "sunderkand" },
-
-  // April 2026
-  { date: "2026-04-02", label: "02 Apr 2026", name: "Hanuman Jayanti", note: "Birth of Hanuman", cat: "jayanti", tithi: "Chaitra Purnima", serviceId: "sunderkand" },
-  { date: "2026-04-18", label: "18 Apr 2026", name: "Akshaya Tritiya", note: "Highly auspicious day", cat: "tyohar", tithi: "Vaishakha Shukla Tritiya", muhurat: "05:53 AM - 12:12 PM", serviceId: "bhoomi-pujan" },
-
-  // May 2026
-  { date: "2026-05-12", label: "12 May 2026", name: "Apara Ekadashi", note: "Fasting day", cat: "vrat", tithi: "Jyeshtha Krishna Ekadashi", muhurat: "Parana: 05:32 AM - 08:14 AM" },
-  { date: "2026-05-31", label: "31 May 2026", name: "Vat Purnima Vrat", note: "Fasting for husband's long life", cat: "vrat", tithi: "Jyeshtha Purnima", serviceId: "satyanarayan-katha" },
-
-  // August 2026
-  { date: "2026-08-09", label: "09 Aug 2026", name: "Raksha Bandhan", note: "Shravan Purnima", cat: "tyohar", tithi: "Shravana Purnima", muhurat: "01:30 PM - 09:07 PM", img: "/assets/img/festivals/fest_raksha_bandhan_1785602630761.jpg" },
-  { date: "2026-08-16", label: "16 Aug 2026", name: "Krishna Janmashtami", note: "Nishith puja muhurat", cat: "jayanti", tithi: "Bhadrapada Krishna Ashtami", muhurat: "12:04 AM - 12:47 AM", img: "/assets/img/festivals/fest_janmashtami_1785602642409.jpg" },
-
-  // September 2026
-  { date: "2026-09-04", label: "04 Sep 2026", name: "Ganesh Chaturthi", note: "Sthapana muhurat", cat: "tyohar", tithi: "Bhadrapada Shukla Chaturthi", muhurat: "11:05 AM - 01:36 PM", serviceId: "ganesh-utsav", img: "/assets/img/festivals/fest_ganesh_chaturthi_1785602654153.jpg" },
-  { date: "2026-09-15", label: "15 Sep 2026", name: "Anant Chaturdashi", note: "Ganesh Visarjan", cat: "tyohar", tithi: "Bhadrapada Shukla Chaturdashi" },
-  { date: "2026-09-26", label: "26 Sep 2026", name: "Pitru Paksha begins", note: "Shradh & tarpan", cat: "vrat", tithi: "Ashwina Krishna Pratipada", serviceId: "pitru-dosh", img: "/assets/img/festivals/fest_pitru_paksha_1785602665066.jpg" },
-
-  // October 2026
-  { date: "2026-10-11", label: "11 Oct 2026", name: "Navratri Ghatasthapana", note: "Kalash sthapana", cat: "tyohar", tithi: "Ashwina Shukla Pratipada", muhurat: "06:20 AM - 10:16 AM", serviceId: "navratri-sthapana", img: "/assets/img/festivals/fest_navratri_1785602683293.jpg" },
-  { date: "2026-10-19", label: "19 Oct 2026", name: "Maha Navami", note: "Kanya Puja", cat: "tyohar", tithi: "Ashwina Shukla Navami", serviceId: "durga-path" },
-  { date: "2026-10-20", label: "20 Oct 2026", name: "Vijayadashami", note: "Shastra puja", cat: "tyohar", tithi: "Ashwina Shukla Dashami", img: "/assets/img/festivals/fest_vijayadashami_1785602694116.jpg" },
-
-  // November 2026
-  { date: "2026-11-08", label: "08 Nov 2026", name: "Diwali — Lakshmi Puja", note: "Pradosh muhurat", cat: "tyohar", tithi: "Kartika Krishna Amavasya", muhurat: "05:31 PM - 07:27 PM", serviceId: "satyanarayan-diwali", img: "/assets/img/festivals/fest_diwali_1785602705433.jpg" },
-  { date: "2026-11-09", label: "09 Nov 2026", name: "Govardhan Puja", note: "Annakut", cat: "tyohar", tithi: "Kartika Shukla Pratipada", serviceId: "gau-puja" },
-  { date: "2026-11-15", label: "15 Nov 2026", name: "Chhath Puja", note: "Sandhya arghya", cat: "tyohar", tithi: "Kartika Shukla Shashthi", muhurat: "Sunset: 05:27 PM", serviceId: "chhath", img: "/assets/img/festivals/fest_chhath_1785602716516.jpg" },
-  { date: "2026-11-24", label: "24 Nov 2026", name: "Tulsi Vivah", note: "Ceremonial marriage of Tulsi", cat: "tyohar", tithi: "Kartika Shukla Dwadashi", serviceId: "wedding" },
-];
-
 /* ---------------------------------------------------------------- reviews */
 export const reviews: Review[] = [
   { name: "Ankit Verma", city: "Lucknow", rating: 5, text: "Pandit ji ke saath direct baat hui, koi middleman nahi. Griha Pravesh ke liye samagri list pehle hi WhatsApp par mil gayi — sab kuch time par ho gaya.", service: "Griha Pravesh", variant: "featured", photos: ["/assets/img/review-photo-1.jpg"] },
@@ -163,38 +116,6 @@ export const posts: BlogPost[] = [
   { id: "muhurat-myths", cat: "Jyotish", title: "Muhurat myths that cost families time and money", date: "22 May 2026", read: "7 min", excerpt: "Not every day needs a paid muhurat consultation. Here is when timing genuinely matters and when a Brahma muhurat start is enough." },
   { id: "temple-seva", cat: "PanditSuggest", title: "How temple sevas are verified before a listing goes live", date: "14 May 2026", read: "5 min", excerpt: "Our four-step process: document check, video KYC, temple confirmation and a review-integrity audit every six months." },
 ];
-
-/* -------------------------------------------------------- panchang (today) */
-export const panchang: Panchang = {
-  tithi: "Shukla Paksha Dwadashi",
-  nakshatra: "Anuradha",
-  yoga: "Siddhi",
-  karana: "Balava",
-  paksha: "Shukla",
-  vaar: "Guruvar (Thursday)",
-  sunrise: "05:58 AM",
-  sunset: "07:04 PM",
-  moonrise: "04:12 PM",
-  moonset: "03:26 AM",
-  vikram: "2083 Rakshas",
-  shaka: "1948 Vishvavasu",
-  masa: "Shravan",
-  ritu: "Varsha",
-  auspicious: [
-    { k: "Brahma Muhurat", v: "04:24 AM – 05:11 AM" },
-    { k: "Abhijit Muhurat", v: "11:58 AM – 12:52 PM" },
-    { k: "Vijaya Muhurat", v: "02:42 PM – 03:35 PM" },
-    { k: "Godhuli Muhurat", v: "07:02 PM – 07:26 PM" },
-    { k: "Amrit Kaal", v: "09:14 PM – 10:48 PM" },
-  ],
-  inauspicious: [
-    { k: "Rahu Kaal", v: "02:06 PM – 03:44 PM" },
-    { k: "Yamaganda", v: "05:58 AM – 07:36 AM" },
-    { k: "Gulika Kaal", v: "09:14 AM – 10:52 AM" },
-    { k: "Dur Muhurat", v: "10:14 AM – 11:06 AM" },
-    { k: "Varjyam", v: "06:38 PM – 08:12 PM" },
-  ],
-};
 
 /* ------------------------------------------------------------ subscription */
 export const plans: Plan[] = [

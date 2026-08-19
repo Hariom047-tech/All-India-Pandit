@@ -1,0 +1,60 @@
+# LOCAL DEVELOPMENT OVERRIDE
+#
+# Docker Compose loads this automatically on top of docker-compose.yml, so
+# `docker compose up -d --build` just works on a laptop. The production file is
+# left completely untouched.
+#
+# Three things it changes, each of which otherwise breaks a local run:
+#   1. Drops the Let's Encrypt cert bind-mounts. Those paths only exist on the
+#      production host; on any other machine the frontend container refuses to
+#      start.
+#   2. Serves plain HTTP on http://localhost:8080 (the port the README has
+#      always documented) instead of binding 80/443, which are frequently
+#      already taken and would need certificates anyway.
+#   3. Passes OPENAI_API_KEY through so the Pandit Ji chat works locally.
+#
+# For a production deploy, ignore this file explicitly:
+#   docker compose -f docker-compose.yml up -d --build
+services:
+  frontend:
+    # !override on BOTH keys is essential. Compose MERGES list-valued keys by
+    # default, so without it the production Let's Encrypt bind-mounts and the
+    # 80/443 port bindings would survive this file and the container would
+    # still fail to start on a machine with no certificates.
+    # Requires Docker Compose >= 2.24 (`docker compose version`).
+    volumes: !override
+      - ./docker/nginx/local.conf:/etc/nginx/conf.d/default.conf:ro
+    ports: !override
+      - "8080:80"
+
+  backend:
+    environment:
+      CORS_ORIGIN: http://localhost:8080
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      # Local/test only — see auth.controller.js's otpMatches(). Lets any
+      # pending OTP (phone or email) also be verified by typing this fixed
+      # code, so accounts can be created/tested without a real SMS provider.
+      # Never set on docker-compose.yml (the production file) or on any real
+      # deployment — this file is explicitly excluded from prod deploys
+      # (see the note at the top of this file).
+      OTP_TEST_BYPASS_CODE: "1234"
+    volumes:
+      # Uploaded pandit photos, intro videos, temple galleries, service images
+      # and hero images live on disk, not in the database. Without this mount
+      # they are written INSIDE the container and vanish on the next
+      # `--build` — and the files you have already uploaded via `npm run dev`
+      # would be invisible to the containerised backend.
+      - ./backend/public/uploads:/app/public/uploads
+    # !override: the production file now binds this to 127.0.0.1 only (no CDN
+    # to bypass in prod is not true locally either way, but there IS no CDN
+    # in front of local Docker at all, so the loopback restriction would just
+    # make `curl localhost:4000` from the host fail for no benefit). Ports
+    # merge by default (see the note at the top of this file), so without
+    # `!override` both bindings would apply and Docker would refuse to start
+    # with "port is already allocated".
+    ports: !override
+      - "4000:4000"
+
+  db:
+    ports:
+      - "5433:5432"

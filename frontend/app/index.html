@@ -3,16 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PanditSuggest — Connect with Trusted Pandits Across India</title>
-    <meta name="description" content="Browse temples across India, view verified Pandit profiles and contact them directly on WhatsApp or call. No middleman, no commission on your puja." />
+    <!-- No static <title>/<meta name="description"> here on purpose: every
+         route renders frontend/app/src/lib/Seo.tsx (App.tsx's Layout renders
+         a site-wide default, individual pages override it), and React 19
+         does not de-duplicate its own rendered tags against ones already
+         sitting in this static HTML — a static tag here would just create a
+         second, competing instance, and document.title would keep showing
+         THIS one (the first in document order) instead of the page's own.
+         See docs/SEO_ARCHITECTURE.md. -->
     <meta name="theme-color" content="#d4a017" />
-    <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/img/logo-new.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Noto Sans/Serif Devanagari cover the Hindi UI (लॉगिन इन fonts above
          have no Devanagari glyphs at all) — appended to the stacks in
          base.css so the browser only falls back to them per-character. -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet" />
+    <!-- Loaded non-render-blocking: media="print" makes the browser fetch it
+         at low priority without waiting on it for first paint, then the
+         onload swap applies it once it arrives. &display=swap in the URL
+         means body text is never invisible while a font loads (Phase 8,
+         docs/SEO_ARCHITECTURE.md) — this just stops the fetch itself from
+         holding up first paint. <noscript> covers JS-disabled clients. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif+Devanagari:wght@600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet" />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

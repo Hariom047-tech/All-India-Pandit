@@ -14,6 +14,8 @@ COPY frontend/app ./
 # not a secret; the actual Google Secret Key stays server-side only).
 ARG VITE_GOOGLE_CLIENT_ID
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
 # NOTE: VITE_ADMIN_SECRET_PATH has been intentionally removed (security fix C3).
 # The admin panel is now at a fixed /admin-panel route. The backend API secret
 # path is resolved at runtime from /api/admin-config — never baked into the bundle.

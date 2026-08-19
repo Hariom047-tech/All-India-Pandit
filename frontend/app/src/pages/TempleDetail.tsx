@@ -1,4 +1,8 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+
+/** Marks a dropdown value as a temple-specific ritual rather than a catalogue
+ *  slug. Chosen to be impossible in a slug, which is [a-z0-9-] only. */
+const CUSTOM_PREFIX = "custom::";
 import { Link, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../lib/icons";
@@ -9,12 +13,19 @@ import { ReviewCard } from "../components/ui/ReviewCard";
 import { TempleCard } from "../components/ui/TempleCard";
 import { Modal } from "../components/ui/Modal";
 import { Lightbox } from "../components/ui/Lightbox";
-import { TempleBanner } from "../components/temple/TempleBanner";
+import { WriteReview } from "../components/ui/WriteReview";
+import { TempleBanner, type HeroSlide } from "../components/temple/TempleBanner";
 import { SacredBackground } from "../components/temple/SacredBackground";
 import { useToast } from "../components/ui/Toast";
 import { onImgError } from "../lib/format";
-import { api } from "../lib/api";
-import { temples, panditsAtTemple, service, serviceName, reviews as allReviews } from "../data/content";
+import { api, useFairRanking, useReportExposure } from "../lib/api";
+import { useTemple, useTemples, usePandits, useReviews, useServices } from "../hooks/useData";
+import { useUrlTab } from "../hooks/useUrlTab";
+import { normTemple, normTemples, normPandits, normReviews, normServices } from "../lib/normalize";
+import { Loading, ErrorState } from "../components/ui/DataState";
+import { Seo } from "../lib/Seo";
+import { useStructuredData, breadcrumbSchema, placeOfWorshipSchema, organizationSchema, websiteSchema, webPageSchema, placeOfWorshipId } from "../lib/structuredData";
+import { isTempleIndexable } from "../lib/indexability";
 import "../styles/temple-detail.css";
 
 const TABS = [
@@ -25,6 +36,7 @@ const TABS = [
   { id: "reviews", label: "Reviews", icon: "star" },
   { id: "location", label: "Location", icon: "map-pin" },
 ];
+const TAB_IDS = TABS.map((tb) => tb.id);
 
 const REVIEW_DIST = [76, 17, 4, 2, 1];
 
@@ -39,6 +51,7 @@ const fadeUp = {
 };
 
 const stagger = {
+  initial: {},
   animate: { transition: { staggerChildren: 0.08 } },
 };
 
@@ -50,37 +63,176 @@ const cardReveal = {
 
 export default function TempleDetail() {
   const { id } = useParams();
-  const t = temples.find((x) => x.id === id) || temples[0];
-  const [tab, setTab] = useState("overview");
+  const { data: rawTemple, loading, error } = useTemple(id || "");
+  const { data: rawTemples } = useTemples({ perPage: 50 });
+  // 600, not 50: "limit" was never a real API param (silently ignored,
+  // falling back to a 12-row default) — a temple can have hundreds of
+  // associated pandits (Nalkheda has 500), all of which need to be in this
+  // batch since the fair-ranking overlay below can only rank what it has.
+  const { data: rawPandits } = usePandits({ perPage: 600 });
+  const { data: rawReviews } = useReviews("temple", id);
+  // Services has no pagination at all — "~50 rows is small enough to send
+  // whole" per its own controller comment — so this param is a no-op either
+  // way, but named correctly for anyone reading it as documentation.
+  const { data: rawServices } = useServices();
+
+  const t = useMemo(() => rawTemple ? normTemple(rawTemple) : null, [rawTemple]);
+  const allTemples = useMemo(() => normTemples(rawTemples), [rawTemples]);
+  const allPandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
+  const reviews = useMemo(() => normReviews(rawReviews), [rawReviews]);
+  const allServices = useMemo(() => normServices(rawServices), [rawServices]);
+
+  // URL-backed, not component memory: a direct link, a copied share URL, and
+  // a browser refresh must all restore the same tab (see useUrlTab). This
+  // also fixes the actual bug: the temple-load effect below used to call
+  // setTab("overview") unconditionally, clobbering whatever tab the URL (or
+  // the visitor) had selected the moment temple data finished loading.
+  const [tab, setTab] = useUrlTab(TAB_IDS, "overview");
+
+  // Fair, market-aware rotation instead of a frozen rating sort — the same
+  // engine and pattern already used on /pandits, scoped to this temple so a
+  // devotee doesn't see the same five pandits at Nalkheda on every visit.
+  // Always enabled (not just on the Pandits tab): a small preview now renders
+  // on Overview too (docs/SEO_ARCHITECTURE.md, Phase 6 — a temple page must
+  // link to its pandits without requiring a tab click first, for crawlers
+  // and for real visitors alike), and it must go through the same rotation
+  // as the full tab, never a separate "SEO ranking".
+  const fairScores = useFairRanking(t?.id, undefined, { enabled: Boolean(t) });
+  const pandits = useMemo(() => {
+    if (!t) return [];
+    const list = allPandits.filter((p) => p.temples.includes(t.id));
+    return [...list].sort((a, b) => {
+      if (fairScores) {
+        const diff = (fairScores.get(b.id) ?? -Infinity) - (fairScores.get(a.id) ?? -Infinity);
+        if (diff) return diff;
+      }
+      return b.rating - a.rating;
+    });
+  }, [allPandits, t, fairScores]);
+  const previewPandits = useMemo(() => pandits.slice(0, 3), [pandits]);
+  // Exposure reporting must always match exactly what's visible right now —
+  // the Overview preview or the full Pandits tab, never both, never neither
+  // — so the fairness engine's impression counts stay accurate regardless
+  // of which section a visitor is looking at.
+  const visiblePandits = tab === "pandits" ? pandits : previewPandits;
+  useReportExposure(visiblePandits.map((p) => p.id), { temple: t?.id, enabled: Boolean(t) });
+
   const [reviewOpen, setReviewOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  /** Controlled so a custom-service card can pre-select the enquiry dropdown. */
+  const [enquiryService, setEnquiryService] = useState("");
   const toast = useToast();
 
   useEffect(() => {
-    document.title = `${t.name} — PanditSuggest`;
-    setTab("overview");
-    window.scrollTo({ top: 0 });
+    if (t) window.scrollTo({ top: 0 });
   }, [t]);
 
-  const galleryImages = [t.img, ...t.gallery].map((src) => ({ src, alt: t.name, caption: t.name }));
-  const pandits = panditsAtTemple(t.id);
-  const reviews = allReviews.slice(0, 4);
+  // Hook call must be unconditional (before the loading/error early returns
+  // below) — see docs/SEO_ARCHITECTURE.md. Passing null until data arrives.
+  useStructuredData(t ? [
+    organizationSchema(),
+    websiteSchema(),
+    webPageSchema({
+      path: `/temples/${t.id}`,
+      name: (rawTemple as { meta_title?: string | null } | null)?.meta_title || `${t.name} — Puja, Havan & Pandits`,
+      aboutId: placeOfWorshipId(`/temples/${t.id}`),
+    }),
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Temples", path: "/temples" },
+      { name: t.name, path: `/temples/${t.id}` },
+    ]),
+    placeOfWorshipSchema({
+      name: t.name, path: `/temples/${t.id}`, city: t.city, state: t.state,
+      addressLine1: (rawTemple as { address_line1?: string | null } | null)?.address_line1,
+      lat: t.lat, lng: t.lng, image: t.img, rating: t.rating, reviewCount: t.reviews,
+    }),
+  ] : null);
+
+  if (loading) return <div className="section"><div className="shell"><Loading lines={1} type="detail" /></div></div>;
+  if (error || !t) return <div className="section"><div className="shell"><ErrorState message={error || "Temple not found"} /></div></div>;
+
+  /**
+   * Real uploaded media, with the bundled artwork kept only as a fallback for
+   * temples that have not had photos uploaded yet. Once an admin uploads even
+   * one photo, none of the stock images are used for that temple.
+   */
+  const apiTemple = rawTemple as unknown as {
+    gallery?: { id: string; url: string; title?: string | null; caption?: string | null }[];
+    videos?: { id: string; url: string; title?: string | null; caption?: string | null }[];
+    /** Admin-curated hero slides (temple_media.show_in_hero), photos + videos. */
+    hero?: HeroSlide[];
+    /** Rituals unique to this temple — no catalogue entry, so no detail page. */
+    customServices?: { name: string; description?: string }[];
+    meta_title?: string | null;
+    meta_description?: string | null;
+    address_line1?: string | null;
+  } | null;
+
+  const uploaded = apiTemple?.gallery ?? [];
+  const galleryImages = uploaded.length
+    ? uploaded.map((g) => ({ src: g.url, alt: g.title || t.name, caption: g.caption || t.name }))
+    : [t.img, ...t.gallery].map((src) => ({ src, alt: t.name, caption: t.name }));
+
+  // Bundled temples have no uploads and so no `hero` — the banner falls back to
+  // the photo list on its own.
+  const heroSlides = apiTemple?.hero ?? [];
+  // Every uploaded video, hero-marked or not — the Gallery tab lists them all.
+  const templeVideos = apiTemple?.videos ?? [];
+  const customServices = apiTemple?.customServices ?? [];
+
+  /* Catalogue slugs that no longer resolve to a live service are dropped from
+     the grid, so count what will actually render rather than what was stored —
+     otherwise a temple whose only service was deleted shows an empty grid
+     instead of the empty state. */
+  const linkedServices = t.services
+    .map((sid) => allServices.find((x) => x.id === sid))
+    .filter((s): s is NonNullable<typeof s> => Boolean(s));
+  const hasAnyService = linkedServices.length > 0 || customServices.length > 0;
   const mapQ = encodeURIComponent(`${t.name}, ${t.city}, ${t.state}`);
-  let nearby = temples.filter((x) => x.id !== t.id && (x.state === t.state || x.deity === t.deity)).slice(0, 3);
-  if (!nearby.length) nearby = temples.filter((x) => x.id !== t.id).slice(0, 3);
+  let nearby = allTemples.filter((x) => x.id !== t.id && (x.state === t.state || x.deity === t.deity)).slice(0, 3);
+  if (!nearby.length) nearby = allTemples.filter((x) => x.id !== t.id).slice(0, 3);
+
+  /**
+   * Jump to the enquiry form with a custom service pre-selected.
+   *
+   * The value is prefixed because the same <select> holds catalogue slugs and
+   * temple-specific names, and a name is not a slug — without the marker,
+   * submit could not tell which kind it was looking at.
+   */
+  function askAbout(serviceName: string) {
+    setEnquiryService(`${CUSTOM_PREFIX}${serviceName}`);
+    // The form is a sidebar on desktop and far below the fold on mobile, so a
+    // tap that silently changed an off-screen dropdown would look like nothing
+    // happened.
+    document.getElementById("iqSvc")?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "center",
+    });
+  }
 
   async function onInquiry(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
+    const selected = String(data.get("service") || "");
+    const isCustom = selected.startsWith(CUSTOM_PREFIX);
+    const customName = isCustom ? selected.slice(CUSTOM_PREFIX.length) : "";
+
     const payload = {
       name: String(data.get("name") || ""),
       phone: String(data.get("phone") || ""),
-      service: String(data.get("service") || ""),
+      // A custom ritual has no catalogue row, so `service` would fail the slug
+      // lookup and be stored as NULL — the pandit would receive a lead with no
+      // idea what was asked for. Send it as the message instead.
+      service: isCustom ? "" : selected,
+      ...(isCustom ? { message: `Service requested: ${customName}` } : {}),
       date: String(data.get("date") || ""),
     };
+    if (!t) return;   // the form only renders once the temple has loaded
     try { await api.templeInquiry(t.id, payload); } catch { /* soft-fail */ }
     toast(`Inquiry sent to ${t.pandits} pandits at this temple.`);
     e.currentTarget.reset();
+    setEnquiryService("");
   }
 
   function onReviewSubmit(e: FormEvent<HTMLFormElement>) {
@@ -91,8 +243,15 @@ export default function TempleDetail() {
 
   return (
     <>
+      <Seo
+        title={apiTemple?.meta_title || `${t.name} — Puja, Havan & Pandits`}
+        description={apiTemple?.meta_description || `Explore ${t.name} in ${t.city}, ${t.state}. Discover available puja and havan services, and connect directly with verified Pandits associated with the temple.`}
+        path={`/temples/${t.id}`}
+        image={t.img}
+        noindex={!isTempleIndexable(t)}
+      />
       {/* ═══ HERO BANNER ═══ */}
-      <TempleBanner temple={t} photos={galleryImages} onOpenGallery={setLightboxIndex} />
+      <TempleBanner temple={t} photos={galleryImages} slides={heroSlides} onOpenGallery={setLightboxIndex} />
 
       {/* ═══ STICKY PREMIUM TAB BAR ═══ */}
       <nav className="td-tabs" aria-label="Temple sections">
@@ -117,7 +276,7 @@ export default function TempleDetail() {
       {/* ═══ MAIN CONTENT ═══ */}
       <section className="section td-section">
         <SacredBackground />
-        <div className="shell td-content" style={{ position: "relative", zIndex: 1 }}>
+        <div className={`shell td-content${tab === "pandits" ? " td-content--pandits-3up" : ""}`} style={{ position: "relative", zIndex: 1 }}>
 
           {/* ── LEFT COLUMN: tab panels ── */}
           <div style={{ minWidth: 0 }}>
@@ -141,7 +300,7 @@ export default function TempleDetail() {
                     {([
                       ["Darshan Timings", t.timings, "clock"],
                       ["Presiding Deity", t.deity, "om"],
-                      ["Established", t.est, "calendar"],
+                      ["Established", t.est || "—", "calendar"],
                       ["Location", `${t.city}, ${t.state}`, "map-pin"],
                     ] as [string, string, string][]).map(([label, value, icon], i) => (
                       <motion.div
@@ -161,32 +320,91 @@ export default function TempleDetail() {
 
                   <hr className="sacred-divider" />
 
-                  {/* History & Significance */}
-                  <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
-                    <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
-                      <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="book-open" size={17} /></span>
-                      History &amp; significance
-                    </h3>
-                    <p className="td-about-text" style={{ marginTop: 10 }}>{t.history}</p>
-                  </motion.div>
+                  {/* Services performed here — always in the DOM on the default
+                      tab (not gated behind the Services tab click), so the
+                      temple page always links out to real service pages
+                      (docs/SEO_ARCHITECTURE.md, Phase 6). */}
+                  {hasAnyService && linkedServices.length > 0 && (
+                    <>
+                      <motion.div {...fadeUp} transition={{ delay: 0.22 }}>
+                        <div className="row-between">
+                          <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
+                            <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="diya" size={17} /></span>
+                            Puja &amp; havan performed here
+                          </h3>
+                          {linkedServices.length > 4 && (
+                            <button className="row" style={{ color: "var(--gold-deep)", fontWeight: 600, fontSize: ".9rem", background: "none", border: 0, cursor: "pointer" }} onClick={() => setTab("services")}>
+                              All {linkedServices.length} <Icon name="chevron-right" size={16} />
+                            </button>
+                          )}
+                        </div>
+                        <div className="grid g-4" style={{ marginTop: 14 }}>
+                          {linkedServices.slice(0, 4).map((s, i) => <ServiceCard s={s} key={s.id} index={i} variant="grid" />)}
+                        </div>
+                      </motion.div>
+                      <hr className="sacred-divider" />
+                    </>
+                  )}
 
-                  <hr className="sacred-divider" />
+                  {/* Pandits at this temple — same reasoning; runs through the
+                      same fair-rotation engine as the full Pandits tab (see
+                      fairScores/visiblePandits above), never a separate order. */}
+                  {previewPandits.length > 0 && (
+                    <>
+                      <motion.div {...fadeUp} transition={{ delay: 0.24 }}>
+                        <div className="row-between">
+                          <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
+                            <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="users" size={17} /></span>
+                            Pandits at this temple
+                          </h3>
+                          <button className="row" style={{ color: "var(--gold-deep)", fontWeight: 600, fontSize: ".9rem", background: "none", border: 0, cursor: "pointer" }} onClick={() => setTab("pandits")}>
+                            All {pandits.length} <Icon name="chevron-right" size={16} />
+                          </button>
+                        </div>
+                        <div className="grid g-3" style={{ marginTop: 14 }}>
+                          {previewPandits.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="temple_detail_preview" />)}
+                        </div>
+                      </motion.div>
+                      <hr className="sacred-divider" />
+                    </>
+                  )}
 
-                  {/* Highlights & special sevas */}
-                  <motion.div {...fadeUp} transition={{ delay: 0.35 }}>
-                    <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
-                      <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="sparkles" size={17} /></span>
-                      Highlights &amp; special sevas
-                    </h3>
-                    <ul className="td-highlights">
-                      {t.highlights.map((h, i) => (
-                        <motion.li key={h} className="td-highlight-item" {...cardReveal} transition={{ ...cardReveal.transition, delay: i * 0.06 }}>
-                          <span className="td-highlight-dot" />
-                          {h}
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </motion.div>
+                  {/* History & significance — admin-managed. Rendered only when
+                      there is something to show; an empty heading above blank
+                      space reads as a broken page, which is exactly how this
+                      looked before the fields became editable. */}
+                  {(t.history || t.significance) && (
+                    <>
+                      <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
+                        <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
+                          <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="book-open" size={17} /></span>
+                          History &amp; significance
+                        </h3>
+                        {t.history && <p className="td-about-text" style={{ marginTop: 10 }}>{t.history}</p>}
+                        {t.significance && <p className="td-about-text" style={{ marginTop: 10 }}>{t.significance}</p>}
+                      </motion.div>
+
+                      <hr className="sacred-divider" />
+                    </>
+                  )}
+
+                  {/* Highlights & special sevas — admin-managed. */}
+                  {t.highlights.length > 0 && (
+                    <motion.div {...fadeUp} transition={{ delay: 0.35 }}>
+                      <h3 className="td-heading" style={{ fontSize: "1.3rem" }}>
+                        <span className="td-heading__icon" style={{ width: 34, height: 34, borderRadius: 10 }}><Icon name="sparkles" size={17} /></span>
+                        Highlights &amp; special sevas
+                      </h3>
+                      <ul className="td-highlights">
+                        {t.highlights.map((h, i) => (
+                          <motion.li key={h} className="td-highlight-item" {...cardReveal} transition={{ ...cardReveal.transition, delay: i * 0.06 }}>
+                            <span className="td-highlight-dot" />
+                            {h}
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
 
                   {/* Photo gallery preview */}
                   {galleryImages.length > 1 && (
@@ -234,6 +452,30 @@ export default function TempleDetail() {
                     <span className="td-heading__ornament" />
                   </h2>
                   <p className="muted" style={{ marginBottom: 22 }}>{galleryImages.length} photo{galleryImages.length === 1 ? "" : "s"} of {t.name}. Tap any photo for the full-size view.</p>
+
+                  {/* Every video, with controls. The hero autoplays the first
+                      one muted; this is where a visitor can actually watch
+                      them properly, and where videos 2+ would otherwise be
+                      unreachable. */}
+                  {templeVideos.length > 0 && (
+                    <div style={{ marginBottom: 26 }}>
+                      <h3 style={{ fontSize: "1rem", marginBottom: 10 }}>
+                        {templeVideos.length} video{templeVideos.length === 1 ? "" : "s"}
+                      </h3>
+                      <div className="td-video-grid">
+                        {templeVideos.map((v) => (
+                          <figure key={v.id} style={{ margin: 0 }}>
+                            <video src={v.url} controls preload="metadata" playsInline />
+                            {(v.title || v.caption) && (
+                              <figcaption className="muted" style={{ fontSize: ".82rem", marginTop: 6 }}>
+                                {v.title || v.caption}
+                              </figcaption>
+                            )}
+                          </figure>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <motion.div className="td-gallery" variants={stagger} initial="initial" animate="animate">
                     {galleryImages.map((img, i) => (
                       <motion.button
@@ -254,7 +496,6 @@ export default function TempleDetail() {
                 </motion.div>
               )}
 
-              {/* ━━━━━ PANDITS ━━━━━ */}
               {tab === "pandits" && (
                 <motion.div key="pandits" {...fadeUp}>
                   <h2 className="td-heading">
@@ -262,13 +503,23 @@ export default function TempleDetail() {
                     All Pandits at this temple
                     <span className="td-heading__ornament" />
                   </h2>
-                  <motion.div className="grid g-2 grid-2up-mobile" variants={stagger} initial="initial" animate="animate">
-                    {pandits.map((p) => (
-                      <motion.div key={p.id} variants={cardReveal}>
-                        <PanditCard p={p} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
+                  {pandits.length > 0 ? (
+                    // PanditCard already animates itself in (whileInView, per-card) — an
+                    // outer stagger wrapper here would fire a SECOND animation on mount
+                    // for every card in the array, up to ~500 at Nalkheda, most of them
+                    // off-screen. Plain grid; PanditCard owns its own reveal.
+                    <div className="grid g-3 grid-2up-mobile">
+                      {pandits.map((p) => (
+                        <PanditCard p={p} key={p.id} sourceSurface="temple_detail" />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="td-empty-state">
+                      <div className="td-empty-state__icon">🙏</div>
+                      <p className="td-empty-state__text">No pandits listed at this temple yet.</p>
+                      <p className="muted" style={{ fontSize: ".88rem", marginTop: 8 }}>Check back soon — our team is verifying temple associations.</p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -281,16 +532,54 @@ export default function TempleDetail() {
                     <span className="td-heading__ornament" />
                   </h2>
                   <p className="muted" style={{ marginBottom: 22 }}>Rituals regularly performed at {t.name}. Tap any service to see the samagri list and the pandits who offer it.</p>
-                  <motion.div className="grid g-3 grid-2up-mobile" variants={stagger} initial="initial" animate="animate">
-                    {t.services.map((id2) => {
-                      const s = service(id2);
-                      return s ? (
-                        <motion.div key={id2} variants={cardReveal}>
-                          <ServiceCard s={s} />
+                  {hasAnyService ? (
+                    <>
+                      {linkedServices.length > 0 && (
+                        <motion.div className="svc-row-list" variants={stagger} initial="initial" animate="animate">
+                          {linkedServices.map((s) => (
+                            <motion.div key={s.id} variants={cardReveal}>
+                              <ServiceCard s={s} />
+                            </motion.div>
+                          ))}
                         </motion.div>
-                      ) : null;
-                    })}
-                  </motion.div>
+                      )}
+
+                      {/* This temple's own rituals. Visually a sibling of the
+                          catalogue cards, but deliberately not a ServiceCard:
+                          there is no detail page to link to, so the action is
+                          an enquiry rather than a dead "learn more". */}
+                      {customServices.length > 0 && (
+                        <>
+                          <h3 className="td-subheading">Only at {t.name}</h3>
+                          <motion.div className="grid g-3 grid-2up-mobile" variants={stagger} initial="initial" animate="animate">
+                            {customServices.map((cs) => (
+                              <motion.div key={cs.name} variants={cardReveal}>
+                                <button
+                                  type="button"
+                                  className="td-custom-service"
+                                  onClick={() => askAbout(cs.name)}
+                                >
+                                  <span className="td-custom-service__icon"><Icon name="diya" size={18} /></span>
+                                  <span className="td-custom-service__name">{cs.name}</span>
+                                  {cs.description && (
+                                    <span className="td-custom-service__desc">{cs.description}</span>
+                                  )}
+                                  <span className="td-custom-service__cta">
+                                    Enquire <Icon name="send" size={13} />
+                                  </span>
+                                </button>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="td-empty-state">
+                      <div className="td-empty-state__icon">🕉️</div>
+                      <p className="td-empty-state__text">No services listed yet for this temple.</p>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -302,6 +591,9 @@ export default function TempleDetail() {
                     Devotee Reviews
                     <span className="td-heading__ornament" />
                   </h2>
+                  <div style={{ marginBottom: 18 }}>
+                    <WriteReview targetType="temple" targetSlug={t.id} targetName={t.name} />
+                  </div>
 
                   <div className="td-review-summary">
                     <motion.div className="td-review-big" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, ease: "easeOut" }}>
@@ -328,10 +620,12 @@ export default function TempleDetail() {
                     </div>
                   </div>
 
-                  <div className="hp-reviews-carousel" style={{ margin: "16px -18px 0", padding: "10px 18px 20px" }}>
-                    {reviews.map((r) => (
+                  <div className="td-reviews-carousel-wrap" style={{ margin: "16px -18px 0", padding: "10px 18px 20px" }}>
+                    {reviews.length > 0 ? reviews.map((r) => (
                       <ReviewCard key={r.name} r={r} />
-                    ))}
+                    )) : (
+                      <p className="muted" style={{ padding: "8px 0" }}>No reviews yet. Be the first devotee to leave a review after your visit.</p>
+                    )}
                   </div>
 
                   <motion.button
@@ -383,7 +677,11 @@ export default function TempleDetail() {
                         <div style={{ position: "relative", zIndex: 1 }}>
                           <Icon name="map" size={54} style={{ color: "var(--gold)" }} />
                           <p style={{ fontFamily: "var(--font-head)", fontWeight: 600, marginTop: 10, fontSize: "1.1rem" }}>{t.name}</p>
-                          <p className="muted">{t.lat.toFixed(4)}° N, {t.lng.toFixed(4)}° E</p>
+                          {(t.lat !== 0 || t.lng !== 0) ? (
+                            <p className="muted">{t.lat.toFixed(4)}° N, {t.lng.toFixed(4)}° E</p>
+                          ) : (
+                            <p className="muted">{t.city}, {t.state}</p>
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -412,8 +710,21 @@ export default function TempleDetail() {
                   <div className="field-group"><label className="label" htmlFor="iqPhone">Phone number</label><input className="input" id="iqPhone" name="phone" type="tel" required placeholder="Phone number" /></div>
                   <div className="field-group">
                     <label className="label" htmlFor="iqSvc">Select your service</label>
-                    <select className="select" id="iqSvc" name="service">
-                      {t.services.map((sid) => <option key={sid} value={sid}>{serviceName(sid)}</option>)}
+                    <select
+                      className="select" id="iqSvc" name="service"
+                      value={enquiryService}
+                      onChange={(e) => setEnquiryService(e.target.value)}
+                    >
+                      {/* Without a placeholder the first option is submitted by
+                          default, so a devotee who never touched the dropdown
+                          sends an enquiry for a ritual they did not choose. */}
+                      <option value="">Select a service…</option>
+                      {linkedServices.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                      {customServices.map((cs) => (
+                        <option key={cs.name} value={`${CUSTOM_PREFIX}${cs.name}`}>{cs.name}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="field-group"><label className="label" htmlFor="iqDate">Date picker</label><input className="input" id="iqDate" name="date" type="date" /></div>

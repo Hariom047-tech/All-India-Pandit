@@ -1,48 +1,51 @@
 const { query } = require('../config/db');
 
-async function panchang() {
-  const { rows } = await query(
-    `SELECT id, tithi_name AS tithi, paksha, nakshatra, yoga, karana,
-            sunrise, sunset, moonrise, moonset, hindu_month AS masa
-     FROM panchang_data WHERE date = CURRENT_DATE`,
-  );
-  if (!rows[0]) return null;
-  const { id, ...core } = rows[0];
-
-  const { rows: muhurats } = await query(
-    `SELECT activity_type AS k, quality,
-            to_char(start_time, 'HH12:MI AM') || ' – ' || to_char(end_time, 'HH12:MI AM') AS v
-     FROM muhurat_data WHERE panchang_id = $1 ORDER BY start_time`,
-    [id],
-  );
-  return {
-    ...core,
-    auspicious: muhurats.filter((m) => m.quality === 'Shubh').map(({ k, v }) => ({ k, v })),
-    inauspicious: muhurats.filter((m) => m.quality === 'Ashubh').map(({ k, v }) => ({ k, v })),
-  };
-}
-
-async function festivals() {
-  const { rows } = await query('SELECT slug, name, description AS note, date FROM festivals ORDER BY date');
-  return rows.map((r) => ({ ...r, date: r.date.toISOString().slice(0, 10) }));
-}
-
-async function faqs() {
-  const { rows } = await query('SELECT question AS q, answer AS a FROM faqs ORDER BY display_order');
-  return rows;
+/**
+ * `features` has two shapes in the wild:
+ *   - the ORIGINAL seeded object: { per, highlights: [], cta }
+ *   - the ARRAY an admin now produces from the Plans screen: ["Verified badge", ...]
+ * Both are supported rather than migrating the seed, because the seed file is
+ * regenerated from frontend content.ts (see README's data-sync chain) and a
+ * one-way migration would be undone the next time someone runs `npm run seed`.
+ */
+function readInclusions(features) {
+  if (Array.isArray(features)) return features;
+  if (features && Array.isArray(features.highlights)) return features.highlights;
+  return [];
 }
 
 async function plans() {
   const { rows } = await query(
-    `SELECT name, tier, price_monthly, features, is_popular FROM subscription_plans ORDER BY display_order`,
+    `SELECT name, tier, price_monthly, price_quarterly, price_yearly, currency,
+            features, description, tagline, lead_credits_monthly,
+            max_temple_listings, max_service_listings, max_photos, is_popular
+       FROM subscription_plans
+      WHERE is_active = TRUE
+      ORDER BY display_order`,
   );
   return rows.map((p) => ({
     name: p.name,
     tier: p.tier,
     price: p.price_monthly,
-    per: p.features?.per || 'month',
-    feats: p.features?.highlights || [],
-    cta: p.features?.cta || 'Upgrade',
+    priceMonthly: p.price_monthly,
+    priceQuarterly: p.price_quarterly,
+    priceYearly: p.price_yearly,
+    currency: p.currency || 'INR',
+    per: (!Array.isArray(p.features) && p.features?.per) || 'month',
+    // `feats` is the long-standing key the existing plan cards render from —
+    // kept so nothing on the current site breaks; `inclusions` is the same
+    // list under the name the new pandit Plan page uses.
+    feats: readInclusions(p.features),
+    inclusions: readInclusions(p.features),
+    description: p.description || null,
+    tagline: p.tagline || null,
+    leadCreditsMonthly: p.lead_credits_monthly,
+    limits: {
+      templeListings: p.max_temple_listings,
+      serviceListings: p.max_service_listings,
+      photos: p.max_photos,
+    },
+    cta: (!Array.isArray(p.features) && p.features?.cta) || 'Upgrade',
     popular: p.is_popular,
   }));
 }
@@ -96,6 +99,6 @@ async function logAiRecommendation({ userId, text, why, serviceIds, responseTime
 }
 
 module.exports = {
-  panchang, festivals, faqs, plans, stats, taxonomy, blogList, blogBySlug, recommendRules,
+  plans, stats, taxonomy, blogList, blogBySlug, recommendRules,
   logAiRecommendation,
 };

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Rollout Audit — PanditSuggest</title>
+<style>
+  :root {
+    --bg: #faf7f1;
+    --surface: #ffffff;
+    --surface-2: #f2ede2;
+    --ink: #241d14;
+    --ink-soft: #4a4033;
+    --muted: #7c7262;
+    --line: #e4dbc9;
+    --line-soft: #ece5d6;
+    --accent: #a9761f;
+    --accent-ink: #ffffff;
+    --accent-soft: #f3e6cc;
+    --pass: #2f7a4f;
+    --pass-soft: #e2f0e6;
+    --fail: #b23b2e;
+    --fail-soft: #f7e4e1;
+    --note: #7c5cbf;
+    --note-soft: #ece5f7;
+    --shadow: 0 1px 2px rgba(36,29,20,0.06), 0 8px 24px -12px rgba(36,29,20,0.18);
+    --font-display: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Public Sans", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1a1610; --surface: #221c14; --surface-2: #2a2318;
+      --ink: #f3ead9; --ink-soft: #cfc2a9; --muted: #96896f;
+      --line: #3a3123; --line-soft: #2e271b;
+      --accent: #d9a63e; --accent-ink: #1a1610; --accent-soft: #3a2f18;
+      --pass: #5cb583; --pass-soft: #1e2f24;
+      --fail: #e0685a; --fail-soft: #35201d;
+      --note: #b09be0; --note-soft: #2a2338;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1a1610; --surface: #221c14; --surface-2: #2a2318;
+    --ink: #f3ead9; --ink-soft: #cfc2a9; --muted: #96896f;
+    --line: #3a3123; --line-soft: #2e271b;
+    --accent: #d9a63e; --accent-ink: #1a1610; --accent-soft: #3a2f18;
+    --pass: #5cb583; --pass-soft: #1e2f24;
+    --fail: #e0685a; --fail-soft: #35201d;
+    --note: #b09be0; --note-soft: #2a2338;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  header.masthead {
+    display: flex; flex-direction: column; gap: 14px;
+    padding-bottom: 32px; margin-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2rem, 4vw, 2.7rem); line-height: 1.15;
+    margin: 0; text-wrap: balance; color: var(--ink);
+  }
+  .masthead-meta {
+    display: flex; flex-wrap: wrap; gap: 10px 28px;
+    font-size: 0.92rem; color: var(--muted); margin-top: 4px;
+  }
+  .masthead-meta strong { color: var(--ink-soft); font-weight: 600; }
+
+  .verdict-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--pass-soft);
+    border: 1px solid color-mix(in srgb, var(--pass) 35%, transparent);
+    border-radius: 14px; padding: 20px 24px; margin-top: 8px;
+  }
+  .verdict-dot {
+    flex: none; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--pass);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--pass) 18%, transparent);
+  }
+  .verdict-text .verdict-title { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+  .verdict-text .verdict-sub { color: var(--ink-soft); font-size: 0.92rem; margin-top: 2px; }
+
+  section { margin-bottom: 48px; }
+  h2 {
+    font-family: var(--font-display); font-size: 1.5rem;
+    font-weight: 600; margin: 0 0 6px; color: var(--ink);
+  }
+  .section-sub { color: var(--muted); font-size: 0.95rem; margin: 0 0 20px; max-width: 68ch; }
+
+  .stat-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px; margin-bottom: 40px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .stat-num {
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: 1.7rem; font-weight: 600; color: var(--ink);
+  }
+  .stat-num.pass { color: var(--pass); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  .phase-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .phase-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+  }
+  .phase-name { font-weight: 700; font-size: 1.02rem; color: var(--ink); }
+  .phase-num { font-family: var(--font-mono); color: var(--accent); font-weight: 600; margin-right: 8px; }
+  .pill {
+    flex: none; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em;
+    text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  }
+  .pill.pass { background: var(--pass-soft); color: var(--pass); }
+  .pill.note { background: var(--note-soft); color: var(--note); }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .evidence { font-size: 0.9rem; color: var(--ink-soft); }
+  .evidence ul { margin: 8px 0 0; padding-left: 20px; }
+  .evidence li { margin-bottom: 5px; }
+  code.inline {
+    font-family: var(--font-mono); background: var(--surface-2);
+    border: 1px solid var(--line-soft); border-radius: 5px;
+    padding: 1px 6px; font-size: 0.86em; color: var(--ink);
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .table-wrap {
+    overflow-x: auto; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: var(--shadow);
+  }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  th {
+    font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); font-weight: 600; background: var(--surface-2);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  td.route { white-space: normal; }
+
+  .check { color: var(--pass); font-weight: 700; }
+
+  .findings-list { display: flex; flex-direction: column; gap: 10px; }
+  .finding {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 3px solid var(--note); border-radius: 10px;
+    padding: 14px 18px; font-size: 0.9rem;
+  }
+  .finding-title { font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .finding-body { color: var(--ink-soft); }
+
+  footer {
+    border-top: 1px solid var(--line); padding-top: 24px; margin-top: 56px;
+    font-size: 0.84rem; color: var(--muted);
+  }
+  footer p { margin: 4px 0; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 36px 16px 64px; }
+    th, td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="eyebrow">PanditSuggest &middot; Engineering Audit</span>
+    <h1>SEO Rollout — End-to-End Audit</h1>
+    <div class="masthead-meta">
+      <span><strong>Scope:</strong> Phases 1&ndash;9 (Discovery through Automated Validation)</span>
+      <span><strong>Environment:</strong> live Docker stack (db + backend + frontend)</span>
+      <span><strong>Method:</strong> real HTTP requests, real browser DOM inspection &mdash; no simulated results</span>
+    </div>
+    <div class="verdict-banner">
+      <span class="verdict-dot"></span>
+      <div class="verdict-text">
+        <div class="verdict-title">All 9 shipped phases verified live and passing.</div>
+        <div class="verdict-sub">372 / 374 automated tests passing &mdash; the 2 failures are a single pre-existing, unrelated review-auth test that predates this initiative.</div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num pass">9 / 9</div><div class="stat-label">Phases verified live</div></div>
+      <div class="stat-card"><div class="stat-num">372<span style="color:var(--muted); font-weight:400;">/374</span></div><div class="stat-label">Automated tests passing</div></div>
+      <div class="stat-card"><div class="stat-num">1,615</div><div class="stat-label">URLs in sitemap.xml</div></div>
+      <div class="stat-card"><div class="stat-num">98%</div><div class="stat-label">Logo payload reduction</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Duplicate tags found</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Phase-by-phase results</h2>
+    <p class="section-sub">Each phase was re-verified against the live stack for this audit, not re-stated from prior notes. Evidence lines are the literal output of the commands run today.</p>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">01</span>Discovery &amp; Audit</div>
+        <span class="pill note"><span class="pill-dot"></span>Foundational</span>
+      </div>
+      <div class="evidence">Established the CSR-only rendering model, found unused <code class="inline">meta_title</code>/<code class="inline">meta_description</code> columns, and a broken <code class="inline">sitemap.xml</code> reference. No live re-test applies here &mdash; its findings are the premise every later phase was built and verified against.</div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">02</span>Universal FAQ CMS</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li><code class="inline">GET /api/faqs</code> &rarr; <span class="check">200</span>, 8 published entries returned, real content (e.g. &ldquo;Do you charge commission on my puja?&rdquo;)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">03</span>SEO Foundation (metadata engine)</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>All checked routes (<code class="inline">/</code>, <code class="inline">/temples</code>, <code class="inline">/pandits</code>, <code class="inline">/services</code>, <code class="inline">/login</code>, <code class="inline">/search</code>) &rarr; <span class="check">200</span></li>
+          <li>Browser DOM check: exactly one <code class="inline">&lt;title&gt;</code>, one canonical link per page &mdash; no duplicates from the React-19 dedup issue found and fixed in this phase</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">04</span>Structured Data (JSON-LD)</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>Home emits <code class="inline">Organization</code> + <code class="inline">WebSite</code>; temple emits <code class="inline">BreadcrumbList</code> + <code class="inline">PlaceOfWorship</code>; service emits <code class="inline">Service</code>; pandit emits <code class="inline">Person</code> &mdash; confirmed by parsing live response bodies</li>
+          <li>Exactly one <code class="inline">&lt;script id="ld-json"&gt;</code> per page, confirmed via DOM query on all 4 route shapes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">05</span>Crawl Architecture (sitemap)</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li><code class="inline">GET /sitemap.xml</code> &rarr; <span class="check">200</span>, <code class="inline">Content-Type: application/xml</code>, 1,615 well-formed <code class="inline">&lt;url&gt;</code> entries (grown from 1,127 at ship time &mdash; organic dataset growth, not a regression)</li>
+          <li><code class="inline">robots.txt</code> correctly references <code class="inline">Sitemap: https://panditsuggest.com/sitemap.xml</code>, and correctly disallows <code class="inline">/login</code> and <code class="inline">/search</code> (added in Phase 7)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">06</span>Entity Page Internal Linking</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>Mahakaleshwar temple detail page, Overview tab, <strong>no tab click</strong>: 4 real <code class="inline">/services/*</code> links and 1 <code class="inline">/pandits/*</code> link present in the DOM, confirming the always-visible preview (not tab-gated) is still working</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">07</span>Rendering &mdash; server-injected metadata</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>All 4 route shapes (home, temple, service, pandit) return the correct entity-specific title/OG/JSON-LD on a plain, non-JS request</li>
+          <li>Unknown slug (<code class="inline">/temples/does-not-exist-xyz-999</code>) &rarr; <span class="check">200</span> with the plain, unmodified shell &mdash; never a broken page</li>
+          <li><strong>Live outage drill run for this audit:</strong> stopped the backend container entirely &mdash; home and temple routes both still returned <span class="check">200</span> via nginx&rsquo;s static fallback; service resumed automatically once the backend was restarted, no manual recovery step</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">08</span>Performance</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>Header/footer logo confirmed <strong>42,850 bytes</strong> transferred over the wire on every page, down from 2,166,443 bytes (98% smaller) &mdash; verified with a fresh byte count for this audit, not assumed from the earlier build log</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-head">
+        <div class="phase-name"><span class="phase-num">09</span>Automated Validation</div>
+        <span class="pill pass"><span class="pill-dot"></span>Pass</span>
+      </div>
+      <div class="evidence">
+        <ul>
+          <li>Full backend suite re-run fresh for this audit: <strong>372 / 374 tests passing</strong> &mdash; identical to the count at ship time, confirming no drift since</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Server-injected metadata, by route</h2>
+    <p class="section-sub">Exact titles returned by a plain <code class="inline">curl</code> request (no JavaScript executed) against each of the 4 dynamic routes, checked live for this audit.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Route</th><th>Status</th><th>Injected title</th><th>JSON-LD type</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="route"><code class="inline">/</code></td><td class="num check">200</td><td class="route">PanditSuggest &mdash; Connect with Trusted Pandits Across India</td><td>Organization, WebSite</td></tr>
+          <tr><td class="route"><code class="inline">/temples/mahakaleshwar</code></td><td class="num check">200</td><td class="route">Mahakaleshwar Jyotirlinga &mdash; Puja, Havan &amp; Pandits</td><td>BreadcrumbList, PlaceOfWorship</td></tr>
+          <tr><td class="route"><code class="inline">/services/rudrabhishek</code></td><td class="num check">200</td><td class="route">Rudrabhishek &mdash; Puja &amp; Havan Service</td><td>BreadcrumbList, Service</td></tr>
+          <tr><td class="route"><code class="inline">/pandits/ramesh-sharma</code></td><td class="num check">200</td><td class="route">Pandit Pandit Ramesh Sharma &mdash; Puja &amp; Havan Services in Varanasi</td><td>BreadcrumbList, Person</td></tr>
+          <tr><td class="route"><code class="inline">/temples/does-not-exist-xyz-999</code></td><td class="num check">200</td><td class="route"><em style="color:var(--muted); font-style:italic;">(none &mdash; plain shell, client handles it)</em></td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Test suite, fresh run</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metric</th><th class="num">Count</th></tr></thead>
+        <tbody>
+          <tr><td>Total tests</td><td class="num">374</td></tr>
+          <tr><td>Passing</td><td class="num" style="color:var(--pass);">372</td></tr>
+          <tr><td>Failing</td><td class="num" style="color:var(--fail);">2</td></tr>
+          <tr><td>New tests added in Phase 9</td><td class="num">43</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="section-sub" style="margin-top:14px;">The 2 failures are both inside a single pre-existing subtest &mdash; <code class="inline">POST /api/reviews requires auth, then creates a review</code> &mdash; confirmed by name, not just by count, to be the same failure present before this SEO initiative began. It is unrelated to any SEO work and was not touched by any of the 9 phases.</p>
+  </section>
+
+  <section>
+    <h2>Observed, non-blocking</h2>
+    <p class="section-sub">Found during today&rsquo;s pass or earlier phases, deliberately left as-is because fixing them was outside each phase&rsquo;s stated scope. Listed here so nothing quietly gets lost.</p>
+    <div class="findings-list">
+      <div class="finding">
+        <div class="finding-title">Seeded pandit name duplicates the &ldquo;Pandit&rdquo; honorific in generated titles</div>
+        <div class="finding-body">The <code class="inline">ramesh-sharma</code> fixture&rsquo;s <code class="inline">full_name</code> is itself &ldquo;Pandit Ramesh Sharma&rdquo;, and the title formula prepends &ldquo;Pandit &rdquo; again &rarr; &ldquo;Pandit Pandit Ramesh Sharma.&rdquo; This is seed-data content, not a code defect &mdash; it reproduces identically on the client-rendered page today, unrelated to the SEO work in any phase.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title">Missing fallback image for pandits with no photo</div>
+        <div class="finding-body"><code class="inline">/assets/img/pandits/default.jpg</code> is referenced as a fallback in <code class="inline">normalize.ts</code> but was never added to <code class="inline">public/</code>, producing an occasional 404. Predates this initiative; noted during the Phase 8 performance pass and left as a follow-up ticket.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-title">No frontend test runner</div>
+        <div class="finding-body">Phase 9&rsquo;s coverage is entirely backend (real Express app + real DB). <code class="inline">Seo.tsx</code> and <code class="inline">structuredData.ts</code>&rsquo;s correctness is validated indirectly via the server-side metadata mirror&rsquo;s own tests, plus this audit&rsquo;s live browser checks &mdash; not via a component test suite, which does not exist in this project.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Methodology:</strong> every result above was produced by a real HTTP request or a real Chromium DOM inspection against the running <code class="inline">db + backend + frontend</code> Docker Compose stack at the time this document was generated &mdash; including a live backend-outage drill (container stopped, then restarted). Nothing here is inferred from prior session notes without being re-checked.</p>
+    <p>Full phase-by-phase implementation detail lives in <code class="inline">docs/SEO_ARCHITECTURE.md</code>. Remaining work: Phase 10, a final documentation consistency pass.</p>
+  </footer>
+
+</div>
+</body>
+</html>

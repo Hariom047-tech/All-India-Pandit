@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import en from "./dictionary.en";
-import hi from "./dictionary.hi";
 
 export type Lang = "en" | "hi";
+type Dictionary = typeof en;
 const STORAGE_KEY = "panditconnect_lang";
-const dictionaries: Record<Lang, typeof en> = { en, hi };
 
 function getPath(obj: unknown, path: string): unknown {
   return path.split(".").reduce<unknown>((node, key) => {
@@ -34,6 +33,20 @@ function detectInitialLang(): Lang {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(detectInitialLang);
+  // The Hindi dictionary (~28KB source, mostly Devanagari — bigger than the
+  // English one) is loaded on demand instead of bundled into every visit's
+  // critical JS: English is the default for a first-time visitor (above),
+  // so most page loads never need it at all. Only a returning visitor who
+  // already chose Hindi (persisted in localStorage) pays a brief
+  // dictionary-load moment, once, instead of every visitor paying the
+  // weight upfront (Phase 12, docs/SEO_ARCHITECTURE.md).
+  const [hiDict, setHiDict] = useState<Dictionary | null>(null);
+
+  useEffect(() => {
+    if (lang === "hi" && !hiDict) {
+      import("./dictionary.hi").then((mod) => setHiDict(mod.default));
+    }
+  }, [lang, hiDict]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, lang);
@@ -44,16 +57,17 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const toggle = () => setLangState((l) => (l === "en" ? "hi" : "en"));
 
   const t = useMemo(() => {
+    const active: Dictionary = lang === "hi" && hiDict ? hiDict : en;
     return (key: string, vars?: Record<string, string | number>) => {
-      let str = getPath(dictionaries[lang], key);
-      if (typeof str !== "string") str = getPath(dictionaries.en, key);
+      let str = getPath(active, key);
+      if (typeof str !== "string") str = getPath(en, key);
       if (typeof str !== "string") return key;
       if (vars) {
         for (const [k, v] of Object.entries(vars)) str = (str as string).replace(`{${k}}`, String(v));
       }
       return str as string;
     };
-  }, [lang]);
+  }, [lang, hiDict]);
 
   return <I18nContext.Provider value={{ lang, setLang, toggle, t }}>{children}</I18nContext.Provider>;
 }

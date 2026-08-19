@@ -6,14 +6,34 @@ const { hashToken } = require('../middleware/auth');
 const { withUserContext } = require('../config/db');
 const { logSecurityEvent } = require('../utils/securityLog');
 const { sessionTtlHours, nodeEnv } = require('../config/env');
+const { logActivityEvent, deviceTypeFromUserAgent } = require('../utils/activityLog');
+const { browsingMarketFor } = require('../services/distribution/market');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_ROUNDS = 10;
 
+/**
+ * Allow-list, not a deny-list.
+ *
+ * This used to strip a couple of known-sensitive columns and return the rest,
+ * which meant every future column on `users` was published by default — and
+ * `date_of_birth` (the second factor in pandit password reset) was exactly
+ * such a column. Enumerating what MAY leave the server fails closed instead.
+ */
+const PUBLIC_USER_FIELDS = [
+  'id', 'email', 'phone', 'full_name', 'display_name', 'avatar_url',
+  'role', 'status', 'city', 'state', 'pincode',
+  'preferred_language', 'theme_preference',
+  'email_verified', 'phone_verified', 'last_login_at', 'created_at',
+];
+
 function sanitize(user) {
   if (!user) return null;
-  const { password_hash, ...rest } = user; // eslint-disable-line no-unused-vars
-  return rest;
+  const out = {};
+  for (const key of PUBLIC_USER_FIELDS) {
+    if (key in user) out[key] = user[key];
+  }
+  return out;
 }
 
 async function issueSession(res, user, req) {
@@ -27,6 +47,17 @@ async function issueSession(res, user, req) {
     deviceInfo: { userAgent: req.headers['user-agent'] || null },
   });
   await withUserContext(user.id, (q) => repo.touchLogin(user.id, q));
+
+  const browsing = browsingMarketFor(req);
+  void logActivityEvent({
+    userId: user.id,
+    eventType: 'LOGIN',
+    country: browsing.countryCode,
+    market: browsing.market === 'UNKNOWN' ? null : browsing.market,
+    locationSource: browsing.source,
+    deviceType: deviceTypeFromUserAgent(req.headers['user-agent']),
+  });
+
   res.status(201).json({ token, expiresAt, user: sanitize(user) });
 }
 
@@ -94,6 +125,7 @@ async function login(req, res) {
 async function logout(req, res) {
   const [, token] = (req.headers.authorization || '').split(' ');
   if (token) await repo.revokeSession(hashToken(token));
+  if (req.user?.id) void logActivityEvent({ userId: req.user.id, eventType: 'LOGOUT' });
   res.json({ ok: true });
 }
 
@@ -104,15 +136,49 @@ async function me(req, res) {
   res.json(sanitize(user));
 }
 
+/** PATCH /api/auth/me — allow-listed profile update (name, phone only).
+ *  The client never touches role, status, or any verified flag. */
+async function updateMe(req, res) {
+  const { full_name, phone } = req.body || {};
+  const updates = {};
+  if (full_name !== undefined) updates.full_name = String(full_name).trim().slice(0, 120);
+  if (phone !== undefined) updates.phone = phone ? String(phone).trim().slice(0, 20) : null;
+  if (!Object.keys(updates).length) return res.status(400).json({ error: 'Nothing to update' });
+
+  await withUserContext(req.user.id, (q) => q(
+    `UPDATE users SET ${ Object.keys(updates).map((k, i) => `${k} = $${i + 2}`).join(', ') } WHERE id = $1`,
+    [req.user.id, ...Object.values(updates)],
+  ));
+  const updated = await withUserContext(req.user.id, (q) => repo.findById(req.user.id, q));
+  res.json(sanitize(updated));
+}
+
+/** Set only for local/test environments (docker-compose.override.yml) —
+ *  never in docker-compose.yml's production `backend` service, and never on
+ *  any real deployment. When set, this exact code is accepted as correct for
+ *  ANY pending OTP, in addition to the real generated one. This is a
+ *  deliberately blunt bypass (not gated on NODE_ENV, unlike
+ *  ALLOW_DEV_GEO_HEADER) because this codebase's own local Docker rig runs
+ *  with NODE_ENV=production, which would otherwise make it impossible to
+ *  turn on — see docs/PROJECT_STATUS.md. The env var itself being unset is
+ *  the only gate, so it must never be set anywhere real accounts are created. */
+function otpMatches(candidate, record) {
+  const bypass = process.env.OTP_TEST_BYPASS_CODE;
+  if (bypass && candidate === bypass) return true;
+  const candidateHash = crypto.createHash('sha256').update(candidate).digest('hex');
+  return candidateHash === record.otp_hash;
+}
+
 /** POST /api/auth/otp/request — no real SMS/email provider is wired up (see
  *  README "Known placeholders"); in non-production the OTP is returned in
- *  the response body so the flow is testable end-to-end without one. */
+ *  the response body so the flow is testable end-to-end without one. 4
+ *  digits to match the OTP entry UI (Login.tsx's 4-box input). */
 async function requestOtp(req, res) {
   const { target, targetType } = req.body || {};
   if (!target || !['phone', 'email'].includes(targetType)) {
     return res.status(400).json({ error: 'target and targetType ("phone" or "email") are required' });
   }
-  const otp = String(crypto.randomInt(100000, 1000000));
+  const otp = String(crypto.randomInt(1000, 10000));
   const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
   await repo.createOtp({ target, targetType, otpHash, expiresAt });
@@ -125,7 +191,10 @@ async function requestOtp(req, res) {
   res.status(201).json({ ok: true, expiresAt, ...(nodeEnv === 'development' ? { devOtp: otp } : {}) });
 }
 
-/** POST /api/auth/otp/verify */
+/** POST /api/auth/otp/verify — marks an already-known target verified. If
+ *  the caller is logged in (req.user set), also flags their own
+ *  email_verified/phone_verified. Does NOT create a session — for a
+ *  passwordless phone login/signup that issues one, see phoneLogin below. */
 async function verifyOtp(req, res) {
   const { target, targetType, otp } = req.body || {};
   if (!target || !targetType || !otp) return res.status(400).json({ error: 'target, targetType and otp are required' });
@@ -135,8 +204,7 @@ async function verifyOtp(req, res) {
   if (new Date(record.expires_at) < new Date()) return res.status(400).json({ error: 'OTP has expired' });
   if (record.attempts >= record.max_attempts) return res.status(429).json({ error: 'Too many attempts — request a new OTP' });
 
-  const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
-  if (otpHash !== record.otp_hash) {
+  if (!otpMatches(otp, record)) {
     await repo.incrementOtpAttempts(record.id);
     return res.status(400).json({ error: 'Incorrect OTP' });
   }
@@ -144,6 +212,51 @@ async function verifyOtp(req, res) {
   await repo.markOtpVerified(record.id);
   if (req.user) await withUserContext(req.user.id, (q) => repo.markTargetVerified(req.user.id, targetType, q));
   res.json({ ok: true, verified: true });
+}
+
+/** POST /api/auth/otp/login — passwordless phone login/signup: verifies the
+ *  OTP for `phone`, then finds-or-creates a devotee account for that number
+ *  and issues a real session. `users.email` is NOT NULL + UNIQUE, so a
+ *  brand-new phone-only account gets a synthetic placeholder email derived
+ *  from the (already-UNIQUE) phone number — never shown to the user, never
+ *  used to log in. */
+async function phoneLogin(req, res) {
+  const { phone, otp } = req.body || {};
+  if (!phone || !otp) return res.status(400).json({ error: 'phone and otp are required' });
+
+  const record = await repo.findLatestOtp(phone, 'phone');
+  if (!record || record.verified) return res.status(400).json({ error: 'No pending OTP for this number — request a new one' });
+  if (new Date(record.expires_at) < new Date()) return res.status(400).json({ error: 'OTP has expired' });
+  if (record.attempts >= record.max_attempts) return res.status(429).json({ error: 'Too many attempts — request a new OTP' });
+
+  if (!otpMatches(otp, record)) {
+    await repo.incrementOtpAttempts(record.id);
+    return res.status(400).json({ error: 'Incorrect OTP' });
+  }
+  await repo.markOtpVerified(record.id);
+
+  let user = await repo.findByPhone(phone);
+  if (user) {
+    if (!user.phone_verified) {
+      await withUserContext(user.id, (q) => repo.markTargetVerified(user.id, 'phone', q));
+      user.phone_verified = true;
+    }
+  } else {
+    const placeholderEmail = `phone-${phone.replace(/[^a-zA-Z0-9]/g, '')}@otp.panditsuggest.local`;
+    try {
+      user = await repo.create({ email: placeholderEmail, phone, fullName: 'Devotee', role: 'devotee' });
+    } catch (err) {
+      if (err.code === '23505') return res.status(409).json({ error: 'An account with this number already exists — please try again' });
+      throw err;
+    }
+    await withUserContext(user.id, (q) => repo.markTargetVerified(user.id, 'phone', q));
+    user.phone_verified = true;
+  }
+
+  if (user.status === 'suspended' || user.status === 'banned' || user.status === 'deactivated') {
+    return res.status(403).json({ error: `Account is ${user.status}` });
+  }
+  await issueSession(res, user, req);
 }
 
 /** POST /api/auth/google */
@@ -163,15 +276,22 @@ async function googleAuth(req, res) {
       return res.status(400).json({ error: 'Invalid Google token payload' });
     }
 
-    const { sub: googleId, email, name: fullName, email_verified } = payload;
+    const { sub: googleId, email, name: fullName } = payload;
     let user = await repo.findByEmail(email);
 
     if (user) {
       // If user exists but doesn't have google_id linked, link it.
       if (!user.google_id) {
-        // Need to run inside a context to update
         await withUserContext(user.id, (q) => repo.linkGoogleId(user.id, googleId, q));
         user.google_id = googleId;
+      }
+      // Always ensure email_verified=true for Google users (Google verifies emails).
+      // Covers existing accounts created before this fix.
+      if (!user.email_verified) {
+        await withUserContext(user.id, (q) => q(
+          'UPDATE users SET email_verified = TRUE WHERE id = $1', [user.id]
+        ));
+        user.email_verified = true;
       }
     } else {
       // User doesn't exist, create a new one (no password).
@@ -189,4 +309,4 @@ async function googleAuth(req, res) {
   }
 }
 
-module.exports = { register, registerPandit, login, logout, me, requestOtp, verifyOtp, googleAuth };
+module.exports = { register, registerPandit, login, logout, me, updateMe, requestOtp, verifyOtp, phoneLogin, googleAuth };

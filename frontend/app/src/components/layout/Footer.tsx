@@ -18,12 +18,12 @@ const EXPLORE: [string, string][] = [
   ["/pandits", "footer.panditDirectory"],
   ["/services", "footer.allServices"],
   ["/temple-map", "footer.templeMap"],
-  ["/panchang", "footer.panchangMuhurat"],
   ["/ai-recommender", "footer.aiPoojaGuide"],
 ];
 
 const COMPANY: [string, string][] = [
   ["/about", "footer.aboutUs"],
+  ["/how-it-works", "footer.howItWorks"],
   ["/blog", "footer.spiritualBlog"],
   ["/contact", "footer.contact"],
   ["/dashboard", "footer.panditDashboard"],

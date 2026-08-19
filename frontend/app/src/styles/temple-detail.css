@@ -335,6 +335,110 @@
   font-size: 1rem;
 }
 
+/* ── empty state (no pandits / no services) ── */
+/* ── This temple's own services ─────────────────────────────────────
+   Rituals with no catalogue entry, so no detail page. Styled as a sibling of
+   ServiceCard but clearly a button: the only thing it can do is start an
+   enquiry, and a card that looks navigable but is not is worse than one that
+   states its action. */
+.td-subheading {
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text, #1a1714);
+  margin: 30px 0 14px;
+}
+
+.td-custom-service {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  background: rgba(255, 248, 231, 0.6);
+  border: 1px solid rgba(212, 160, 23, 0.28);
+  border-radius: 18px;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.td-custom-service:hover {
+  background: rgba(255, 248, 231, 0.95);
+  border-color: var(--gold, #d4a017);
+  transform: translateY(-2px);
+}
+.td-custom-service:focus-visible {
+  outline: 2px solid var(--gold, #d4a017);
+  outline-offset: 2px;
+}
+.td-custom-service__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; flex: none;
+  border-radius: 12px;
+  background: var(--gold-bright, #ffd700);
+  color: var(--text, #1a1714);
+}
+.td-custom-service__name {
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text, #1a1714);
+  overflow-wrap: anywhere;
+}
+.td-custom-service__desc {
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--text-2, #6d6a62);
+  overflow-wrap: anywhere;
+}
+.td-custom-service__cta {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: .84rem;
+  font-weight: 700;
+  color: var(--gold-deep, #b8860b);
+}
+@media (prefers-reduced-motion: reduce) {
+  .td-custom-service, .td-custom-service:hover { transition: none; transform: none; }
+}
+
+.td-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: rgba(255, 248, 231, 0.5);
+  border: 1px dashed rgba(212, 160, 23, 0.25);
+  border-radius: 20px;
+  margin-top: 8px;
+}
+.td-empty-state__icon {
+  font-size: 2.8rem;
+  margin-bottom: 14px;
+}
+.td-empty-state__text {
+  font-family: var(--font-head, "Playfair Display", serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #1a1714);
+  margin: 0;
+}
+
+/* ── reviews horizontal carousel ── */
+.td-reviews-carousel-wrap {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 6px;
+}
+.td-reviews-carousel-wrap::-webkit-scrollbar { display: none; }
+.td-reviews-carousel-wrap > * { flex: 0 0 min(300px, 80vw); scroll-snap-align: start; }
+
 /* ── nearby temple section ── */
 .td-nearby {
   background: linear-gradient(180deg, rgba(250, 247, 240, 0.8), rgba(255, 255, 255, 0.9));
@@ -346,6 +450,31 @@
   grid-template-columns: 1fr 360px;
   gap: 36px;
   align-items: start;
+}
+
+/* On the Pandits tab, the inquiry form competes with the thing devotees
+   actually came for — a full roster to browse. Desktop/tablet only: the
+   sidebar still earns its place on mobile, where there is no spare width
+   for a 3-up grid anyway (grid-2up-mobile forces 2 columns below 620px). */
+@media (min-width: 621px) {
+  .td-content--pandits-3up .td-inquiry {
+    display: none;
+  }
+}
+@media (min-width: 961px) {
+  .td-content--pandits-3up {
+    grid-template-columns: 1fr;
+  }
+}
+/* base.css has a sitewide rule dropping .g-3 to 2 columns at <=900px, tuned
+   for other pages' wider cards. This page's own tablet range already runs
+   to 960px (see .td-content's breakpoint above), and with the inquiry
+   sidebar gone there is room for 3 — so re-assert 3 columns across that
+   whole range, specific to this grid, without touching .g-3 sitewide. */
+@media (min-width: 621px) and (max-width: 960px) {
+  .td-content--pandits-3up .grid.g-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* ── responsive ── */
@@ -385,4 +514,40 @@
   .td-info-value {
     font-size: 0.95rem;
   }
+  /* Reviews carousel: remove negative margin on mobile to prevent overflow */
+  .td-reviews-carousel-wrap {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Tiny phones: stack info grid to 1 column */
+@media (max-width: 400px) {
+  .td-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .td-tab {
+    padding: 12px 14px;
+    font-size: 0.82rem;
+  }
+}
+
+/* Uploaded temple videos — responsive grid, landscape 16:9 (unlike pandit
+   reels, temple footage is usually filmed horizontally). */
+.td-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.td-video-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #12100c;
+  border: 1px solid var(--border, #e8d5b7);
+}
+@media (max-width: 600px) {
+  .td-video-grid { grid-template-columns: 1fr; }
 }

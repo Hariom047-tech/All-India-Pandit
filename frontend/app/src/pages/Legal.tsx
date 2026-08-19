@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { Seo } from "../lib/Seo";
 
 export default function Legal() {
   const location = useLocation();
@@ -6,8 +7,15 @@ export default function Legal() {
 
   return (
     <div style={{ backgroundColor: "#fff", minHeight: "100vh", color: "#333", fontFamily: "Arial, sans-serif" }}>
+      <Seo
+        title={isPrivacy ? "Privacy Policy" : "Terms of Use"}
+        description={isPrivacy
+          ? "How PanditSuggest collects, uses and protects your personal data."
+          : "The terms governing your use of PanditSuggest."}
+        path={isPrivacy ? "/privacy" : "/terms"}
+      />
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 20px" }}>
-        
+
         {isPrivacy ? (
           <>
             <h1 style={{ textAlign: "center", fontSize: "1.5rem", marginBottom: 30, letterSpacing: "1px", color: "#000" }}>PRIVACY POLICY</h1>

@@ -60,10 +60,18 @@
 
 .sp-hero__list li {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.05rem;
+  /* flex-start, not center: with a two-line label the tick was centring
+     against the whole block and sitting between the lines. It belongs beside
+     the FIRST line. */
+  align-items: flex-start;
+  gap: 10px;
+  /* Scales smoothly instead of jumping at a breakpoint — 0.86rem at 320px,
+     1.05rem from ~768px up, and sensible at every width in between. */
+  font-size: clamp(0.86rem, 2.6vw, 1.05rem);
+  line-height: 1.45;
   color: var(--text-2, #6d6a62);
+  /* Long Devanagari and unbroken strings must wrap rather than overflow. */
+  overflow-wrap: anywhere;
 }
 
 .sp-hero__check {
@@ -72,6 +80,8 @@
   justify-content: center;
   width: 22px;
   height: 22px;
+  flex: none;                 /* never squashed by a long label */
+  margin-top: 1px;            /* optical alignment with the first text line */
   border-radius: 50%;
   background: var(--gold-bright, #ffd700);
   color: var(--text, #1a1714);
@@ -747,6 +757,18 @@
   .sp-hero { padding: 40px 0 0; }
   .sp-hero__grid { display: flex; flex-direction: column-reverse; text-align: center; gap: 24px; }
   .sp-hero__content { max-width: none; padding: 0 0 20px; }
+  /* The grid centres everything, which is right for the display heading and
+     wrong for the bullets: centred multi-line text beside a left-aligned tick
+     gives every line a different starting edge and is genuinely hard to read.
+     The list is left-aligned and the BLOCK is centred instead, capped to a
+     comfortable measure so it still looks deliberate. */
+  .sp-hero__list {
+    text-align: left;
+    max-width: 34ch;
+    margin-inline: auto;
+    margin-bottom: 26px;
+    gap: 12px;
+  }
   .sp-hero__search { max-width: none; justify-content: center; }
   .sp-hero__img-wrap { width: 200px; height: 200px; margin: 0 auto; }
   .pp-hero__stats { justify-content: center; }
@@ -757,9 +779,47 @@
 @media (max-width: 640px) {
   .sp-hero { padding: 32px 0 28px; }
   .sp-hero__title { font-size: 1.8rem; }
+  .sp-hero__list { gap: 10px; margin-bottom: 22px; }
+  .sp-hero__check { width: 20px; height: 20px; }
   .sp-cat-chips { gap: 10px; }
   .sp-cat-chip { padding: 10px 20px; font-size: 0.85rem; }
   .sp-booked-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .sp-booked-card__name { font-size: 1rem; }
   .sp-trust-footer__inner { flex-direction: column; text-align: center; }
+
+  /* "All Services" grid on small phones: at 2-up width the full
+     description + duration + pandit-count overlay no longer fits over the
+     image without wrapping onto itself and burying the card in text. Mobile
+     only — keep just the name and how many pandits offer it; desktop/tablet
+     (the earlier breakpoints above) are untouched. */
+  .sp-all-card__tag { display: none; }
+  /* .sp-all-card__meta span (unconditional, base rule further up this file)
+     sets display:inline-flex with a type-selector that outranks a bare class
+     selector here (0,1,1 beats 0,1,0) — the extra .sp-all-card__meta ancestor
+     class is what wins it back (0,2,0 beats 0,1,1), not source order. */
+  .sp-all-card__meta .sp-all-card__meta-dur { display: none; }
+  .sp-all-card__bottom { padding: 12px; }
+  .sp-all-card__name { font-size: 0.94rem; margin-bottom: 3px; }
+  .sp-all-card__meta { font-size: 0.72rem; }
+}
+
+/* ── Online puja / havan ─────────────────────────────────────────── */
+.sp-online-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 38px; padding: 6px 14px;
+  border: 1px solid var(--border, #e8d5b7); border-radius: 999px;
+  background: #fff; font: inherit; font-size: .86rem; cursor: pointer;
+  white-space: nowrap;
+}
+.sp-online-toggle.is-on {
+  background: #e7f3ff; border-color: #7fb7e8; color: #1c4f7c; font-weight: 700;
+}
+.sp-online-toggle:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 2px; }
+
+.sp-online-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgba(28, 79, 124, .92); color: #fff;
+  font-size: .72rem; font-weight: 700; letter-spacing: .01em;
 }

@@ -1,0 +1,177 @@
+/* Redesigned pandit profile — proof-first layout.
+   Mobile-first; two-column with a sticky rail from 1024px. */
+
+.pp {
+  --pp-gold: var(--gold, #d4a017);
+  --pp-line: var(--border, #e8d5b7);
+  --pp-ink: var(--text, #2d2d2d);
+  --pp-ink-2: var(--text-2, #6b6b6b);
+  --pp-tap: 44px;
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────── */
+.pp-hero {
+  background: linear-gradient(180deg, #fffdf6, var(--ivory, #fff8e7));
+  border: 1px solid var(--pp-line);
+  border-radius: 16px;
+  padding: 22px 18px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.pp-hero__avatar {
+  width: clamp(88px, 26vw, 124px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--pp-gold);
+  background: #fff;
+  display: block;
+  margin: 0 auto 12px;
+}
+.pp-hero__name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.35rem, 6vw, 1.9rem);
+  line-height: 1.15;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+.pp-hero__meta {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 6px 12px; font-size: .88rem; color: var(--pp-ink-2); margin-bottom: 10px;
+}
+.pp-hero__meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+/* "New" instead of 0.0/5 — a zero rating reads as a BAD pandit, not a new one. */
+.pp-chip-new {
+  display: inline-block; background: #fdf3d9; color: #7a5a08;
+  border: 1px solid #e8cf8e; border-radius: 999px;
+  padding: 4px 12px; font-size: .78rem; font-weight: 600;
+}
+.pp-rating { display: inline-flex; align-items: center; gap: 6px; font-size: .9rem; }
+.pp-rating__stars { color: var(--pp-gold); letter-spacing: 1px; }
+
+.pp-cta { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.pp-cta__call, .pp-cta__wa {
+  min-height: var(--pp-tap);
+  border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-weight: 700; display: inline-flex;
+  align-items: center; justify-content: center; gap: 8px;
+}
+.pp-cta__call { flex: 1; max-width: 260px; background: var(--pp-gold); color: #fff; padding: 0 24px; }
+.pp-cta__wa { width: var(--pp-tap); background: #25d366; color: #fff; }
+.pp-cta__call:disabled, .pp-cta__wa:disabled { opacity: .6; cursor: default; }
+.pp-cta__call:focus-visible, .pp-cta__wa:focus-visible { outline: 2px solid var(--pp-ink); outline-offset: 2px; }
+
+.pp-disclosure {
+  font-size: .78rem; color: var(--pp-ink-2); margin: 10px auto 0;
+  max-width: 40ch; line-height: 1.5;
+}
+
+/* ── Trust strip ──────────────────────────────────────────────────── */
+.pp-trust { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+.pp-trust span {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #eaf7f0; color: #1d6b38; border: 1px solid #b9e3ca;
+  border-radius: 999px; padding: 4px 11px; font-size: .76rem; font-weight: 600;
+}
+
+/* ── Sections ─────────────────────────────────────────────────────── */
+.pp-section { margin-top: 22px; }
+.pp-section__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.05rem, 4vw, 1.25rem); margin: 0 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.pp-card {
+  background: #fff; border: 1px solid var(--pp-line);
+  border-radius: 14px; padding: 16px;
+}
+.pp-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-chip {
+  border: 1px solid var(--pp-line); border-radius: 999px;
+  padding: 7px 14px; font-size: .86rem; background: #fff;
+  text-decoration: none; color: inherit;
+}
+.pp-chip--online { background: #e6f1fb; border-color: #85b7eb; color: #0c447c; font-weight: 600; }
+
+.pp-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.pp-fact { border: 1px solid var(--pp-line); border-radius: 12px; padding: 12px 14px; }
+.pp-fact__k {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+  color: #b8860b; font-weight: 700; margin-bottom: 3px;
+}
+.pp-fact__v { font-size: .95rem; overflow-wrap: anywhere; }
+
+.pp-empty {
+  text-align: center; padding: 26px 16px; color: var(--pp-ink-2);
+  border: 1px dashed var(--pp-line); border-radius: 14px; font-size: .9rem;
+}
+
+/* ── Sticky contact bar (mobile / tablet) ─────────────────────────── */
+.contact-bar {
+  /* z above .bottom-nav (95) — the tab bar is fixed too, and at z:60 this
+     rendered behind it and was unreachable on mobile. */
+  position: fixed; left: 0; right: 0; z-index: 96;
+  background: #fff; border-top: 1px solid var(--border, #e8d5b7);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  transform: translateY(110%); transition: transform .22s ease;
+  /* Sits directly above the mobile tab bar. --bottom-nav-h is published by
+     base.css at the same breakpoint that shows .bottom-nav, so this is 0 on
+     desktop where no tab bar exists. */
+  bottom: var(--bottom-nav-h, 0px);
+}
+.contact-bar.is-shown { transform: translateY(0); }
+.contact-bar__inner {
+  display: flex; align-items: center; gap: 10px;
+  max-width: 1120px; margin: 0 auto;
+}
+.contact-bar__name {
+  flex: 1; min-width: 0; font-weight: 600; font-size: .92rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.contact-bar__call, .contact-bar__wa {
+  min-height: 42px; border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-weight: 700; display: inline-flex;
+  align-items: center; justify-content: center; gap: 7px; flex: none;
+}
+.contact-bar__call { background: var(--gold, #d4a017); color: #fff; padding: 0 20px; }
+.contact-bar__wa { width: 42px; background: #25d366; color: #fff; }
+
+@media (prefers-reduced-motion: reduce) { .contact-bar { transition: none; } }
+
+/* ── Tablet ───────────────────────────────────────────────────────── */
+@media (min-width: 600px) {
+  .pp-hero {
+    display: grid;
+    /* auto: avatar; 1fr: text — this adapts if the avatar grows */
+    grid-template-columns: auto 1fr;
+    gap: 20px; text-align: left; align-items: center; padding: 24px;
+    min-width: 0;
+  }
+  .pp-hero > * { min-width: 0; }
+  .pp-hero__avatar { margin: 0; }
+  .pp-hero__meta, .pp-trust, .pp-cta { justify-content: flex-start; }
+  .pp-disclosure { margin-left: 0; }
+}
+
+/* ── Tablet only (600–1023px): ensure the cta wraps properly ── */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .pp-hero {
+    /* On a 768px portrait tablet, auto could be up to 124px; 1fr gives the rest */
+    grid-template-columns: min-content 1fr;
+  }
+  .pp-cta { flex-wrap: wrap; }
+}
+
+/* ── Desktop: sticky contact rail replaces the bottom bar ─────────── */
+@media (min-width: 1024px) {
+  .pp-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+  .pp-rail {
+    position: sticky;
+    /* Accounts for the header + a small breathing gap. Use the CSS var when set. */
+    top: calc(var(--header-h, 72px) + 16px);
+  }
+  /* The sticky sidebar completely replaces the fixed bottom bar on desktop. */
+  .contact-bar { display: none; }
+}

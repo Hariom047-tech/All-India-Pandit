@@ -17,6 +17,11 @@ module.exports = {
   sessionTtlHours: parseInt(process.env.SESSION_TTL_HOURS, 10) || 168,
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
+  // Absolute origin used to build <loc> URLs in the sitemap (see
+  // routes/sitemap.routes.js) — mirrors frontend/app/src/lib/siteConfig.ts's
+  // same fallback, so both halves of the app agree on the canonical domain
+  // even if this var is never set.
+  publicSiteUrl: (process.env.PUBLIC_SITE_URL || 'https://panditsuggest.com').replace(/\/$/, ''),
   // Obscurity only, never the actual defense — see docs/ADMIN.md.
   // REQUIRED: no fallback — startup fails if not set, preventing silent exposure.
   adminSecretPath: process.env.NODE_ENV === 'test'
