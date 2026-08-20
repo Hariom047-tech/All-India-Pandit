@@ -9,7 +9,7 @@ const list = async (req, res) => res.json(await repo.listAll(req.db));
 
 async function upload(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
-  const imageUrl = hero.urlFor(req.file.filename);
+  const imageUrl = req.file.mediaUrl;
 
   // The hero has exactly three slots. Refusing a fourth is clearer than
   // silently accepting one that will never be displayed.
@@ -21,6 +21,7 @@ async function upload(req, res) {
 
   const created = await repo.add(req.db, {
     imageUrl,
+    imageKey: req.file.storageKey,
     altText: req.body?.altText,
     caption: req.body?.caption,
     mimeType: req.file.mimetype,

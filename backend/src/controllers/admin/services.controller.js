@@ -79,7 +79,7 @@ async function getBySlug(req, res) {
 /** POST <secret>/services/:slug/image — replaces the hero image. */
 async function uploadImage(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
-  const imageUrl = serviceImage.urlFor(req.file.filename);
+  const imageUrl = req.file.mediaUrl;
 
   const existing = await repo.getBySlug(req.db, req.params.id);
   if (!existing) {
@@ -87,7 +87,7 @@ async function uploadImage(req, res) {
     return res.status(404).json({ error: 'Service not found' });
   }
 
-  const updated = await repo.setImage(req.db, req.params.id, imageUrl);
+  const updated = await repo.setImage(req.db, req.params.id, imageUrl, req.file.storageKey);
   // A service has one hero image, so the previous file is now unreachable.
   if (existing.image_url && existing.image_url !== imageUrl) serviceImage.removeFile(existing.image_url);
 
@@ -101,12 +101,12 @@ async function uploadImage(req, res) {
 /** POST <secret>/service-categories/:id/image — tile image for the strip. */
 async function uploadCategoryImage(req, res) {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
-  const imageUrl = serviceImage.urlFor(req.file.filename);
+  const imageUrl = req.file.mediaUrl;
 
   const existing = await repo.findCategoryById(req.db, req.params.id);
   if (!existing) { serviceImage.removeFile(imageUrl); return res.status(404).json({ error: 'Category not found' }); }
 
-  const updated = await repo.setCategoryImage(req.db, req.params.id, imageUrl);
+  const updated = await repo.setCategoryImage(req.db, req.params.id, imageUrl, req.file.storageKey);
   if (existing.image_url && existing.image_url !== imageUrl) serviceImage.removeFile(existing.image_url);
 
   await logAdminAction({

@@ -8,8 +8,14 @@ const { checkIpBan } = require('./middleware/ipBan');
 const { normalizeIp } = require('./middleware/normalizeIp');
 const routes = require('./routes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const { verifyOrigin } = require('./middleware/originVerify');
 
 const app = express();
+
+// First: reject anything that did not come through CloudFront, when
+// ORIGIN_SHARED_SECRET is configured — see middleware/originVerify.js.
+// A no-op until that env var is set, so local dev is unaffected.
+app.use(verifyOrigin);
 
 app.use(express.static(path.join(__dirname, '../public')));
 

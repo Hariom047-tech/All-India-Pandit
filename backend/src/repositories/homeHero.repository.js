@@ -29,16 +29,17 @@ async function listAll(q = query) {
   return rows;
 }
 
-async function add(q, { imageUrl, altText, caption, mimeType, sizeBytes, uploadedBy }) {
+async function add(q, { imageUrl, imageKey, altText, caption, mimeType, sizeBytes, uploadedBy }) {
   const { rows: orderRows } = await q(
     'SELECT COALESCE(MAX(display_order), -1) + 1 AS next FROM home_hero_images',
   );
   const { rows } = await q(
     `INSERT INTO home_hero_images
-       (image_url, alt_text, caption, display_order, mime_type, file_size_bytes, uploaded_by)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
-     RETURNING id, image_url, alt_text, caption, display_order, is_active`,
-    [imageUrl, altText || null, caption || null, orderRows[0].next, mimeType || null, sizeBytes || null, uploadedBy || null],
+       (image_url, image_key, alt_text, caption, display_order, mime_type, file_size_bytes, uploaded_by)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING id, image_url, image_key, alt_text, caption, display_order, is_active`,
+    [imageUrl, imageKey || null, altText || null, caption || null, orderRows[0].next,
+      mimeType || null, sizeBytes || null, uploadedBy || null],
   );
   return rows[0];
 }

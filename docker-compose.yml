@@ -67,6 +67,21 @@ services:
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
       GEMINI_API_KEY: "${GEMINI_API_KEY}"
       GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}"
+      # S3 + CloudFront media storage — see docs/S3_CLOUDFRONT_MIGRATION.md
+      # and backend/.env.example. All optional: unset (the default), media
+      # stays on local disk under backend/public/uploads exactly as before
+      # this existed. AWS_ACCESS_KEY_ID/SECRET are for local/testing only —
+      # prefer an EC2 instance IAM role in real production, which needs
+      # neither variable set here at all.
+      AWS_REGION: "${AWS_REGION}"
+      AWS_S3_MEDIA_BUCKET: "${AWS_S3_MEDIA_BUCKET}"
+      MEDIA_CDN_BASE_URL: "${MEDIA_CDN_BASE_URL}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      # Rejects any request not carrying this shared secret as a custom
+      # CloudFront origin header — see backend/src/middleware/originVerify.js.
+      # Unset = no-op, required for local dev.
+      ORIGIN_SHARED_SECRET: "${ORIGIN_SHARED_SECRET}"
     ports:
       # Loopback only. The distribution/fairness engine trusts a handful of
       # geo headers (cloudfront-viewer-country etc.) as coming from the edge —

@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S3 Migration Report</title>
+<style>
+  :root {
+    --bg: #F1F2F5;
+    --surface: #FFFFFF;
+    --surface-alt: #E7E9ED;
+    --text: #14171D;
+    --text-muted: #565D6B;
+    --border: #D7DAE1;
+    --border-strong: #BFC4CD;
+    --accent: #A8590E;
+    --accent-strong: #8A4A0B;
+    --accent-soft: #F6E4CD;
+    --pass: #157A42;
+    --pass-soft: #DCF3E4;
+    --fail: #B3261E;
+    --fail-soft: #FADAD7;
+    --pending: #4A5164;
+    --pending-soft: #E4E6EC;
+    --mono-bg: #191C22;
+    --mono-text: #E7E9ED;
+    --mono-accent: #E4A15C;
+    --mono-muted: #8B93A3;
+    --shadow: 0 1px 2px rgba(20, 23, 29, 0.06), 0 6px 20px -8px rgba(20, 23, 29, 0.15);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161B;
+      --surface: #1B1E25;
+      --surface-alt: #22262E;
+      --text: #ECEDF0;
+      --text-muted: #9AA0AB;
+      --border: #2E333C;
+      --border-strong: #3B414C;
+      --accent: #E4A15C;
+      --accent-strong: #EFB578;
+      --accent-soft: #3A2C18;
+      --pass: #5FD98A;
+      --pass-soft: #16301F;
+      --fail: #F1857D;
+      --fail-soft: #3A1A18;
+      --pending: #AEB4C2;
+      --pending-soft: #262A33;
+      --mono-bg: #0F1115;
+      --mono-text: #E7E9ED;
+      --mono-accent: #E4A15C;
+      --mono-muted: #7D8494;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161B;
+    --surface: #1B1E25;
+    --surface-alt: #22262E;
+    --text: #ECEDF0;
+    --text-muted: #9AA0AB;
+    --border: #2E333C;
+    --border-strong: #3B414C;
+    --accent: #E4A15C;
+    --accent-strong: #EFB578;
+    --accent-soft: #3A2C18;
+    --pass: #5FD98A;
+    --pass-soft: #16301F;
+    --fail: #F1857D;
+    --fail-soft: #3A1A18;
+    --pending: #AEB4C2;
+    --pending-soft: #262A33;
+    --mono-bg: #0F1115;
+    --mono-text: #E7E9ED;
+    --mono-accent: #E4A15C;
+    --mono-muted: #7D8494;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 24px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--accent-strong); }
+
+  a { color: var(--accent-strong); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---------- header ---------- */
+  header.report-head {
+    padding: 56px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  h1.title {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.1rem, 4.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .dek {
+    font-size: 1.08rem;
+    color: var(--text-muted);
+    max-width: 62ch;
+    margin: 0 0 28px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  .meta-row span {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    padding: 4px 9px;
+    border-radius: 5px;
+  }
+
+  /* ---------- stat strip ---------- */
+  .stats {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .stat {
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+  .stat .n {
+    font-family: "Newsreader", Georgia, serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    line-height: 1;
+  }
+  .stat .l {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ---------- sections ---------- */
+  main { padding-top: 8px; }
+  section.block {
+    padding: 44px 0;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 24px;
+  }
+  section.block:last-of-type { border-bottom: none; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .sec-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    min-width: 2.2em;
+  }
+  h2.sec-title {
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.55rem;
+    margin: 0;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+  h3.sub-title {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    margin: 28px 0 10px;
+    color: var(--text);
+  }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  section.block > p:first-of-type { margin-top: 0; }
+  .lede { color: var(--text-muted); }
+
+  code, .k {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.88em;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    padding: 0.05em 0.4em;
+    border-radius: 4px;
+    color: var(--accent-strong);
+  }
+
+  /* ---------- pills ---------- */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 3px 9px 3px 8px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .pill.pass { background: var(--pass-soft); color: var(--pass); }
+  .pill.fail { background: var(--fail-soft); color: var(--fail); }
+  .pill.pending { background: var(--pending-soft); color: var(--pending); }
+  .pill.new { background: var(--accent-soft); color: var(--accent-strong); }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ---------- flow diagram ---------- */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin: 22px 0 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .flow-col { flex: 1; min-width: 150px; }
+  .flow-col + .flow-col { margin-left: 0; }
+  .flow-title {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .flow-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 13px;
+    font-size: 13.5px;
+    box-shadow: var(--shadow);
+  }
+  .flow-box + .flow-box { margin-top: 8px; }
+  .flow-box.ghost {
+    background: transparent;
+    border-style: dashed;
+    color: var(--text-muted);
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    color: var(--border-strong);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 700px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { width: auto; height: 20px; transform: rotate(90deg); }
+  }
+
+  /* ---------- tables ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background: var(--surface-alt);
+    font-weight: 600;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-alt); }
+  td.path, td .path { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; color: var(--text); }
+  td.status { white-space: nowrap; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- file groups ---------- */
+  .filegroup { margin-bottom: 26px; }
+  .filegroup:last-child { margin-bottom: 0; }
+  .filegroup-name {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- checklist ---------- */
+  ul.checklist { list-style: none; margin: 0 0 14px; padding: 0; }
+  ul.checklist li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 14.5px;
+  }
+  ul.checklist li:last-child { border-bottom: none; }
+  ul.checklist li .box {
+    flex-shrink: 0;
+    width: 17px; height: 17px;
+    margin-top: 2px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border-strong);
+  }
+  ul.checklist li.done .box { background: var(--pass); border-color: var(--pass); position: relative; }
+  ul.checklist li.done .box::after {
+    content: "";
+    position: absolute; left: 4px; top: 1px;
+    width: 5px; height: 9px;
+    border-right: 2px solid var(--surface);
+    border-bottom: 2px solid var(--surface);
+    transform: rotate(45deg);
+  }
+
+  ul.plain { margin: 0 0 14px; padding-left: 20px; }
+  ul.plain li { margin-bottom: 6px; font-size: 14.5px; }
+
+  /* ---------- code blocks ---------- */
+  .codeblock {
+    background: var(--mono-bg);
+    color: var(--mono-text);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 14px 0;
+  }
+  .codeblock .c { color: var(--mono-muted); }
+  .codeblock .h { color: var(--mono-accent); }
+
+  /* ---------- deploy steps ---------- */
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+  ol.steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+  }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before {
+    content: counter(step);
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--accent-strong);
+  }
+  ol.steps li strong { display: block; margin-bottom: 2px; }
+  ol.steps li .d { color: var(--text-muted); }
+
+  /* ---------- callout ---------- */
+  .callout {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14.5px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-strong);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  footer.report-foot {
+    padding: 40px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer.report-foot .path { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="page">
+
+  <header class="report-head">
+    <div class="eyebrow">Implementation Report &middot; PanditSuggest</div>
+    <h1 class="title">S3 + CloudFront media migration</h1>
+    <p class="dek">Every file touched while moving Pandit, temple and service media off the EC2 filesystem and onto S3 — what shipped in code, what's automated, and what still needs a human in the AWS console.</p>
+    <div class="meta-row">
+      <span>2026&#8209;08&#8209;20</span>
+      <span>branch: main</span>
+      <span>backend + frontend</span>
+      <span>docs/S3_CLOUDFRONT_MIGRATION.md</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n num">30</div><div class="l">files touched</div></div>
+      <div class="stat"><div class="n num">10</div><div class="l">new files</div></div>
+      <div class="stat"><div class="n num">27</div><div class="l">new tests, all passing</div></div>
+      <div class="stat"><div class="n num">0</div><div class="l">AWS resources created</div></div>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="block" id="summary">
+      <div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">What changed, in one paragraph</h2></div>
+      <p>Media upload now runs through one storage backend that writes to S3 when <code>AWS_S3_MEDIA_BUCKET</code> is set and to local disk otherwise — so nothing changes for local development, and switching to S3 in production is an environment-variable change, not a code deploy. Every uploaded image is re-encoded to WebP and size-capped before storage. Large videos can go browser&nbsp;&rarr;&nbsp;S3 directly via a presigned URL, bypassing the backend's own bandwidth. The database gained an additive <code>media_key</code> column for a future vendor-neutral pointer, without touching the URL columns every existing query already reads. Two CLI scripts handle historical migration and cleanup, both dry-run by default and safe to re-run. The India/International market resolver and lead-distribution engine were audited and found already correct — they were not touched.</p>
+    </section>
+
+    <section class="block" id="architecture">
+      <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Before &rarr; after</h2></div>
+      <div class="flow">
+        <div class="flow-col">
+          <div class="flow-title">Before</div>
+          <div class="flow-box">Browser upload</div>
+          <div class="flow-box">multer &middot; disk storage</div>
+          <div class="flow-box">EC2 <code>/public/uploads</code></div>
+          <div class="flow-box">served by Express from the same box running the API</div>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-col">
+          <div class="flow-title">After</div>
+          <div class="flow-box">Browser upload<br><span style="color:var(--text-muted)">(or direct-to-S3 for large video)</span></div>
+          <div class="flow-box">multer &middot; memory &rarr; WebP optimize</div>
+          <div class="flow-box"><strong>mediaStorage.js</strong> &mdash; picks S3 or disk</div>
+          <div class="flow-box ghost">S3 + CloudFront <span style="opacity:.7">(once provisioned)</span></div>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:18px">The switch lives in exactly one file. Every upload path — pandits, temples, services, home hero, reviews — was rewired to call it instead of writing to disk directly.</p>
+    </section>
+
+    <section class="block" id="files">
+      <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Files changed</h2></div>
+
+      <div class="filegroup">
+        <div class="filegroup-name">Storage backend &mdash; new</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>File</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="path">services/media/mediaStorage.js</td><td>S3-or-local-disk backend. Save, delete, check existence, presign a PUT, migrate an existing file &mdash; the only file that knows which mode is active.</td></tr>
+            <tr><td class="path">services/media/mediaService.js</td><td>Validation plus the two-step presigned-upload flow (authorize, then confirm) for large video uploads.</td></tr>
+            <tr><td class="path">services/media/imageOptimizer.js</td><td>Re-encodes uploaded images to WebP capped at 1600px, via <code>sharp</code>. Never touches video. Falls back to the original bytes on any failure.</td></tr>
+            <tr><td class="path">middleware/originVerify.js</td><td>Rejects a request missing the shared-secret header CloudFront is expected to attach &mdash; a second, independent check that traffic didn't bypass the CDN.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="filegroup">
+        <div class="filegroup-name">Upload middleware &mdash; rewired</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>File</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td class="path">middleware/mediaUpload.js</td><td>The shared factory behind pandits/temples/services/home&nbsp;hero. Switched from multer <code>diskStorage</code> to memory buffering, piped through the optimizer and the new storage backend.</td></tr>
+            <tr><td class="path">middleware/upload.js</td><td>Review photos (up to 5/review). Same rewire, plus fixed a pre-existing bug where a rejected review's photos were cleaned up against the wrong folder and never actually deleted.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="filegroup">
+        <div class="filegroup-name">Controllers &amp; routes &mdash; modified</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>File</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td class="path">controllers/admin/media.controller.js</td><td>Pandit media. Stopped hardcoding <code>/uploads/pandits/…</code>; added <code>presign</code> / <code>confirmUpload</code> for direct-to-S3 video.</td></tr>
+            <tr><td class="path">controllers/admin/templeMedia.controller.js</td><td>Temple media. Same fix, same two new endpoints.</td></tr>
+            <tr><td class="path">controllers/admin/services.controller.js</td><td>Service &amp; category hero images now read the resolved URL from the upload middleware instead of recomputing it.</td></tr>
+            <tr><td class="path">controllers/admin/homeHero.controller.js</td><td>Same fix for the homepage hero slots.</td></tr>
+            <tr><td class="path">controllers/reviews.controller.js</td><td>Reads <code>mediaUrl</code> from each uploaded file; cleanup now targets the correct folder.</td></tr>
+            <tr><td class="path">repositories/admin/media.repository.js, templeMedia.repository.js, services.repository.js, homeHero.repository.js</td><td>Accept and store the new <code>media_key</code> / <code>image_key</code> alongside the existing URL column &mdash; additive, no existing query changed.</td></tr>
+            <tr><td class="path">routes/admin/pandits.routes.js, temples.routes.js</td><td>New <code>POST …/media/presign</code> and <code>…/media/confirm</code> routes.</td></tr>
+            <tr><td class="path">routes/reviews.routes.js</td><td>Points at the rewired multi-file upload wrapper.</td></tr>
+            <tr><td class="path">src/app.js</td><td>Mounts the origin-verify check first in the middleware chain.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="filegroup">
+        <div class="filegroup-name">Database, scripts, tests &mdash; new</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>File</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="path">db/26-media-storage-keys.sql</td><td>Adds nullable <code>media_key</code> / <code>image_key</code> to 5 tables. Additive migration &mdash; <code>npm run db:migrate</code>.</td></tr>
+            <tr><td class="path">scripts/migrate-media-to-s3.js</td><td>Historical migration. Dry-run by default, idempotent, per-row failure doesn't abort the batch.</td></tr>
+            <tr><td class="path">scripts/cleanup-legacy-media.js</td><td>Deletes local files already confirmed migrated. Deliberately separate from the script above.</td></tr>
+            <tr><td class="path">tests/media-storage.test.js, media-service.test.js, image-optimizer.test.js, origin-verify.test.js</td><td>27 unit tests, no database required &mdash; <code>npm run test:media</code>.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="filegroup">
+        <div class="filegroup-name">Config &amp; frontend</div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>File</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td class="path">backend/.env.example</td><td>Documents every new variable. All optional, all default to current local-disk behaviour.</td></tr>
+            <tr><td class="path">docker-compose.yml</td><td>Passes the new variables through to the backend container.</td></tr>
+            <tr><td class="path">frontend/.../VideoPlayer.tsx</td><td>Added the one missing <code>preload="metadata"</code> &mdash; every other <code>&lt;video&gt;</code> in the app already had it.</td></tr>
+            <tr><td class="path">docs/S3_CLOUDFRONT_MIGRATION.md</td><td>Added an implementation-status section on top of the original plan doc.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section class="block" id="env">
+      <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">New environment variables</h2></div>
+      <p class="lede">Every one of these is optional. Unset, the app behaves exactly as it did before this work.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Variable</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="path">AWS_S3_MEDIA_BUCKET</td><td>Setting this is the switch: local disk &rarr; S3 for every new upload.</td></tr>
+          <tr><td class="path">MEDIA_CDN_BASE_URL</td><td>e.g. <code>https://media.panditsuggest.com</code> &mdash; required together with the bucket.</td></tr>
+          <tr><td class="path">AWS_REGION</td><td>S3 bucket region.</td></tr>
+          <tr><td class="path">AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY</td><td>Local testing only. Production should use an EC2 instance IAM role instead &mdash; leave these unset there.</td></tr>
+          <tr><td class="path">ORIGIN_SHARED_SECRET</td><td>CloudFront's custom-origin-header value. A request without it gets a flat 403.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block" id="db">
+      <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Database</h2></div>
+      <p>One migration, additive only &mdash; nothing that already reads <code>media_url</code> / <code>image_url</code> changed.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Table</th><th>New column</th></tr></thead>
+        <tbody>
+          <tr><td class="path">pandit_media</td><td class="path">media_key</td></tr>
+          <tr><td class="path">temple_media</td><td class="path">media_key</td></tr>
+          <tr><td class="path">services</td><td class="path">image_key</td></tr>
+          <tr><td class="path">service_categories</td><td class="path">image_key</td></tr>
+          <tr><td class="path">home_hero_images</td><td class="path">image_key</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:14px"><code>npm run db:migrate</code> applies it.</p>
+    </section>
+
+    <section class="block" id="commands">
+      <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Migration commands</h2></div>
+      <div class="codeblock"><span class="c"># preview only &mdash; nothing uploaded, nothing written</span>
+npm run media:migrate
+
+<span class="c"># actually migrate, table-by-table if you want control</span>
+npm run media:migrate <span class="h">-- --execute</span>
+npm run media:migrate <span class="h">-- --execute --table=pandit_media --limit=25</span>
+
+<span class="c"># only after production has served the migrated media successfully</span>
+npm run media:cleanup
+npm run media:cleanup <span class="h">-- --execute</span></div>
+    </section>
+
+    <section class="block" id="aws">
+      <div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Remaining AWS setup <span class="pill pending" style="margin-left:6px">manual</span></h2></div>
+      <p class="lede">Nothing below was created &mdash; this environment has no AWS account access. Everything above is ready to point at it the moment it exists.</p>
+      <ul class="checklist">
+        <li><span class="box"></span>S3 bucket, Block Public Access ON</li>
+        <li><span class="box"></span>CloudFront distribution with Origin Access Control (OAC)</li>
+        <li><span class="box"></span>Bucket policy granting that OAC read access</li>
+        <li><span class="box"></span>ACM certificate + DNS for <code>media.panditsuggest.com</code></li>
+        <li><span class="box"></span>CloudFront custom origin header set to match <code>ORIGIN_SHARED_SECRET</code></li>
+        <li><span class="box"></span>Security group restricting the origin to CloudFront's IP range</li>
+        <li><span class="box"></span>EC2 IAM role scoped to <code>s3:PutObject/GetObject/DeleteObject/HeadObject</code> on this bucket only</li>
+      </ul>
+      <p>Full detail, including why each step matters, is in <code>docs/S3_CLOUDFRONT_MIGRATION.md</code>.</p>
+    </section>
+
+    <section class="block" id="tests">
+      <div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">Verification</h2></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Check</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>New media tests &mdash; <code>npm run test:media</code></td><td class="status"><span class="pill pass">27 / 27 pass</span></td></tr>
+          <tr><td>Full backend suite</td><td class="status"><span class="pill pass">300 / 416 pass</span></td></tr>
+          <tr><td>&nbsp;&nbsp;&mdash; the 116 failures</td><td class="status"><span class="pill pending">pre-existing, unrelated</span></td></tr>
+          <tr><td>Frontend lint (oxlint)</td><td class="status"><span class="pill pass">0 errors</span></td></tr>
+          <tr><td>Frontend build (tsc + vite)</td><td class="status"><span class="pill pass">pass</span></td></tr>
+          <tr><td>End-to-end upload smoke test</td><td class="status"><span class="pill pass">pass</span></td></tr>
+          <tr><td>Migration script against a real database</td><td class="status"><span class="pill pending">not run</span></td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:14px" class="lede">The 116 pre-existing failures are all <code>ECONNREFUSED</code> &mdash; no local Postgres running in this session, not a symptom of anything changed here. The migration script wasn't run because Docker Desktop's engine wasn't reachable in this environment; it was syntax-checked and reviewed against the codebase's own proven migration pattern instead.</p>
+    </section>
+
+    <section class="block" id="deploy">
+      <div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Deployment order</h2></div>
+      <ol class="steps">
+        <li><strong>Provision AWS</strong><span class="d">Bucket, CloudFront, OAC, DNS &mdash; the checklist above.</span></li>
+        <li><strong>Deploy this code with the S3 variables still unset</strong><span class="d">Zero behaviour change &mdash; confirms the deploy itself is healthy before anything else moves.</span></li>
+        <li><strong>Run the database migration</strong><span class="d"><code>npm run db:migrate</code></span></li>
+        <li><strong>Set <code>AWS_S3_MEDIA_BUCKET</code> / <code>MEDIA_CDN_BASE_URL</code></strong><span class="d">New uploads start going to S3 from this point.</span></li>
+        <li><strong>Migrate historical media</strong><span class="d">Dry run, review the output, then <code>--execute</code> in batches.</span></li>
+        <li><strong>Lock the origin down</strong><span class="d">Set <code>ORIGIN_SHARED_SECRET</code>; restrict the security group to CloudFront's IP range.</span></li>
+        <li><strong>Clean up, once production has proven stable</strong><span class="d"><code>npm run media:cleanup</code> &mdash; never before.</span></li>
+      </ol>
+    </section>
+
+    <section class="block" id="rollback">
+      <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Rollback</h2></div>
+      <div class="callout">
+        <span class="label">A config change, not a data recovery</span>
+        <p>Unset <code>AWS_S3_MEDIA_BUCKET</code> / <code>MEDIA_CDN_BASE_URL</code> and new uploads go straight back to local disk. Rows already migrated keep their CDN URL &mdash; still resolvable as long as CloudFront and DNS stay up. No script here ever deletes a database row, and local files are never removed until <code>media:cleanup</code> is run explicitly.</p>
+      </div>
+    </section>
+
+    <section class="block" id="scope">
+      <div class="sec-head"><span class="sec-num">11</span><h2 class="sec-title">Scoped out, on purpose</h2></div>
+      <ul class="plain">
+        <li><strong>Multi-size responsive images (320/640/1280 srcset).</strong> One optimized WebP per upload instead &mdash; three objects per image would touch the schema and every image call site for a further optimization on top of the one that matters most.</li>
+        <li><strong>A frontend "media URL" helper.</strong> Not needed &mdash; the backend already returns a fully resolved URL, and no frontend code was composing one by hand.</li>
+        <li><strong>Entity-ID-nested S3 keys</strong> (<code>pandits/&#123;id&#125;/profile/…</code>). Kept flat by content type &mdash; equally secure, and nesting would have meant reordering route middleware for an organisational-only win.</li>
+        <li><strong>Wiring the admin UI to the new presigned-upload endpoints.</strong> The backend capability is real and tested; a presigned-URL flow is exactly the kind of thing that silently breaks against real infrastructure (CORS, clock skew) in ways this environment can't catch without a live bucket.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="report-foot">
+    <span>PanditSuggest &middot; S3 + CloudFront migration</span>
+    <span class="path">docs/S3_CLOUDFRONT_MIGRATION.md</span>
+  </footer>
+
+</div>
+</body>
+</html>

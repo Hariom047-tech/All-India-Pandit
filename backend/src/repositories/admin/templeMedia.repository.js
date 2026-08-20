@@ -11,7 +11,7 @@
  *  withUserContext() transaction — so multi-statement writes below are atomic.
  */
 
-const COLUMNS = `id, media_url, media_type, title, caption, display_order,
+const COLUMNS = `id, media_url, media_key, media_type, title, caption, display_order,
                  is_cover, show_in_hero, mime_type, created_at`;
 
 async function list(q, templeId) {
@@ -24,7 +24,7 @@ async function list(q, templeId) {
   return rows;
 }
 
-async function add(q, templeId, { mediaUrl, mediaType, title, caption, mimeType, sizeBytes, uploadedBy }) {
+async function add(q, templeId, { mediaUrl, mediaKey, mediaType, title, caption, mimeType, sizeBytes, uploadedBy }) {
   const { rows: orderRows } = await q(
     'SELECT COALESCE(MAX(display_order), -1) + 1 AS next FROM temple_media WHERE temple_id = $1',
     [templeId],
@@ -37,10 +37,10 @@ async function add(q, templeId, { mediaUrl, mediaType, title, caption, mimeType,
 
   const { rows } = await q(
     `INSERT INTO temple_media
-       (temple_id, media_url, media_type, title, caption, display_order, is_cover, mime_type, file_size_bytes, uploaded_by)
-     VALUES ($1, $2, $3::media_type, $4, $5, $6, $7, $8, $9, $10)
+       (temple_id, media_url, media_key, media_type, title, caption, display_order, is_cover, mime_type, file_size_bytes, uploaded_by)
+     VALUES ($1, $2, $3, $4::media_type, $5, $6, $7, $8, $9, $10, $11)
      RETURNING ${COLUMNS}`,
-    [templeId, mediaUrl, mediaType, title || null, caption || null,
+    [templeId, mediaUrl, mediaKey || null, mediaType, title || null, caption || null,
       orderRows[0].next, isCover, mimeType || null, sizeBytes || null, uploadedBy || null],
   );
   return rows[0];

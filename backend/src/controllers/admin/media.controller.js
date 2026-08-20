@@ -1,9 +1,11 @@
 const repo = require('../../repositories/admin/media.repository');
 const pandits = require('../../repositories/admin/pandits.repository');
 const { removeUploadedFile, isVideo } = require('../../middleware/panditMedia');
+const mediaService = require('../../services/media/mediaService');
 const { logAdminAction } = require('../../utils/adminLog');
 
 const ALLOWED_TYPES = ['photo', 'video_intro', 'certificate', 'thumbnail'];
+const FOLDER = 'pandits';
 
 async function resolvePandit(req, res) {
   const found = await pandits.findIdBySlug(req.db, req.params.id);
@@ -27,12 +29,12 @@ async function list(req, res) {
 async function upload(req, res) {
   const pandit = await resolvePandit(req, res);
   if (!pandit) {
-    if (req.file) removeUploadedFile(`/uploads/pandits/${req.file.filename}`);
+    if (req.file) removeUploadedFile(req.file.mediaUrl);
     return;
   }
   if (!req.file) return res.status(400).json({ error: 'No file uploaded (expected field "file")' });
 
-  const mediaUrl = `/uploads/pandits/${req.file.filename}`;
+  const mediaUrl = req.file.mediaUrl;
   const mediaType = String(req.body?.mediaType || '').trim();
 
   const fail = (msg) => { removeUploadedFile(mediaUrl); return res.status(400).json({ error: msg }); };
@@ -46,6 +48,7 @@ async function upload(req, res) {
 
   const media = await repo.add(req.db, pandit.id, {
     mediaUrl,
+    mediaKey: req.file.storageKey,
     mediaType,
     title: req.body?.title,
     caption: req.body?.caption,
@@ -57,6 +60,72 @@ async function upload(req, res) {
     adminUserId: req.adminUser.id, action: 'PANDIT_MEDIA_UPLOADED',
     targetType: 'pandit', targetId: pandit.id,
     details: { mediaType, mimeType: req.file.mimetype, sizeBytes: req.file.size },
+    ip: req.ip,
+  });
+
+  res.status(201).json(media);
+}
+
+/**
+ * POST <secret>/pandits/:id/media/presign — step 1 of the direct-to-S3 flow
+ * for large intro videos (docs/S3_CLOUDFRONT_MIGRATION.md #7). Body:
+ * { mediaType, mimeType, sizeBytes? }. 501s when this deployment is still in
+ * local-disk mode — the admin UI should fall back to POST .../media then.
+ */
+async function presign(req, res) {
+  const pandit = await resolvePandit(req, res);
+  if (!pandit) return;
+
+  const mediaType = String(req.body?.mediaType || '').trim();
+  if (!ALLOWED_TYPES.includes(mediaType)) {
+    return res.status(400).json({ error: `mediaType must be one of: ${ALLOWED_TYPES.join(', ')}` });
+  }
+  const allowVideo = mediaType === 'video_intro';
+  const { mimeType, sizeBytes } = req.body || {};
+  const presigned = await mediaService.generateUploadUrl(FOLDER, {
+    mimeType, sizeBytes: Number(sizeBytes) || undefined, allowVideo, maxMb: 60,
+  });
+  res.json(presigned);
+}
+
+/**
+ * POST <secret>/pandits/:id/media/confirm — step 2. Body:
+ * { key, mediaType, mimeType, sizeBytes, title?, caption? }. Verifies the
+ * object the browser just PUT to S3 actually exists before writing the
+ * pandit_media row — see mediaService.confirmUpload for why.
+ */
+async function confirmUpload(req, res) {
+  const pandit = await resolvePandit(req, res);
+  if (!pandit) return;
+
+  const { key, mediaType, mimeType, sizeBytes, title, caption } = req.body || {};
+  if (!ALLOWED_TYPES.includes(mediaType)) {
+    return res.status(400).json({ error: `mediaType must be one of: ${ALLOWED_TYPES.join(', ')}` });
+  }
+  const fileIsVideo = isVideo(mimeType);
+  if (mediaType === 'video_intro' && !fileIsVideo) {
+    return res.status(400).json({ error: 'video_intro requires a video file' });
+  }
+  if (mediaType !== 'video_intro' && fileIsVideo) {
+    return res.status(400).json({ error: 'Videos must be uploaded as mediaType "video_intro"' });
+  }
+
+  const confirmed = await mediaService.confirmUpload(FOLDER, key);
+
+  const media = await repo.add(req.db, pandit.id, {
+    mediaUrl: confirmed.url,
+    mediaKey: confirmed.key,
+    mediaType,
+    title,
+    caption,
+    mimeType,
+    sizeBytes: Number(sizeBytes) || null,
+  });
+
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'PANDIT_MEDIA_UPLOADED',
+    targetType: 'pandit', targetId: pandit.id,
+    details: { mediaType, mimeType, sizeBytes, via: 'presigned' },
     ip: req.ip,
   });
 
@@ -100,4 +169,4 @@ async function setPrimaryPhoto(req, res) {
   res.json({ ok: true, profilePhotoUrl: media.media_url });
 }
 
-module.exports = { list, upload, remove, reorder, setPrimaryPhoto };
+module.exports = { list, upload, presign, confirmUpload, remove, reorder, setPrimaryPhoto };

@@ -19,7 +19,7 @@ async function list(q, panditId) {
      * uploaded photo had never become the avatar. Now the badge reflects what
      * devotees actually see.
      */
-    `SELECT m.id, m.media_url, m.media_type, m.title, m.caption, m.display_order,
+    `SELECT m.id, m.media_url, m.media_key, m.media_type, m.title, m.caption, m.display_order,
             m.mime_type, m.file_size_bytes, m.created_at,
             (m.media_type = 'photo'       AND m.media_url = p.profile_photo_url) AS is_primary,
             (m.media_type = 'video_intro' AND m.media_url = p.video_intro_url)   AS is_primary_video
@@ -32,7 +32,7 @@ async function list(q, panditId) {
   return rows;
 }
 
-async function add(q, panditId, { mediaUrl, mediaType, title, caption, mimeType, sizeBytes }) {
+async function add(q, panditId, { mediaUrl, mediaKey, mediaType, title, caption, mimeType, sizeBytes }) {
   // Append to the end of this media type's ordering.
   const { rows: orderRows } = await q(
     `SELECT COALESCE(MAX(display_order), -1) + 1 AS next
@@ -42,10 +42,10 @@ async function add(q, panditId, { mediaUrl, mediaType, title, caption, mimeType,
 
   const { rows } = await q(
     `INSERT INTO pandit_media
-       (pandit_id, media_url, media_type, title, caption, display_order, mime_type, file_size_bytes)
-     VALUES ($1, $2, $3::media_type, $4, $5, $6, $7, $8)
-     RETURNING id, media_url, media_type, title, caption, display_order, mime_type, created_at`,
-    [panditId, mediaUrl, mediaType, title || null, caption || null,
+       (pandit_id, media_url, media_key, media_type, title, caption, display_order, mime_type, file_size_bytes)
+     VALUES ($1, $2, $3, $4::media_type, $5, $6, $7, $8, $9)
+     RETURNING id, media_url, media_key, media_type, title, caption, display_order, mime_type, created_at`,
+    [panditId, mediaUrl, mediaKey || null, mediaType, title || null, caption || null,
       orderRows[0].next, mimeType || null, sizeBytes || null],
   );
 

@@ -25,7 +25,7 @@ export function VideoPlayer({ url }: VideoPlayerProps) {
           allowFullScreen
         />
       ) : (
-        <video className="html5-video" controls>
+        <video className="html5-video" controls preload="metadata">
           <source src={url} type="video/mp4" />
           Your browser does not support the video tag.
         </video>

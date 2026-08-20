@@ -29,6 +29,11 @@ router.put('/:id/date-of-birth', adminHandler(ctrl.setDateOfBirth));
 // oversized or wrong-typed file) before a database transaction is opened.
 router.get('/:id/media', adminHandler(mediaCtrl.list));
 router.post('/:id/media', handlePanditMediaUpload, adminHandler(mediaCtrl.upload));
+// Direct-to-S3 flow for large intro videos — see docs/S3_CLOUDFRONT_MIGRATION.md #7.
+// 501s (S3 not configured) until the deployment sets AWS_S3_MEDIA_BUCKET; the
+// multipart route above keeps working in local-disk mode either way.
+router.post('/:id/media/presign', adminHandler(mediaCtrl.presign));
+router.post('/:id/media/confirm', adminHandler(mediaCtrl.confirmUpload));
 router.delete('/:id/media/:mediaId', adminHandler(mediaCtrl.remove));
 router.put('/:id/media/reorder', adminHandler(mediaCtrl.reorder));
 router.post('/:id/media/:mediaId/primary', adminHandler(mediaCtrl.setPrimaryPhoto));

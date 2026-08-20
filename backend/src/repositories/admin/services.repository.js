@@ -70,9 +70,10 @@ async function findCategoryById(q, id) {
   return rows[0] || null;
 }
 
-async function setCategoryImage(q, id, imageUrl) {
+async function setCategoryImage(q, id, imageUrl, imageKey = null) {
   const { rows } = await q(
-    'UPDATE service_categories SET image_url = $2 WHERE id = $1 RETURNING image_url', [id, imageUrl]);
+    'UPDATE service_categories SET image_url = $2, image_key = $3 WHERE id = $1 RETURNING image_url, image_key',
+    [id, imageUrl, imageKey]);
   return rows[0] || null;
 }
 
@@ -170,10 +171,10 @@ async function getBySlug(q, slug) {
   return rows[0] || null;
 }
 
-async function setImage(q, slug, imageUrl) {
+async function setImage(q, slug, imageUrl, imageKey = null) {
   const { rows } = await q(
-    'UPDATE services SET image_url = $2 WHERE slug = $1 RETURNING image_url',
-    [slug, imageUrl],
+    'UPDATE services SET image_url = $2, image_key = $3 WHERE slug = $1 RETURNING image_url, image_key',
+    [slug, imageUrl, imageKey],
   );
   return rows[0] || null;
 }

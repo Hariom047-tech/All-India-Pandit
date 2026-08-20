@@ -19,6 +19,9 @@ router.put('/:id/services', adminHandler(ctrl.setServices));
 // Photo / video gallery, written into the temple_media table.
 router.get('/:id/media', adminHandler(mediaCtrl.list));
 router.post('/:id/media', mediaCtrl.templeUploadHandler, adminHandler(mediaCtrl.upload));
+// Direct-to-S3 flow for large temple videos — see docs/S3_CLOUDFRONT_MIGRATION.md #7.
+router.post('/:id/media/presign', adminHandler(mediaCtrl.presign));
+router.post('/:id/media/confirm', adminHandler(mediaCtrl.confirmUpload));
 router.delete('/:id/media/:mediaId', adminHandler(mediaCtrl.remove));
 router.put('/:id/media/reorder', adminHandler(mediaCtrl.reorder));
 // Profile picture (list cards, search, social previews) — photos only.

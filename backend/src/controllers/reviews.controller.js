@@ -1,5 +1,5 @@
 const repo = require('../repositories/reviews.repository');
-const { removeUploadedFile } = require('../middleware/panditMedia');
+const { removePhoto } = require('../middleware/upload');
 
 const TARGET_TYPES = ['pandit', 'temple', 'platform'];
 
@@ -26,10 +26,10 @@ async function list(req, res) {
  * rests on those star ratings meaning something.
  */
 async function create(req, res) {
-  const photoUrls = (req.files || []).map((f) => `/uploads/reviews/${f.filename}`);
-  // Any rejection below must not leave uploaded files orphaned on disk.
+  const photoUrls = (req.files || []).map((f) => f.mediaUrl);
+  // Any rejection below must not leave uploaded files orphaned (disk or S3).
   const fail = (status, error) => {
-    photoUrls.forEach(removeUploadedFile);
+    photoUrls.forEach(removePhoto);
     return res.status(status).json({ error });
   };
 
@@ -56,7 +56,7 @@ async function create(req, res) {
   // Phone OTP users have phone_verified=true. Either is sufficient.
   const isVerified = req.user.phone_verified || req.user.email_verified;
   if (!isVerified) {
-    photoUrls.forEach(removeUploadedFile);
+    photoUrls.forEach(removePhoto);
     return res.status(403).json({
       error: 'Review likhne ke liye pehle apna mobile verify karein.',
       code: 'phone_not_verified',   // the UI routes to OTP verification on this
