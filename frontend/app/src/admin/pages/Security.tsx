@@ -5,20 +5,42 @@ import { useAdminAuth } from "../lib/AdminAuth";
 interface AuditRow { id: string; event_type: string; severity: string; details: Record<string, unknown> | null; ip: string | null; created_at: string; }
 interface BannedIp { ip: string; reason: string | null; banned_at: string; expires_at: string | null; }
 interface Session { session_id: string; email: string; full_name: string; session_ip: string | null; created_at: string; last_active_at: string; }
+interface ViewerLocation {
+  countryCode: string | null; countryName: string | null;
+  regionCode: string | null; regionName: string | null;
+  city: string | null; timezone: string | null;
+  device: string | null; os: string | null;
+  market: "INDIA" | "INTERNATIONAL" | "UNKNOWN"; source: string;
+}
 
 export default function AdminSecurity() {
   const { user } = useAdminAuth();
-  const [tab, setTab] = useState<"audit" | "bans" | "sessions">("audit");
+  const [tab, setTab] = useState<"audit" | "bans" | "sessions" | "geo">("audit");
   const [audit, setAudit] = useState<Paged<AuditRow> | null>(null);
   const [bans, setBans] = useState<BannedIp[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [geo, setGeo] = useState<ViewerLocation | null>(null);
+  const [geoLoading, setGeoLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const loadGeo = () => {
+    setGeoLoading(true);
+    adminApi.get<ViewerLocation>("/geo/viewer-location")
+      .then(setGeo)
+      .catch(() => setGeo(null))
+      .finally(() => setGeoLoading(false));
+  };
 
   useEffect(() => {
     adminApi.get<Paged<AuditRow>>("/security/audit-log?perPage=50").then(setAudit).catch(() => {});
     adminApi.get<BannedIp[]>("/security/banned-ips").then(setBans).catch(() => {});
     adminApi.get<Session[]>("/security/active-sessions").then(setSessions).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (tab === "geo" && !geo && !geoLoading) loadGeo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
 
   async function onBan(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,6 +83,7 @@ export default function AdminSecurity() {
         <button className={`pill${tab === "audit" ? " is-active" : ""}`} onClick={() => setTab("audit")}>Audit log</button>
         <button className={`pill${tab === "bans" ? " is-active" : ""}`} onClick={() => setTab("bans")}>Banned IPs</button>
         <button className={`pill${tab === "sessions" ? " is-active" : ""}`} onClick={() => setTab("sessions")}>Active sessions</button>
+        <button className={`pill${tab === "geo" ? " is-active" : ""}`} onClick={() => setTab("geo")}>CloudFront geo</button>
       </div>
 
       {tab === "audit" && (
@@ -131,6 +154,64 @@ export default function AdminSecurity() {
               </tbody>
             </table>
             {!sessions.length && <div className="admin-empty">No active sessions.</div>}
+          </div>
+        </div>
+      )}
+
+      {tab === "geo" && (
+        <div className="admin-panel">
+          <div className="admin-panel__body">
+            <p className="muted-cell" style={{ marginBottom: 14 }}>
+              What CloudFront resolved <em>this request</em> as — reload after visiting via{" "}
+              <code>https://api.panditsuggest.com</code> to confirm the distribution is really attaching viewer
+              headers. A visit that reaches this server directly (bypassing CloudFront) shows every field blank
+              and market <strong>UNKNOWN</strong> — that is the correct, safe behaviour, not a bug.
+            </p>
+            <button className="btn btn-outline btn-sm" onClick={loadGeo} disabled={geoLoading} style={{ marginBottom: 18 }}>
+              {geoLoading ? "Checking…" : "Re-check now"}
+            </button>
+
+            {geo && (
+              <div className="admin-stat-grid">
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Market</div>
+                  <div className="admin-stat-card__value">
+                    <span className={`admin-pill ${geo.market === "INDIA" ? "admin-pill--green" : geo.market === "INTERNATIONAL" ? "admin-pill--gold" : "admin-pill--gray"}`}>
+                      {geo.market}
+                    </span>
+                  </div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Country</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>
+                    {geo.countryName || geo.countryCode || "—"} {geo.countryCode ? <span className="muted-cell">({geo.countryCode})</span> : null}
+                  </div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Region / State</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>{geo.regionName || geo.regionCode || "—"}</div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">City</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>{geo.city || "—"}</div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Timezone</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>{geo.timezone || "—"}</div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Device</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>
+                    {[geo.device, geo.os].filter(Boolean).join(" · ") || "—"}
+                  </div>
+                </div>
+                <div className="admin-stat-card">
+                  <div className="admin-stat-card__label">Geo source</div>
+                  <div className="admin-stat-card__value" style={{ fontSize: "1.1rem" }}>{geo.source}</div>
+                </div>
+              </div>
+            )}
+            {!geo && !geoLoading && <div className="admin-empty">Could not reach the geo check endpoint.</div>}
           </div>
         </div>
       )}

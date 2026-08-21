@@ -21,6 +21,7 @@ router.use('/analytics', require('./analytics.routes'));
 router.use('/settings', require('./settings.routes'));
 router.use('/distribution', require('./distribution.routes'));   // v2 engine controls
 router.use('/home-hero', require('./homeHero.routes'));
+router.use('/geo', require('./geo.routes'));
 // AI knowledge base + AI analytics (docs/AI_KNOWLEDGE_GUIDE.md).
 router.use('/ai', require('./ai.routes'));
 

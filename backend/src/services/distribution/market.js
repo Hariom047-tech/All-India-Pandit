@@ -118,6 +118,82 @@ function regionFromEdge(headers = {}) {
   };
 }
 
+/* ── viewer location snapshot (debug/analytics only — NOT entitlement) ──
+ *
+ * Everything below reuses countryFromEdge/regionFromEdge/toMarket for the
+ * actual country/market resolution, so this can never disagree with the
+ * market a visitor is really being served under. It exists purely to surface
+ * the extra display fields (country/region NAME, timezone, device) that the
+ * eligibility path has no use for — see GET .../geo/viewer-location and the
+ * admin Security page's "CloudFront" tab.
+ *
+ * Deliberately excludes latitude/longitude, CloudFront-Viewer-Address and
+ * CloudFront-Viewer-ASN: those are precise-location/network-identifying and
+ * this platform has no current use for them (see docs/S3_CLOUDFRONT_MIGRATION.md
+ * and the geo-work privacy note) — country/region/city/timezone is the
+ * agreed ceiling.
+ */
+
+/**
+ * Percent-decodes a CloudFront geo header value. City/region names can be
+ * non-ASCII and CloudFront URL-encodes them — malformed encoding must never
+ * crash a request, so this falls back to the raw value instead of throwing.
+ */
+function safeDecodeHeader(raw) {
+  if (typeof raw !== 'string' || !raw) return null;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+/** 'mobile' | 'tablet' | 'desktop' | null. Checked in that order — a tablet
+ *  also matching "not desktop" is still a tablet, not a fallback desktop. */
+function deviceTypeFromEdge(headers = {}) {
+  const h = (name) => headers[name] || headers[name.toLowerCase()];
+  const truthy = (v) => v === 'true' || v === '1';
+  if (truthy(h('cloudfront-is-mobile-viewer'))) return 'mobile';
+  if (truthy(h('cloudfront-is-tablet-viewer'))) return 'tablet';
+  if (truthy(h('cloudfront-is-desktop-viewer'))) return 'desktop';
+  return null;
+}
+
+/** 'ios' | 'android' | null — independent of device type (an iPad is both
+ *  tablet and ios). */
+function osFromEdge(headers = {}) {
+  const h = (name) => headers[name] || headers[name.toLowerCase()];
+  const truthy = (v) => v === 'true' || v === '1';
+  if (truthy(h('cloudfront-is-ios-viewer'))) return 'ios';
+  if (truthy(h('cloudfront-is-android-viewer'))) return 'android';
+  return null;
+}
+
+/**
+ * The full structured snapshot for the geo debug endpoint / future admin
+ * analytics. `market`/`countryCode`/`source` here are computed the exact
+ * same way the real eligibility path computes them (via countryFromEdge +
+ * toMarket) — this function does not introduce a second opinion on market.
+ */
+function viewerLocationSnapshot(headers = {}) {
+  const h = (name) => headers[name] || headers[name.toLowerCase()] || null;
+  const edge = countryFromEdge(headers);
+  const { region, city } = regionFromEdge(headers);
+
+  return {
+    countryCode: edge.code,
+    countryName: safeDecodeHeader(h('cloudfront-viewer-country-name')),
+    regionCode: region,
+    regionName: safeDecodeHeader(h('cloudfront-viewer-country-region-name')),
+    city: safeDecodeHeader(city),
+    timezone: h('cloudfront-viewer-time-zone'),
+    device: deviceTypeFromEdge(headers),
+    os: osFromEdge(headers),
+    market: toMarket(edge.code),
+    source: edge.source,
+  };
+}
+
 /* ── browsing market ──────────────────────────────────────────────────── */
 
 /**
@@ -364,4 +440,8 @@ module.exports = {
   poolsForBrowsing,
   geoMiddleware,
   DIAL_CODES,
+  viewerLocationSnapshot,
+  safeDecodeHeader,
+  deviceTypeFromEdge,
+  osFromEdge,
 };
