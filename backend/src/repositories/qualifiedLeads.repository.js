@@ -1,5 +1,7 @@
 const { pool, query } = require('../config/db');
 const { QUALIFIED_LEAD_DEDUP_HOURS, LEAD_REPORTING_TIMEZONE } = require('../config/leads');
+const { COUNTRY_NAMES } = require('../config/countryNames');
+const { countryFromPhone } = require('../services/distribution/market');
 
 /**
  * Every CTA press is recorded as a contact_click (raw funnel analytics),
@@ -158,7 +160,7 @@ async function analyticsForPandit(panditId, q = query) {
   };
 }
 
-const PERIOD_INTERVALS = { today: '1 day', '7d': '7 days', '30d': '30 days' };
+const PERIOD_INTERVALS = { today: '1 day', '7d': '7 days', '30d': '30 days', '90d': '90 days' };
 
 /**
  * Paginated lead list for ONE pandit.
@@ -197,7 +199,9 @@ async function listForPandit(panditId, { page = 1, limit = 20, period, method, s
     `SELECT ql.id, ql.first_contact_method, ql.last_contact_method, ql.interaction_count,
             ql.status, ql.created_at, ql.last_interaction_at,
             COALESCE(u.full_name, ql.contact_name_snapshot)  AS contact_name,
-            COALESCE(u.phone,     ql.contact_phone_snapshot) AS contact_phone
+            COALESCE(u.phone,     ql.contact_phone_snapshot) AS contact_phone,
+            COALESCE(u.city,  ql.contact_city_snapshot)  AS city,
+            COALESCE(u.state, ql.contact_state_snapshot) AS state
        FROM qualified_leads ql
        LEFT JOIN users u ON u.id = ql.user_id AND u.deleted_at IS NULL
        ${whereSql}
@@ -236,6 +240,156 @@ async function updateStatus(panditId, leadId, status, q = query) {
   return rowCount > 0;
 }
 
+const TREND_DAYS_ALLOWED = [7, 30, 90];
+
+/**
+ * Day-by-day trend for the last `days` calendar days (in
+ * LEAD_REPORTING_TIMEZONE), zero-filled so the chart never has to guess at a
+ * gap. Leads come straight from qualified_leads; views/clicks come from the
+ * pandit_analytics daily rollup (written by recordContact's INSERT ... ON
+ * CONFLICT — see recordContact above). Both are bucketed by the SAME local
+ * day the rest of the dashboard uses, so this can never disagree with the
+ * today/week/month stat cards.
+ */
+async function trendForPandit(panditId, days, q = query) {
+  if (!TREND_DAYS_ALLOWED.includes(days)) days = 30;
+  const { rows } = await q(
+    `WITH bounds AS (
+        SELECT (date_trunc('day', NOW() AT TIME ZONE $2) AT TIME ZONE $2) AS today_start
+     ),
+     days AS (
+        SELECT (b.today_start - (n || ' days')::interval) AS day_start
+          FROM bounds b, generate_series(0, $3::int - 1) AS n
+     ),
+     lead_days AS (
+        SELECT (date_trunc('day', created_at AT TIME ZONE $2) AT TIME ZONE $2) AS day_start,
+               COUNT(*)::int AS leads
+          FROM qualified_leads
+         WHERE pandit_id = $1
+         GROUP BY 1
+     ),
+     analytics_days AS (
+        SELECT date, profile_views, call_clicks, whatsapp_clicks
+          FROM pandit_analytics
+         WHERE pandit_id = $1
+     )
+     SELECT to_char((d.day_start AT TIME ZONE $2)::date, 'YYYY-MM-DD') AS date,
+            COALESCE(ld.leads, 0)             AS leads,
+            COALESCE(ad.profile_views, 0)     AS views,
+            COALESCE(ad.call_clicks, 0)       AS call_clicks,
+            COALESCE(ad.whatsapp_clicks, 0)   AS whatsapp_clicks
+       FROM days d
+       LEFT JOIN lead_days ld ON ld.day_start = d.day_start
+       LEFT JOIN analytics_days ad ON ad.date = (d.day_start AT TIME ZONE $2)::date
+      ORDER BY d.day_start`,
+    [panditId, LEAD_REPORTING_TIMEZONE, days],
+  );
+  return rows;
+}
+
+/**
+ * Raw material for the "where are my leads coming from" breakdown: one row
+ * per qualified lead in the period, with just enough to derive a country
+ * (from the verified phone — same evidence record_qualified_lead() already
+ * required) and a city/state (from the devotee's own profile).
+ *
+ * Aggregation (country lookup via countryFromPhone, top-N cities) happens in
+ * the controller, NOT here, so the phone→country table has exactly one
+ * implementation on the Node side instead of a second copy in SQL — see
+ * services/distribution/market.js.
+ *
+ * Nothing here is new exposure: contact_phone_snapshot/city/state are already
+ * readable by this pandit for these same leads via listForPandit.
+ */
+async function geoForPandit(panditId, period, q = query) {
+  const where = ['ql.pandit_id = $1'];
+  const params = [panditId];
+
+  if (period && PERIOD_INTERVALS[period]) {
+    if (period === 'today') {
+      params.push(LEAD_REPORTING_TIMEZONE);
+      where.push(`ql.created_at >= (date_trunc('day', NOW() AT TIME ZONE $${params.length}) AT TIME ZONE $${params.length})`);
+    } else {
+      params.push(PERIOD_INTERVALS[period]);
+      where.push(`ql.created_at >= NOW() - $${params.length}::interval`);
+    }
+  }
+
+  const { rows } = await q(
+    `SELECT COALESCE(u.phone, ql.contact_phone_snapshot) AS phone,
+            COALESCE(u.city,  ql.contact_city_snapshot)  AS city,
+            COALESCE(u.state, ql.contact_state_snapshot) AS state
+       FROM qualified_leads ql
+       LEFT JOIN users u ON u.id = ql.user_id AND u.deleted_at IS NULL
+      WHERE ${where.join(' AND ')}`,
+    params,
+  );
+  return rows;
+}
+
+/**
+ * Row-level qualified-lead facts for client-side pivoting (the Analytics
+ * "Lead Explorer" — pick any field for X, any measure for Y). Same
+ * ownership/period pattern as geoForPandit, just selecting more columns:
+ * status, contact method and interaction_count in addition to the
+ * phone/city/state geoForPandit already exposes for THIS pandit's own leads.
+ *
+ * LIMIT 3000 is a defensive cap, not a real-world limiter — a single
+ * pandit's lead volume is nowhere near that; it just bounds worst-case query
+ * cost if it ever were.
+ */
+async function detailForPandit(panditId, period, q = query) {
+  const where = ['ql.pandit_id = $1'];
+  const params = [panditId];
+
+  if (period && PERIOD_INTERVALS[period]) {
+    if (period === 'today') {
+      params.push(LEAD_REPORTING_TIMEZONE);
+      where.push(`ql.created_at >= (date_trunc('day', NOW() AT TIME ZONE $${params.length}) AT TIME ZONE $${params.length})`);
+    } else {
+      params.push(PERIOD_INTERVALS[period]);
+      where.push(`ql.created_at >= NOW() - $${params.length}::interval`);
+    }
+  }
+
+  const { rows } = await q(
+    `SELECT ql.created_at, ql.status, ql.first_contact_method, ql.interaction_count, ql.market::text AS market,
+            COALESCE(u.phone, ql.contact_phone_snapshot) AS phone,
+            COALESCE(u.city,  ql.contact_city_snapshot)  AS city,
+            COALESCE(u.state, ql.contact_state_snapshot) AS state
+       FROM qualified_leads ql
+       LEFT JOIN users u ON u.id = ql.user_id AND u.deleted_at IS NULL
+      WHERE ${where.join(' AND ')}
+      ORDER BY ql.created_at DESC
+      LIMIT 3000`,
+    params,
+  );
+  return rows;
+}
+
+/**
+ * Maps one detailForPandit() row into the wire shape returned by both
+ * /me/analytics/detail (the pandit's own Lead Explorer) and its admin
+ * equivalent — one mapping, so a pandit's own numbers and the admin's view
+ * of that same pandit can never disagree about what a "country" or "market"
+ * label means. Country is derived from the phone the same way geoForPandit
+ * derives it; the phone itself never appears in the output.
+ */
+function mapDetailRow(row) {
+  const code = countryFromPhone(row.phone);
+  return {
+    date: row.created_at.toLocaleDateString('en-CA', { timeZone: LEAD_REPORTING_TIMEZONE }),
+    createdAt: row.created_at,
+    status: row.status,
+    method: row.first_contact_method,
+    interactionCount: row.interaction_count,
+    market: row.market === 'INDIA' ? 'India' : row.market === 'INTERNATIONAL' ? 'International' : null,
+    country: code ? (COUNTRY_NAMES[code] || code) : null,
+    city: row.city || null,
+    state: row.state || null,
+  };
+}
+
 module.exports = {
   recordContact,
   countsForPandit,
@@ -243,4 +397,9 @@ module.exports = {
   listForPandit,
   recentForPandit,
   updateStatus,
+  trendForPandit,
+  geoForPandit,
+  detailForPandit,
+  mapDetailRow,
+  TREND_DAYS_ALLOWED,
 };

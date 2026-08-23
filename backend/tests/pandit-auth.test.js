@@ -308,6 +308,65 @@ test('Pandit dashboard, leads and ownership', async (t) => {
     assert.equal((await request(server, 'GET', '/api/me/leads')).status, 401);
   });
 
+  await t.test('leads trend is zero-filled and matches the real lead count', async () => {
+    const p = await makePandit();
+    const token = await loginPandit(p);
+    const d = await makeDevotee(server);
+    await request(server, 'POST', `/api/pandits/${p.slug}/click`, { method: 'call' }, auth(d.token));
+
+    const res = await request(server, 'GET', '/api/me/leads/trend?days=7', null, auth(token));
+    assert.equal(res.status, 200);
+    assert.equal(res.body.points.length, 7, 'must be zero-filled to the full window');
+    const todayPoint = res.body.points[res.body.points.length - 1];
+    assert.equal(todayPoint.leads, 1);
+    assert.equal(res.body.points.slice(0, -1).every((pt) => pt.leads === 0), true, 'no leads on earlier days');
+  });
+
+  await t.test('leads trend rejects an unlisted window', async () => {
+    const p = await makePandit();
+    const token = await loginPandit(p);
+    const res = await request(server, 'GET', '/api/me/leads/trend?days=13', null, auth(token));
+    assert.equal(res.status, 400);
+  });
+
+  await t.test('leads geo derives country from the verified phone and city from the profile', async () => {
+    const p = await makePandit();
+    const token = await loginPandit(p);
+    const d = await makeDevotee(server); // +9199... => IN
+    await superQuery('UPDATE users SET city = $2, state = $3 WHERE id = $1', [d.userId, 'Indore', 'Madhya Pradesh']);
+    await request(server, 'POST', `/api/pandits/${p.slug}/click`, { method: 'call' }, auth(d.token));
+
+    const res = await request(server, 'GET', '/api/me/leads/geo', null, auth(token));
+    assert.equal(res.status, 200);
+    assert.equal(res.body.total, 1);
+    assert.equal(res.body.countries[0].code, 'IN');
+    assert.equal(res.body.countries[0].count, 1);
+    assert.equal(res.body.cities[0].city, 'Indore');
+  });
+
+  await t.test('leads geo never leaks the phone number itself', async () => {
+    const p = await makePandit();
+    const token = await loginPandit(p);
+    const d = await makeDevotee(server);
+    await request(server, 'POST', `/api/pandits/${p.slug}/click`, { method: 'whatsapp' }, auth(d.token));
+
+    const res = await request(server, 'GET', '/api/me/leads/geo', null, auth(token));
+    assert.ok(!JSON.stringify(res.body).includes(d.phone));
+  });
+
+  await t.test('Pandit A geo/trend never includes Pandit B leads', async () => {
+    const a = await makePandit();
+    const b = await makePandit();
+    const tokenA = await loginPandit(a);
+    const d = await makeDevotee(server);
+    await request(server, 'POST', `/api/pandits/${b.slug}/click`, { method: 'call' }, auth(d.token));
+
+    const geo = await request(server, 'GET', '/api/me/leads/geo', null, auth(tokenA));
+    assert.equal(geo.body.total, 0);
+    const trend = await request(server, 'GET', '/api/me/leads/trend?days=7', null, auth(tokenA));
+    assert.equal(trend.body.points.every((pt) => pt.leads === 0), true);
+  });
+
   await t.test('a pandit cannot self-award verification or a paid tier', async () => {
     const p = await makePandit({ planTier: 'free' });
     const token = await loginPandit(p);

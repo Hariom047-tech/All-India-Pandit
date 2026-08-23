@@ -279,6 +279,30 @@ async function analytics(req, res) {
   }
 }
 
+const ANALYTICS_DETAIL_PERIODS = ['today', '7d', '30d', '90d', 'all'];
+
+/**
+ * GET /:id/analytics/detail?period= — row-level lead facts for the admin's
+ * PowerBI-style Lead Explorer, for ANY pandit (not just "your own"). Reuses
+ * qualifiedLeadsRepo.detailForPandit/mapDetailRow verbatim — the exact
+ * functions backing the pandit's own /me/analytics/detail — so the two
+ * views of the same pandit's leads can never disagree. Authorization is the
+ * qleads_select_admin RLS policy on req.db (see adminHandler), the same
+ * policy the existing leads() handler above already relies on.
+ */
+async function analyticsDetail(req, res) {
+  const pandit = await repo.findIdBySlug(req.db, req.params.id);
+  if (!pandit) return res.status(404).json({ error: 'Pandit not found' });
+
+  const period = req.query.period;
+  if (period && !ANALYTICS_DETAIL_PERIODS.includes(period)) {
+    return res.status(400).json({ error: `period must be one of: ${ANALYTICS_DETAIL_PERIODS.join(', ')}` });
+  }
+
+  const rows = await qualifiedLeadsRepo.detailForPandit(pandit.id, period === 'all' ? undefined : period, req.db);
+  res.json({ rows: rows.map(qualifiedLeadsRepo.mapDetailRow) });
+}
+
 async function setSubscription(req, res) {
   const { tier, expiresAt, reason } = req.body || {};
   if (!['free', 'silver', 'gold', 'diamond'].includes(tier)) return res.status(400).json({ error: 'invalid tier' });
@@ -286,6 +310,26 @@ async function setSubscription(req, res) {
   if (!pandit) return res.status(404).json({ error: 'Pandit not found' });
   await repo.setTier(req.db, pandit.id, tier, expiresAt);
   await logAdminAction({ adminUserId: req.adminUser.id, action: 'PANDIT_SUBSCRIPTION_CHANGED', targetType: 'pandit', targetId: pandit.id, details: { tier, reason }, ip: req.ip });
+  res.json({ ok: true });
+}
+
+/**
+ * POST <secret>/pandits/:id/pause — manual pause/unpause, independent of
+ * subscription state. A paused profile drops out of every public read
+ * (pandits.repository.js) and the distribution engine's eligibility gate
+ * (fairness.js's eligibilityFailure) immediately — see migration 32.
+ */
+async function setPaused(req, res) {
+  const { paused, reason } = req.body || {};
+  if (typeof paused !== 'boolean') return res.status(400).json({ error: 'paused must be true or false' });
+  if (paused && !reason) return res.status(400).json({ error: 'reason is required when pausing a pandit' });
+  const pandit = await repo.findIdBySlug(req.db, req.params.id);
+  if (!pandit) return res.status(404).json({ error: 'Pandit not found' });
+  await repo.setPaused(req.db, pandit.id, paused, reason);
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: paused ? 'PANDIT_PAUSED' : 'PANDIT_UNPAUSED',
+    targetType: 'pandit', targetId: pandit.id, details: { reason }, ip: req.ip,
+  });
   res.json({ ok: true });
 }
 
@@ -319,5 +363,5 @@ async function leads(req, res) {
 
 module.exports = {
   resetPassword, setDateOfBirth, list, verificationQueue, create, getById, update, verify, toggleFeatured,
-  analytics, setSubscription, leads,
+  analytics, analyticsDetail, setSubscription, setPaused, leads,
 };

@@ -168,6 +168,7 @@ function isEligibleInEveryMarket(p) {
  * needs to see, and "not verified" is more actionable than "profile 40% done".
  */
 function eligibilityFailure(p, ctx, config = DEFAULTS) {
+  if (p.isPaused) return 'paused';
   if (!p.isActive) return 'inactive';
   if (!p.isVerified) return 'unverified';
   if (!p.subscriptionActive) return 'subscription_expired';

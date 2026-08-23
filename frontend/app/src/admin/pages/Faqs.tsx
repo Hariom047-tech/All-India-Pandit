@@ -311,7 +311,8 @@ export default function AdminFaqs() {
         )}
       </div>
 
-      <Modal open={editing !== null} onClose={() => setEditing(null)}>
+      <Modal open={editing !== null} onClose={() => setEditing(null)} size="lg">
+        <div style={{ padding: 24 }}>
         <h3 style={{ fontSize: "1.3rem" }}>{editing === "new" ? "Add a FAQ" : "Edit FAQ"}</h3>
         <form onSubmit={onSave} style={{ marginTop: 16 }}>
           <div className="admin-form-grid">
@@ -362,6 +363,7 @@ export default function AdminFaqs() {
           </div>
           <button className="btn btn-gold btn-block" type="submit" style={{ marginTop: 18 }}>Save</button>
         </form>
+        </div>
       </Modal>
     </>
   );

@@ -536,3 +536,45 @@ a.card:hover .svc-ico--emoji {
   .grid-2up-mobile .svc-card .btn { margin-top: auto; padding: 6px 4px; font-size: 0.7rem; }
   .grid-2up-mobile .svc-card .muted { font-size: 0.58rem !important; margin-top: 6px !important; }
 }
+
+/* ══════════════ PANDIT DIRECTORY: 4-UP GRID CARD COMPACTION ══════════════
+   .astro-card was sized for its original 3-up desktop columns (~300px+).
+   At 4 columns (see .pandit-results-grid in base.css) a column is
+   narrower at every non-mobile width, and the untouched card broke in two
+   ways: the name clamped mid-word instead of wrapping cleanly, and the
+   footer's Call button got clipped off the card edge (Chat + Call side by
+   side no longer fit). This compacts the header/tags/stats/footer and
+   stacks the footer (price row above the actions row) — the same technique
+   grid-2up-mobile already uses at an even narrower width, just less
+   aggressive since 4-up still has more room than 2-up mobile.
+   min-width:621px keeps this from ever competing with grid-2up-mobile's own,
+   separately-tuned rules below 620px. */
+@media (min-width: 621px) {
+  .pandit-results-grid .astro-card__header { padding: 14px 14px 10px; gap: 10px; }
+  .pandit-results-grid .astro-card__avatar { width: 48px; height: 48px; }
+  .pandit-results-grid .astro-card__name { font-size: 0.92rem; line-height: 1.22; }
+  .pandit-results-grid .astro-card__meta-short,
+  .pandit-results-grid .astro-card__location { font-size: 0.72rem; }
+  .pandit-results-grid .astro-card__tags { padding: 0 14px; gap: 5px; margin-bottom: 10px; min-height: 54px; }
+  .pandit-results-grid .astro-card__tag { font-size: 0.68rem; padding: 2px 8px; }
+  .pandit-results-grid .astro-card__stats-row { padding: 0 14px; margin-bottom: 14px; }
+  .pandit-results-grid .astro-card__orders { display: none; }
+  .pandit-results-grid .astro-card__footer {
+    flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 10px;
+  }
+  .pandit-results-grid .astro-card__price-col { display: none; }
+  .pandit-results-grid .astro-card__actions { width: 100%; }
+  .pandit-results-grid .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: 0.74rem; }
+}
+
+/* Narrowest 4-up columns (tablet portrait, ~768-900px, still above the
+   grid-2up-mobile cutoff) — a few long names (e.g. "Suresh Chaturvedi")
+   still clamped at the size above. One notch smaller closes that gap
+   without needing a 3rd tier of avatar/footer changes. */
+@media (min-width: 621px) and (max-width: 900px) {
+  .pandit-results-grid .astro-card__header { padding: 12px 10px 8px; gap: 8px; }
+  .pandit-results-grid .astro-card__avatar { width: 42px; height: 42px; }
+  .pandit-results-grid .astro-card__name { font-size: 0.82rem; line-height: 1.2; }
+  .pandit-results-grid .astro-card__meta-short,
+  .pandit-results-grid .astro-card__location { font-size: 0.68rem; }
+}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Icon } from "../lib/icons";
-import { usePandits, useServices } from "../hooks/useData";
+import { usePandits, useServices, usePublicSettings } from "../hooks/useData";
 import { normPandits, normServices } from "../lib/normalize";
 import { useFairRanking, useReportExposure } from "../lib/api";
 import { useLang } from "../lib/i18n";
@@ -15,7 +15,9 @@ import { SacredBackground } from "../components/ui/SacredBackground";
 import { HeroTicker } from "../components/ui/HeroTicker";
 import { Seo } from "../lib/Seo";
 
-const PER_PAGE = 30;
+// Falls back to this while /settings hasn't loaded yet or the admin has
+// never set pandits_per_page — matches the backend's own default.
+const DEFAULT_PER_PAGE = 30;
 
 export default function Pandits() {
   const { t } = useLang();
@@ -28,7 +30,6 @@ export default function Pandits() {
   const [minExp, setMinExp] = useState("");
   const [minRating, setMinRating] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(true);
-  const [sort, setSort] = useState("recommended");
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const fairScores = useFairRanking();
@@ -40,10 +41,12 @@ export default function Pandits() {
   // batch, since filtering/sorting happens client-side over what's fetched.
   const { data: rawPandits } = usePandits({ perPage: 600 });
   const { data: rawSvcs } = useServices();
+  const { data: publicSettings } = usePublicSettings();
   const pandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
   const allServices = useMemo(() => normServices(rawSvcs), [rawSvcs]);
+  const perPage = publicSettings?.pandits_per_page || DEFAULT_PER_PAGE;
 
-  // mobile filter drawer: lock body scroll and close on Escape while open
+  // filter drawer (off-canvas at every width): lock body scroll and close on Escape while open
   useEffect(() => {
     document.body.style.overflow = filtersOpen ? "hidden" : "";
     return () => {
@@ -91,25 +94,22 @@ export default function Pandits() {
       return true;
     });
     list = [...list].sort((a, b) => {
-      if (sort === "exp") return b.exp - a.exp;
-      if (sort === "reviews") return b.reviews - a.reviews;
-      if (sort === "name") return a.name.localeCompare(b.name);
-      if (sort === "recommended" && fairScores) {
+      if (fairScores) {
         const diff = (fairScores.get(b.id) ?? -Infinity) - (fairScores.get(a.id) ?? -Infinity);
         if (diff) return diff;
       }
       return b.rating - a.rating;
     });
     return list;
-  }, [pandits, query, cityFilter, svcFilter, langFilter, minExp, minRating, verifiedOnly, sort, fairScores]);
+  }, [pandits, query, cityFilter, svcFilter, langFilter, minExp, minRating, verifiedOnly, fairScores]);
 
-  const pg = paginate(filtered, page, PER_PAGE);
+  const pg = paginate(filtered, page, perPage);
 
   /* Exposure: only the cards on the current page, in the order shown. Not the
      whole filtered set — a pandit on page 4 was not seen. This is what lets the
      engine tell "shown and ignored" apart from "never shown", which is the
      difference the whole fairness correction rests on. */
-  useReportExposure(pg.slice.map((p) => p.id), { enabled: sort === "recommended" });
+  useReportExposure(pg.slice.map((p) => p.id), { enabled: true });
 
   function toggle(list: string[], setter: (v: string[]) => void, value: string) {
     setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -132,10 +132,10 @@ export default function Pandits() {
         path="/pandits"
       />
       <SacredBackground />
-      {/* the mobile filters drawer is position:fixed with a high z-index, but
-          this wrapper's own z-index:1 stacking context otherwise traps it
-          below the sticky site header (z-index 90) — lift the whole
-          subtree above the header only while the drawer is open */}
+      {/* the filters drawer is position:fixed with a high z-index, but this
+          wrapper's own z-index:1 stacking context otherwise traps it below
+          the sticky site header (z-index 90) — lift the whole subtree above
+          the header only while the drawer is open */}
       <div style={{ position: "relative", zIndex: filtersOpen ? 140 : 1 }}>
       <section className="sp-hero">
         <div className="shell">
@@ -254,19 +254,9 @@ export default function Pandits() {
                   <Icon name="sliders" size={16} /> {t("common.filters")}
                   {activeFilterCount > 0 && <span className="filters-toggle__badge">{activeFilterCount}</span>}
                 </button>
-                <label className="row" style={{ gap: 8 }}>
-                  <span className="muted">{t("common.sortBy")}</span>
-                  <select className="select" style={{ width: "auto", padding: "9px 40px 9px 14px" }} value={sort} onChange={(e) => { setSort(e.target.value); setPage(1); }}>
-                    <option value="recommended">{t("pandits.sortRecommended")}</option>
-                    <option value="rating">{t("pandits.sortRating")}</option>
-                    <option value="exp">{t("pandits.sortExp")}</option>
-                    <option value="reviews">{t("pandits.sortReviews")}</option>
-                    <option value="name">{t("pandits.sortName")}</option>
-                  </select>
-                </label>
               </div>
             </div>
-            <div className="grid g-3 grid-2up-mobile">
+            <div className="grid g-4 pandit-results-grid grid-2up-mobile">
               {pg.slice.length
                 ? pg.slice.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="pandit_directory" />)
                 : <EmptyState msg={t("pandits.emptyState")} />}

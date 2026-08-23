@@ -9,6 +9,21 @@
   background: var(--ivory);
   font-family: var(--font-body);
   color: var(--text);
+  /* Bridges the pandit-portal chart/explorer components' --pd-* tokens onto
+     the admin palette, so FieldExplorer/SeriesChart/DonutChart (imported
+     from ../pandit/components/pivot, styled by ../pandit/pandit.css) render
+     in the admin's own colors without forking that code — see
+     admin/pages/PanditAnalytics.tsx. */
+  --pd-gold: var(--gold-deep, #b8860b);
+  --pd-gold-soft: var(--gold-soft, #fdf6e3);
+  --pd-ink: var(--text);
+  --pd-ink-2: var(--text-2);
+  --pd-line: var(--border);
+  --pd-radius: var(--r-lg, 14px);
+  --pd-tap: 40px;
+  --pd-chart-lead: var(--gold-deep, #b8860b);
+  --pd-chart-view: #2f6f9e;
+  --pd-chart-grid: var(--border-soft, #ece4d2);
 }
 
 /* ------------------------------------------------------------------ login */
@@ -146,6 +161,14 @@
 .admin-stat-card__value { font-family: var(--font-head); font-size: 1.7rem; font-weight: 800; margin-top: 6px; color: var(--text); }
 .admin-stat-card--warn .admin-stat-card__value { color: #b5490a; }
 
+.admin-stat-card--link {
+  cursor: pointer; text-align: left; text-decoration: none; color: inherit;
+  font: inherit; display: block; width: 100%; appearance: none; -webkit-appearance: none;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.admin-stat-card--link:hover { box-shadow: 0 6px 18px rgba(0,0,0,.08); transform: translateY(-1px); }
+.admin-stat-card--active { outline: 2px solid var(--gold-deep, #d4a017); outline-offset: -1px; }
+
 .admin-panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--sh-xs); }
 .admin-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; }
 .admin-panel__head h2 { font-family: var(--font-head); font-size: 1.02rem; }
@@ -181,6 +204,30 @@
 .admin-field .hint { font-size: 0.76rem; color: var(--text-2); font-weight: 400; }
 
 .admin-chip-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 220px; overflow-y: auto; padding: 4px; border: 1px solid var(--border-soft); border-radius: var(--r-md); }
+
+/* ---------- Detail modals (payment detail, and future record-detail views) */
+.admin-hero-amount {
+  background: var(--gold-grad-soft); border: 1px solid var(--border-soft); border-radius: var(--r-lg);
+  padding: 18px 20px; margin-bottom: 20px;
+}
+.admin-hero-amount__label { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-2); }
+.admin-hero-amount__value { font-size: 1.9rem; font-weight: 800; color: var(--gold-deep); font-family: var(--font-head); line-height: 1.2; }
+.admin-hero-amount__sub { font-size: .85rem; color: var(--text-2); margin-top: 2px; }
+
+.admin-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 20px; margin-bottom: 4px; }
+.admin-detail-grid--full { grid-column: 1 / -1; }
+.admin-detail-item__label { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); margin-bottom: 3px; }
+.admin-detail-item__value { font-size: .92rem; color: var(--text); font-weight: 600; word-break: break-word; }
+.admin-detail-item__value--mono { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: .82rem; font-weight: 500; }
+
+.admin-fieldset { border: 1px solid var(--border-soft); border-radius: var(--r-md); padding: 16px 18px; background: var(--ivory); }
+.admin-refund-note { border-radius: var(--r-md); padding: 14px 16px; margin: 16px 0; }
+.admin-refund-note--ok { background: #eef7f0; border: 1px solid #cfe8d6; }
+.admin-refund-note--fail { background: #fbecea; border: 1px solid #f0c6c0; }
+
+@media (max-width: 520px) {
+  .admin-detail-grid { grid-template-columns: 1fr; }
+}
 .admin-chip {
   display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--r-pill);
   font-size: 0.82rem; border: 1.5px solid var(--border); cursor: pointer; background: var(--white); transition: all .15s ease;

@@ -10,6 +10,16 @@ const server = app.listen(port, () => {
 const chatService = require('./services/chat.service');
 chatService.initialize();
 
+// Keeps pandits.current_tier from staying stale after a paid period expires
+// (the distribution engine itself needs no cron — it already checks expiry
+// reactively; see services/billing/expiryScheduler.js for what this is and
+// isn't responsible for).
+require('./services/billing/expiryScheduler').start();
+
+// Dispatches subscription-expiry reminder notifications (7/5/3/1/0/-3 days
+// by default, admin-configurable) — see services/billing/reminderScheduler.js.
+require('./services/billing/reminderScheduler').start();
+
 function shutdown(signal) {
   console.log(`\n${signal} received, closing server and database pool...`);
   server.close(() => {

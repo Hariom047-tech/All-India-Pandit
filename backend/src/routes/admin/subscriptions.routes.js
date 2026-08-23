@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const ctrl = require('../../controllers/admin/subscriptions.controller');
-const { requireAdmin, adminHandler } = require('../../middleware/admin');
+const { requireAdmin, requireSuperAdmin, adminHandler } = require('../../middleware/admin');
 
 const router = Router();
 router.use(requireAdmin);
@@ -14,8 +14,12 @@ router.post('/subscriptions/grant', adminHandler(ctrl.grant));
 
 router.get('/payments', adminHandler(ctrl.listPayments));
 router.get('/payments/:id', adminHandler(ctrl.getPayment));
-router.post('/payments/:id/refund', adminHandler(ctrl.refund));
+// Moves real money via Razorpay — a plain admin is not enough.
+router.post('/payments/:id/refund', requireSuperAdmin, adminHandler(ctrl.refund));
 
 router.get('/revenue/overview', adminHandler(ctrl.revenueOverview));
+router.get('/revenue/renewals', adminHandler(ctrl.renewalReport));
+
+router.get('/billing/reconciliation', adminHandler(ctrl.reconciliation));
 
 module.exports = router;

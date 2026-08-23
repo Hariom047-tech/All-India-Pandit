@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { panditApi, type DashboardPayload } from "../lib/panditApi";
-import { PageHead, ErrorState, Loading, StatCard, EmptyState, formatLeadTime, formatDate, METHOD_LABEL } from "./_shared";
+import { panditApi, type DashboardPayload, type TrendResponse } from "../lib/panditApi";
+import { PageHead, ErrorState, Loading, HeroStat, EmptyState, ExpiryBanner, PausedBanner, formatLeadTime, formatDate, METHOD_LABEL } from "./_shared";
 import { withPanditHonorific } from "../../lib/normalize";
+import { TrendChart, PeriodDropdown } from "../components/charts";
+
+const PERIODS = [
+  { id: "today", label: "Daily" },
+  { id: "week", label: "Weekly" },
+  { id: "month", label: "Monthly" },
+];
 
 /**
  * Every figure here comes from GET /me/dashboard, which computes real SQL
@@ -13,11 +20,18 @@ import { withPanditHonorific } from "../../lib/normalize";
  *   Profile Views   — anonymous counts only. Who viewed is not collected and
  *                     is not shown, because a view is passive and carries no
  *                     consent to share identity.
+ *
+ * Deliberately just TWO headline numbers behind one Daily/Weekly/Monthly
+ * dropdown, not a grid of a dozen small boxes — the funnel-level detail
+ * (CTA clicks, call vs WhatsApp split, verified interactions) lives on the
+ * Analytics page instead of being duplicated here.
  */
 export default function Dashboard() {
   const [data, setData] = useState<DashboardPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [trend, setTrend] = useState<TrendResponse | null>(null);
+  const [period, setPeriod] = useState("today");
 
   const load = useCallback(() => {
     setLoading(true); setError(null);
@@ -28,15 +42,23 @@ export default function Dashboard() {
   }, []);
 
   useEffect(load, [load]);
+  // A quiet, best-effort sparkline: if it fails to load the rest of the
+  // dashboard (which already answers today/week/month) is unaffected.
+  useEffect(() => { panditApi.trend(7).then(setTrend).catch(() => setTrend(null)); }, []);
 
   if (loading) return <Loading />;
   if (error || !data) return <ErrorState message={error || "Dashboard data load nahi ho paya."} onRetry={load} />;
 
-  const { plan, qualifiedLeads, views, analytics, recentLeads, meta } = data;
+  const { plan, qualifiedLeads, views, recentLeads, meta } = data;
+  const leadsForPeriod = qualifiedLeads[period as "today" | "week" | "month"];
+  const viewsForPeriod = views[period as "today" | "week" | "month"];
 
   return (
     <div className="pandit-page">
       <PageHead title={`Namaste ${withPanditHonorific(data.pandit.name)} Ji 🙏`} />
+
+      <PausedBanner pandit={data.pandit} />
+      <ExpiryBanner plan={{ tier: plan.tier, name: plan.name || plan.tier, expiresAt: plan.expiresAt }} />
 
       {/* Plan card first: on mobile this is the single most-checked fact. */}
       <section className="pandit-plancard">
@@ -50,46 +72,44 @@ export default function Dashboard() {
         <Link to="/pandit/dashboard/plan" className="pandit-btn pandit-btn--primary">Upgrade Plan</Link>
       </section>
 
-      <section aria-labelledby="ql-heading">
-        <h2 id="ql-heading" className="pandit-section__title">Qualified Leads</h2>
-        <p className="pandit-section__note">
-          Sirf verified users ke genuine contacts. Ek hi user {meta.dedupWindowHours} ghante mein
-          ek hi lead count hota hai.
-        </p>
-        <div className="pandit-stats">
-          <StatCard tone="lead" label="Today" value={qualifiedLeads.today} />
-          <StatCard tone="lead" label="This Week" value={qualifiedLeads.week} />
-          <StatCard tone="lead" label="This Month" value={qualifiedLeads.month} />
-        </div>
-      </section>
-
-      <section aria-labelledby="views-heading">
-        <h2 id="views-heading" className="pandit-section__title">Profile Views</h2>
-        <p className="pandit-section__note">
-          Aapki profile kitni baar dekhi gayi — sirf count. Kaun dekh raha hai woh record nahi hota.
-        </p>
-        <div className="pandit-stats">
-          <StatCard tone="view" label="Today" value={views.today} />
-          <StatCard tone="view" label="This Week" value={views.week} />
-          <StatCard tone="view" label="This Month" value={views.month} />
-          <StatCard tone="view" label="Total" value={analytics.profileViews.toLocaleString("en-IN")} />
-        </div>
-      </section>
-
-      <section aria-labelledby="funnel-heading">
-        <h2 id="funnel-heading" className="pandit-section__title">Interactions</h2>
-        <div className="pandit-stats">
-          <StatCard label="Total CTA Clicks" value={analytics.ctaClicks} hint="Sabhi Call/WhatsApp taps" />
-          <StatCard label="Call Clicks" value={analytics.callInteractions} />
-          <StatCard label="WhatsApp Clicks" value={analytics.whatsappInteractions} />
-          <StatCard label="Verified Contacts" value={analytics.verifiedInteractions} hint="Logged-in users" />
-          <StatCard tone="lead" label="Qualified Leads" value={analytics.qualifiedLeadCount} />
-        </div>
-      </section>
-
-      <section aria-labelledby="recent-heading">
+      <section className="pandit-panel" aria-labelledby="summary-heading">
         <div className="pandit-section__bar">
-          <h2 id="recent-heading" className="pandit-section__title">Recent Qualified Leads</h2>
+          <h2 id="summary-heading" className="pandit-section__title" style={{ margin: 0 }}>Overview</h2>
+          <PeriodDropdown options={PERIODS} value={period} onChange={setPeriod} />
+        </div>
+        <p className="pandit-section__note">
+          Sirf verified devotees ke genuine contacts count hote hain. Views sirf count hain — kaun dekh raha hai record nahi hota.
+        </p>
+        <div className="pandit-herorow">
+          <HeroStat tone="lead" label="Qualified Leads" value={leadsForPeriod} />
+          <HeroStat tone="view" label="Profile Views" value={viewsForPeriod} />
+        </div>
+      </section>
+
+      {trend && (
+        <section className="pandit-panel" aria-labelledby="trend-heading">
+          <div className="pandit-section__bar">
+            <h2 id="trend-heading" className="pandit-section__title" style={{ margin: 0 }}>Pichhle 7 Din Ka Trend</h2>
+            <Link to="/pandit/dashboard/analytics" className="pandit-link">Poore Analytics dekhein →</Link>
+          </div>
+          <div className="pandit-trends">
+            <TrendChart
+              title="Qualified Leads"
+              points={trend.points.map((p) => ({ date: p.date, value: p.leads }))}
+              color="var(--pd-chart-lead)"
+            />
+            <TrendChart
+              title="Profile Views"
+              points={trend.points.map((p) => ({ date: p.date, value: p.views }))}
+              color="var(--pd-chart-view)"
+            />
+          </div>
+        </section>
+      )}
+
+      <section className="pandit-panel" aria-labelledby="recent-heading">
+        <div className="pandit-section__bar">
+          <h2 id="recent-heading" className="pandit-section__title" style={{ margin: 0 }}>Recent Qualified Leads</h2>
           <Link to="/pandit/dashboard/leads" className="pandit-link">Sabhi dekhein →</Link>
         </div>
         {recentLeads.length === 0 ? (
@@ -107,12 +127,15 @@ export default function Dashboard() {
                     {METHOD_LABEL[l.first_contact_method]} · {formatLeadTime(l.created_at)}
                   </span>
                 </div>
-                <span className={`pandit-badge pandit-badge--${l.status}`}>{l.status}</span>
               </li>
             ))}
           </ul>
         )}
       </section>
+
+      <p className="pandit-note">
+        {meta.dedupWindowHours} ghante ke andar ek hi devotee ka repeat contact ek hi lead count hota hai.
+      </p>
     </div>
   );
 }

@@ -13,7 +13,9 @@ import { Icon } from "../../lib/icons";
  *  removing framer-motion from EnquiryModalProvider's dependency graph,
  *  which (via App.tsx) wraps every route on the site (Phase 12,
  *  docs/SEO_ARCHITECTURE.md). */
-function ModalDialog({ onClose, children }: { onClose: () => void; children: ReactNode }) {
+function ModalDialog({
+  onClose, children, size = "md",
+}: { onClose: () => void; children: ReactNode; size?: "md" | "lg" | "full" }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const id = requestAnimationFrame(() => setVisible(true));
@@ -29,7 +31,7 @@ function ModalDialog({ onClose, children }: { onClose: () => void; children: Rea
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="modal-box" style={{ display: "flex", flexDirection: "column" }}>
+      <div className={`modal-box${size !== "md" ? ` modal-box--${size}` : ""}`} style={{ display: "flex", flexDirection: "column" }}>
         <button className="modal-x" aria-label="Close" onClick={onClose}>
           <Icon name="x" />
         </button>
@@ -46,10 +48,15 @@ export function Modal({
   open,
   onClose,
   children,
+  size = "md",
 }: {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
+  /** "md" (default, 500px) is unchanged for every existing caller. "lg" and
+   *  "full" are wider variants for content-heavy admin forms (map picker,
+   *  gallery manager, several list editors) that were cramped at 500px. */
+  size?: "md" | "lg" | "full";
 }) {
   useEffect(() => {
     if (!open) return;
@@ -69,5 +76,5 @@ export function Modal({
   }, [open, onClose]);
 
   if (!open) return null;
-  return createPortal(<ModalDialog onClose={onClose}>{children}</ModalDialog>, document.body);
+  return createPortal(<ModalDialog onClose={onClose} size={size}>{children}</ModalDialog>, document.body);
 }

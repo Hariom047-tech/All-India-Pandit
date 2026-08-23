@@ -1,12 +1,24 @@
 const repo = require('../repositories/misc.repository');
 const heroRepo = require('../repositories/homeHero.repository');
 const servicesRepo = require('../repositories/services.repository');
+const settingsRepo = require('../repositories/admin/settings.repository');
+const { query } = require('../config/db');
 
 const plans = async (req, res) => res.json(await repo.plans());
 const stats = async (req, res) => res.json(await repo.stats());
 const taxonomy = async (req, res) => res.json(await repo.taxonomy());
 /** GET /api/home-hero — the three homepage hero images, admin-chosen. */
 const homeHero = async (req, res) => res.json(await heroRepo.listPublic());
+
+/** GET /api/settings — the subset of platform_settings safe to read without
+ *  admin auth. Add a key here only once it's meant for the public site; the
+ *  full table (billing_tax etc.) stays behind the admin routes. */
+const publicSettings = async (req, res) => {
+  const panditsPerPage = await settingsRepo.getByKey(query, 'pandits_per_page');
+  res.json({
+    pandits_per_page: typeof panditsPerPage === 'number' && panditsPerPage > 0 ? panditsPerPage : 30,
+  });
+};
 
 async function blogList(req, res) {
   const items = await repo.blogList({ q: req.query.q, cat: req.query.cat });
@@ -48,4 +60,4 @@ async function recommend(req, res) {
 }
 
 module.exports = {
-  homeHero, plans, stats, taxonomy, blogList, blogById, recommend };
+  homeHero, publicSettings, plans, stats, taxonomy, blogList, blogById, recommend };

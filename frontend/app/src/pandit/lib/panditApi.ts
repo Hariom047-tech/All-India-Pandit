@@ -1,7 +1,10 @@
 import { api } from "../../lib/api";
 
 export interface DashboardPayload {
-  pandit: { name: string; profileSlug: string; verificationStatus: string; isAvailable: boolean };
+  pandit: {
+    name: string; profileSlug: string; verificationStatus: string; isAvailable: boolean;
+    isPaused: boolean; pausedReason: string | null; pausedAt: string | null;
+  };
   plan: {
     tier: "free" | "silver" | "gold" | "diamond";
     name: string; status: string; billingCycle: string | null;
@@ -29,16 +32,56 @@ export interface Lead {
   status: LeadStatus;
   created_at: string;
   last_interaction_at: string;
+  city: string | null;
+  state: string | null;
+}
+
+export interface TrendPointRaw {
+  date: string;
+  leads: number;
+  views: number;
+  call_clicks: number;
+  whatsapp_clicks: number;
+}
+
+export interface TrendResponse {
+  days: number;
+  points: TrendPointRaw[];
+}
+
+export interface GeoResponse {
+  total: number;
+  unresolved: number;
+  countries: { code: string; name: string; count: number }[];
+  cities: { city: string; state: string | null; count: number }[];
+}
+
+/** One qualified lead's pivotable facts — the raw material behind the
+ *  Analytics "Lead Explorer" (pick any field for X, any measure for Y). */
+export interface AnalyticsDetailRow {
+  date: string;
+  createdAt: string;
+  status: LeadStatus;
+  method: "phone_call" | "whatsapp";
+  interactionCount: number;
+  country: string | null;
+  city: string | null;
+  state: string | null;
+}
+
+export interface AnalyticsDetailResponse {
+  rows: AnalyticsDetailRow[];
 }
 
 export type LeadStatus = "new" | "viewed" | "contacted" | "completed" | "not_reachable";
 
+/**
+ * Matches utils/paginate.js's paginationEnvelope() shape exactly — page,
+ * perPage, total and totalPages live under `meta`, not at the top level.
+ */
 export interface Paginated<T> {
   data: T[];
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages?: number;
+  meta: { page: number; perPage: number; total: number; totalPages: number };
 }
 
 export interface PlanOption {
@@ -47,6 +90,29 @@ export interface PlanOption {
   currency: string; inclusions: string[]; description: string | null;
   tagline: string | null; popular: boolean;
   limits: { templeListings: number; serviceListings: number; photos: number };
+}
+
+export type PaymentStatus = "pending" | "completed" | "failed" | "refunded" | "cancelled";
+
+export interface PaymentRow {
+  id: string;
+  plan_id: string;
+  plan_name_snapshot: string | null;
+  billing_cycle: string | null;
+  amount: string;
+  currency: string;
+  status: PaymentStatus;
+  gateway: string;
+  gateway_payment_id: string | null;
+  invoice_number: string | null;
+  failure_code: string | null;
+  failure_description: string | null;
+  paid_at: string | null;
+  created_at: string;
+  refund_amount: string | null;
+  refunded_at: string | null;
+  starts_at: string | null;
+  expires_at: string | null;
 }
 
 export const panditApi = {
@@ -64,6 +130,21 @@ export const panditApi = {
   setLeadStatus: (id: string, status: LeadStatus) =>
     api.post<{ ok: boolean; status: LeadStatus }>(`/me/leads/${id}`, { status }),
 
+  /** Day-by-day leads + views, zero-filled, for the trend charts. */
+  trend: (days: 7 | 30 | 90) => api.get<TrendResponse>(`/me/leads/trend?days=${days}`),
+
+  /** Country (from verified phone) + city (from profile) breakdown of qualified leads. */
+  geo: (period: string) => {
+    const qs = period && period !== "all" ? `?period=${period}` : "";
+    return api.get<GeoResponse>(`/me/leads/geo${qs}`);
+  },
+
+  /** Row-level lead facts for the Analytics page's field-driven pivot charts. */
+  analyticsDetail: (period: string) => {
+    const qs = period && period !== "all" ? `?period=${period}` : "";
+    return api.get<AnalyticsDetailResponse>(`/me/analytics/detail${qs}`);
+  },
+
   plans: () => api.get<PlanOption[]>("/plans"),
 
   /**
@@ -73,8 +154,18 @@ export const panditApi = {
    * is asked to charge.
    */
   subscribe: (slug: string, tier: string, billingCycle: string) =>
-    api.post<{ paymentId: string; orderId: string; amount: number; currency: string; keyId: string }>(
-      `/pandits/${slug}/subscribe`, { tier, billingCycle }),
+    api.post<{
+      paymentId: string; orderId: string; amount: number; currency: string; keyId: string;
+      isRenewal: boolean; expiresAt: string;
+    }>(`/pandits/${slug}/subscribe`, { tier, billingCycle }),
+
+  /** The pandit's own billing/payment history — own rows only. */
+  payments: (params: { page?: number; limit?: number } = {}) => {
+    const qs = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => { if (v !== undefined) qs.set(k, String(v)); });
+    const query = qs.toString();
+    return api.get<Paginated<PaymentRow>>(`/me/payments${query ? `?${query}` : ""}`);
+  },
 };
 
 /** PATCH isn't on the shared client; leads status uses it. */

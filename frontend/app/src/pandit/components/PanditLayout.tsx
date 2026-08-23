@@ -3,13 +3,16 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../lib/Auth";
 import "../pandit.css";
 
+/**
+ * Kept deliberately short — a pandit using this on a phone should never have
+ * to think about which tab to open. Profile/Services/Availability/Reviews
+ * still exist as pages and routes (nothing was deleted), they're just not in
+ * this list anymore; re-add a row here if they need to come back into the
+ * sidebar.
+ */
 const NAV = [
   { to: "/pandit/dashboard", label: "Dashboard", icon: "🏠", end: true },
   { to: "/pandit/dashboard/leads", label: "My Leads", icon: "📞" },
-  { to: "/pandit/dashboard/profile", label: "My Profile", icon: "👤" },
-  { to: "/pandit/dashboard/services", label: "Services", icon: "🪔" },
-  { to: "/pandit/dashboard/availability", label: "Availability", icon: "📅" },
-  { to: "/pandit/dashboard/reviews", label: "Reviews", icon: "⭐" },
   { to: "/pandit/dashboard/analytics", label: "Analytics", icon: "📊" },
   { to: "/pandit/dashboard/plan", label: "My Plan", icon: "💎" },
   { to: "/pandit/dashboard/settings", label: "Settings", icon: "⚙️" },

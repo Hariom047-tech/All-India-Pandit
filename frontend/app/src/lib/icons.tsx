@@ -39,6 +39,7 @@ export const iconPaths: Record<string, string> = {
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9S14.5 21 12 21 8.2 15.5 8.2 12 9.5 5.5 12 3z"/>',
   video: '<rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5L21.5 7v10l-6-3.5z"/>',
   play: '<path d="M7 4.5l12 7.5-12 7.5z"/>',
+  pause: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
   "message-circle":
     '<path d="M21 11.5a8.4 8.4 0 01-9 8.4 9.3 9.3 0 01-3.7-.7L3 21l1.8-4.8A8.4 8.4 0 0112 3.1a8.4 8.4 0 019 8.4z"/>',
   "book-open": '<path d="M12 6.5C10.5 5 8.5 4.3 4 4.3V18c4.5 0 6.5.7 8 2.2 1.5-1.5 3.5-2.2 8-2.2V4.3c-4.5 0-6.5.7-8 2.2z"/><path d="M12 6.5v13.7"/>',

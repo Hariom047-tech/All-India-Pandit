@@ -122,6 +122,7 @@ test('UNKNOWN never quietly falls back to acting like INDIA or INTERNATIONAL alo
 
 test('every hard gate excludes, whatever the quality', () => {
   const cases = [
+    [{ isPaused: true }, 'paused'],
     [{ isActive: false }, 'inactive'],
     [{ isVerified: false }, 'unverified'],
     [{ subscriptionActive: false }, 'subscription_expired'],

@@ -17,6 +17,8 @@ interface PanditRow {
   is_featured: boolean;
   is_available: boolean;
   created_at: string;
+  is_paused: boolean;
+  paused_reason: string | null;
 }
 
 const VERIFY_PILL: Record<string, string> = {
@@ -86,6 +88,32 @@ export default function AdminPandits() {
     }
   }
 
+  /**
+   * Pause hides a profile from EVERY public surface and the lead-distribution
+   * engine, immediately (see migration 32) — India and international both.
+   * A reason is required when pausing (enforced here and again on the
+   * backend) so there's always a record of why; unpausing needs none.
+   */
+  async function togglePause(slug: string, currentlyPaused: boolean) {
+    let reason: string | undefined;
+    if (currentlyPaused) {
+      if (!confirm(`Unpause ${slug}? Their profile becomes publicly visible again immediately.`)) return;
+    } else {
+      const input = window.prompt(`Reason for pausing ${slug} — their profile will be hidden everywhere (India + international) until unpaused:`);
+      if (!input || !input.trim()) return;
+      reason = input.trim();
+    }
+    setBusyId(slug);
+    try {
+      await adminApi.post(`/pandits/${slug}/pause`, { paused: !currentlyPaused, reason });
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Action failed");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <>
       <div className="admin-page-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -132,7 +160,7 @@ export default function AdminPandits() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Name</th><th>City</th><th>Verification</th><th>Tier</th><th>Rating</th><th>Featured</th><th></th>
+                  <th>Name</th><th>City</th><th>Verification</th><th>Tier</th><th>Rating</th><th>Featured</th><th>Status</th><th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -156,9 +184,25 @@ export default function AdminPandits() {
                         <Icon name="sparkles" size={13} /> {p.is_featured ? "Featured" : "Feature"}
                       </button>
                     </td>
-                    <td className="row" style={{ gap: 6 }}>
+                    <td>
+                      <span className={`admin-pill ${p.is_paused ? "admin-pill--red" : "admin-pill--green"}`}>
+                        {p.is_paused ? "Paused" : "Active"}
+                      </span>
+                      {p.is_paused && p.paused_reason && (
+                        <div className="muted-cell" style={{ marginTop: 4, maxWidth: 160 }}>{p.paused_reason}</div>
+                      )}
+                    </td>
+                    <td className="row" style={{ gap: 6, flexWrap: "wrap" }}>
                       <Link className="btn btn-outline btn-sm" to={`${ADMIN_BASE}/pandits/${p.slug}`}>Edit</Link>
                       <Link className="btn btn-outline btn-sm" to={`${ADMIN_BASE}/pandits/${p.slug}/analytics`}>Analytics</Link>
+                      <button
+                        className={`btn btn-sm ${p.is_paused ? "btn-gold" : "btn-ghost"}`}
+                        disabled={busyId === p.slug}
+                        onClick={() => togglePause(p.slug, p.is_paused)}
+                        style={{ padding: "4px 10px", fontSize: ".76rem" }}
+                      >
+                        {p.is_paused ? "Unpause" : "Pause"}
+                      </button>
                     </td>
                   </tr>
                 ))}

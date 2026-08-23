@@ -702,16 +702,26 @@ p { margin: 0; }
 }
 
 /* -------------------------------------------------------------- filters --- */
-.layout-side { display: grid; grid-template-columns: 288px 1fr; gap: 32px; align-items: start; }
-.layout-side--right { grid-template-columns: 1fr 340px; }
+/* Filters used to sit in a persistent 260px sidebar column on desktop.
+   Now the panel is an on-demand off-canvas drawer at every width (opened
+   via .filters-toggle in the result bar, closed via the scrim/X/Escape),
+   so .layout-side no longer needs a reserved sidebar track — the results
+   column gets the full shell width, which is what lets
+   .pandit-results-grid run 5-up instead of 4-up on desktop. */
+.layout-side { display: block; }
+.layout-side--right { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
 /* main column + sticky sidebar (temple detail, service detail, contact, map) */
 .split { display: grid; grid-template-columns: 1fr 340px; gap: 34px; align-items: start; }
 .split--narrow { grid-template-columns: 1fr 330px; }
 .split--wide { grid-template-columns: 1.4fr 1fr; }
 .filters {
-  background: var(--ivory); border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: 24px; position: sticky; top: calc(var(--header-h) + 18px);
+  background: var(--ivory); border: 0; border-radius: 0; margin: 0;
+  padding: 24px; overflow-y: auto;
+  position: fixed; inset: 0 0 0 auto; width: min(86vw, 340px); max-width: 340px;
+  height: 100vh; z-index: 130; box-shadow: var(--sh-lg);
+  transform: translateX(100%); transition: transform .32s cubic-bezier(.22, 1, .36, 1);
 }
+.filters.is-open { transform: translateX(0); }
 .filters h3 { display: flex; align-items: center; gap: 9px; }
 .filter-group + .filter-group { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--border); }
 .filter-group h4 { font-size: 1rem; margin-bottom: 12px; }
@@ -731,37 +741,28 @@ p { margin: 0; }
 }
 .result-bar strong { font-family: var(--font-head); }
 
-/* mobile filters drawer: the sidebar becomes an off-canvas panel below
-   1080px (same width the grid already collapses to a single column at),
-   opened by .filters-toggle and closed via the scrim, the X, or Escape. */
-.filters-toggle, .filters-close, .filters-scrim, .filters-apply { display: none; }
-@media (max-width: 1080px) {
-  .filters {
-    position: fixed; inset: 0 0 0 auto; width: min(86vw, 340px); max-width: 340px;
-    height: 100vh; z-index: 130; border-radius: 0; border: 0; margin: 0;
-    box-shadow: var(--sh-lg); overflow-y: auto;
-    transform: translateX(100%); transition: transform .32s cubic-bezier(.22, 1, .36, 1);
-  }
-  .filters.is-open { transform: translateX(0); }
-  .filters-scrim {
-    display: block; position: fixed; inset: 0; background: rgba(45, 45, 45, .42); z-index: 120;
-  }
-  .filters-close {
-    display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
-    background: var(--white); border: 1px solid var(--border); border-radius: var(--r-pill); cursor: pointer;
-  }
-  .filters-toggle {
-    display: inline-flex; align-items: center; gap: 7px; position: relative;
-    background: var(--white); border: 1.5px solid var(--gold); color: var(--gold-deep);
-    font-weight: 600; font-size: .88rem; padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
-  }
-  .filters-toggle__badge {
-    display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
-    padding: 0 4px; border-radius: var(--r-pill); background: var(--gold-grad); color: #fff;
-    font-size: .72rem; font-weight: 700;
-  }
-  .filters-apply { display: block; width: 100%; margin-top: 24px; }
+/* filters drawer chrome: the "Filter" toggle sits in the result bar next to
+   Sort, the scrim dims the page behind the panel, the X closes it, and the
+   sticky "apply" button sits at its foot. Shown at every width now — the
+   panel is off-canvas everywhere, not just on mobile. */
+.filters-scrim {
+  display: block; position: fixed; inset: 0; background: rgba(45, 45, 45, .42); z-index: 120;
 }
+.filters-close {
+  display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r-pill); cursor: pointer;
+}
+.filters-toggle {
+  display: inline-flex; align-items: center; gap: 7px; position: relative;
+  background: var(--white); border: 1.5px solid var(--gold); color: var(--gold-deep);
+  font-weight: 600; font-size: .88rem; padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+}
+.filters-toggle__badge {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px;
+  padding: 0 4px; border-radius: var(--r-pill); background: var(--gold-grad); color: #fff;
+  font-size: .72rem; font-weight: 700;
+}
+.filters-apply { display: block; width: 100%; margin-top: 24px; }
 
 /* search row on listing pages */
 .search-row {
@@ -1359,6 +1360,11 @@ table.tbl tr:last-child td { border-bottom: 0; }
   transition: opacity .22s cubic-bezier(.22, 1, .36, 1), transform .22s cubic-bezier(.22, 1, .36, 1);
 }
 .modal.is-open .modal-box { opacity: 1; transform: translateY(0) scale(1); }
+/* Wider variants for content-heavy forms (admin temple/service editors: map
+   picker, gallery manager, several list editors) — 500px made every field
+   cramped and made the modal itself look broken rather than intentional. */
+.modal-box--lg { width: min(720px, 100%); }
+.modal-box--full { width: min(1180px, calc(100vw - 40px)); max-height: calc(100dvh - 40px); }
 .modal-x {
   position: absolute; top: 14px; right: 14px; z-index: 10;
   background: var(--cream, #fef9ee); border: 1px solid var(--border);
@@ -1458,16 +1464,30 @@ body.modal-open .contact-bar { display: none; }
 /* ------------------------------------------------------------ responsive --- */
 @media (max-width: 1080px) {
   .footer-top { grid-template-columns: 1fr 1fr; }
-  .layout-side, .layout-side--right, .dash,
+  .layout-side--right, .dash,
   .split, .split--narrow, .split--wide { grid-template-columns: 1fr; }
   .inquiry, .dash-nav { position: static; }
   /* profile-id: remove sticky positioning on tablet/mobile */
   .profile-id { position: relative; top: auto; }
   .profile-hero { grid-template-columns: 1fr; }
   .g-4 { grid-template-columns: repeat(2, 1fr); }
+  /* Pandit directory: desktop AND tablet stay 4-up (not the shared .g-4
+     2-up tablet collapse above) — only the mobile grid-2up-mobile rule
+     (≤620px) drops it down from here. Compound selector so it beats the
+     shared rule regardless of source order, same technique as
+     .svc-related-grid.g-4 / .hp-whatis-grid.g-4 elsewhere in this file. */
+  .pandit-results-grid.g-4 { grid-template-columns: repeat(4, 1fr); gap: 18px; }
   /* Avatar sizes scale down slightly on tablet */
   .avatar-ring--lg { width: 190px; height: 190px; }
   .avatar-wrap { margin: -65px auto 16px; }
+}
+
+/* Desktop-only (>1080px): the filters panel is now an off-canvas drawer
+   (see .filters above), not a persistent sidebar column, so the results
+   grid gets the full shell width and runs 5-up instead of 4-up. 18px gap
+   (was the .grid default of 26px) matches the tablet gap above. */
+@media (min-width: 1081px) {
+  .pandit-results-grid.g-4 { grid-template-columns: repeat(5, 1fr); gap: 18px; }
 }
 
 /* Found while auditing pandit-card responsiveness (Phase 3.3): the desktop

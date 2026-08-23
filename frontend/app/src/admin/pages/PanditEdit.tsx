@@ -19,6 +19,9 @@ interface FullPandit {
   current_tier: string;
   is_featured: boolean;
   is_available: boolean;
+  is_paused: boolean;
+  paused_reason: string | null;
+  paused_at: string | null;
   avg_rating: string;
   review_count: number;
   name: string;
@@ -172,6 +175,29 @@ export default function PanditEdit() {
     setPandit(fresh);
   }
 
+  /**
+   * Pause hides this profile from EVERY public surface (search, temple/
+   * service pages, profile page itself) and the lead-distribution engine —
+   * India and international both — immediately, independent of subscription
+   * state. See migration 32. A reason is required when pausing so there's
+   * always a record of why; auto-pause on plan expiry sets
+   * paused_reason='subscription_expired' the same way.
+   */
+  async function togglePause() {
+    if (!pandit) return;
+    let reason: string | undefined;
+    if (pandit.is_paused) {
+      if (!confirm("Unpause this pandit? Their profile becomes publicly visible again immediately.")) return;
+    } else {
+      const input = window.prompt("Reason for pausing — this profile will be hidden everywhere (India + international) until unpaused:");
+      if (!input || !input.trim()) return;
+      reason = input.trim();
+    }
+    await adminApi.post(`/pandits/${pandit.slug}/pause`, { paused: !pandit.is_paused, reason });
+    const fresh = await adminApi.get<FullPandit>(`/pandits/${pandit.slug}`);
+    setPandit(fresh);
+  }
+
   if (error && !pandit) return <div className="admin-login__error">{error}</div>;
   if (!pandit) return <p className="muted">Loading…</p>;
 
@@ -195,8 +221,19 @@ export default function PanditEdit() {
           <button className={`btn btn-sm ${pandit.is_featured ? "btn-gold" : "btn-outline"}`} onClick={toggleFeatured}>
             <Icon name="sparkles" size={14} /> {pandit.is_featured ? "Unfeature" : "Feature"}
           </button>
+          <button className={`btn btn-sm ${pandit.is_paused ? "btn-gold" : "btn-outline"}`} onClick={togglePause}>
+            <Icon name={pandit.is_paused ? "play" : "pause"} size={14} /> {pandit.is_paused ? "Unpause" : "Pause"}
+          </button>
         </div>
       </div>
+
+      {pandit.is_paused && (
+        <div className="admin-login__error" style={{ marginBottom: 18 }}>
+          <strong>This profile is paused</strong> — hidden from every public surface and the lead-distribution
+          engine, India and international both.
+          {pandit.paused_reason && <> Reason: <em>{pandit.paused_reason}</em>.</>}
+        </div>
+      )}
 
       {error && <div className="admin-login__error" style={{ marginBottom: 18 }}>{error}</div>}
       {notice && <div className="admin-login__setup" style={{ marginBottom: 18 }}>{notice}</div>}
@@ -316,6 +353,39 @@ export default function PanditEdit() {
             {["free", "silver", "gold", "diamond"].map((t) => (
               <button key={t} className={`btn btn-sm ${pandit.current_tier === t ? "btn-gold" : "btn-outline"}`} onClick={() => setTier(t)} style={{ textTransform: "capitalize" }}>{t}</button>
             ))}
+          </div>
+        </div>
+
+        <div className="admin-panel">
+          <div className="admin-panel__head"><h2>Visibility</h2></div>
+          <div className="admin-panel__body">
+            <p className="muted" style={{ fontSize: ".85rem", marginTop: 0 }}>
+              A paused profile is hidden from search, temple/service pages and the profile page itself —
+              India and international both — and is skipped entirely by the lead-distribution engine.
+              This happens automatically when a paid plan expires with no renewal, or manually here.
+            </p>
+            <div className="row" style={{ gap: 10, alignItems: "center" }}>
+              <span className={`admin-pill ${pandit.is_paused ? "admin-pill--red" : "admin-pill--green"}`}>
+                {pandit.is_paused ? "Paused" : "Visible"}
+              </span>
+              <button className={`btn btn-sm ${pandit.is_paused ? "btn-gold" : "btn-outline"}`} onClick={togglePause}>
+                <Icon name={pandit.is_paused ? "play" : "pause"} size={14} /> {pandit.is_paused ? "Unpause" : "Pause"}
+              </button>
+            </div>
+            {pandit.is_paused && (
+              <div className="admin-detail-grid" style={{ marginTop: 14 }}>
+                <div>
+                  <span className="admin-detail-item__label">Reason</span>
+                  <span className="admin-detail-item__value">{pandit.paused_reason || "—"}</span>
+                </div>
+                <div>
+                  <span className="admin-detail-item__label">Paused At</span>
+                  <span className="admin-detail-item__value">
+                    {pandit.paused_at ? new Date(pandit.paused_at).toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" }) : "—"}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

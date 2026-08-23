@@ -3,6 +3,15 @@ async function getAll(q) {
   return rows;
 }
 
+/** Read a single setting outside the admin request path — e.g. the
+ *  checkout/invoice flow needs billing_tax, and that isn't an admin
+ *  request. No RLS on platform_settings, so the plain pool connection is
+ *  fine here (unlike pandits/payment_transactions). */
+async function getByKey(q, key) {
+  const { rows } = await q('SELECT value FROM platform_settings WHERE key = $1', [key]);
+  return rows[0] ? rows[0].value : null;
+}
+
 async function upsert(q, key, value, description, updatedBy) {
   const { rows } = await q(
     `INSERT INTO platform_settings (key, value, description, updated_by, updated_at)
@@ -15,4 +24,4 @@ async function upsert(q, key, value, description, updatedBy) {
   return rows[0];
 }
 
-module.exports = { getAll, upsert };
+module.exports = { getAll, upsert, getByKey };

@@ -293,7 +293,8 @@ export default function AdminTemples() {
         )}
       </div>
 
-      <Modal open={editing !== null} onClose={() => setEditing(null)}>
+      <Modal open={editing !== null} onClose={() => setEditing(null)} size="full">
+        <div style={{ padding: 24 }}>
         <h3 style={{ fontSize: "1.3rem" }}>{editing === "new" ? "Add a temple" : `Edit ${(editing as TempleFull)?.name || ""}`}</h3>
         <form onSubmit={onSave} style={{ marginTop: 16 }}>
           <div className="admin-form-grid">
@@ -450,9 +451,11 @@ export default function AdminTemples() {
             />
           </div>
         )}
+        </div>
       </Modal>
 
       <Modal open={mappingFor !== null} onClose={() => setMappingFor(null)}>
+        <div style={{ padding: 24 }}>
         <h3 style={{ fontSize: "1.3rem" }}>Map a pandit to {mappingFor?.name}</h3>
         <p className="muted" style={{ marginTop: 6 }}>Enter the pandit's slug (visible on their admin edit page URL, or the public profile URL).</p>
         <form onSubmit={onMapPandit} style={{ marginTop: 16 }}>
@@ -467,6 +470,7 @@ export default function AdminTemples() {
           </div>
           <button className="btn btn-gold btn-block" type="submit" style={{ marginTop: 18 }}>Map pandit</button>
         </form>
+        </div>
       </Modal>
     </>
   );

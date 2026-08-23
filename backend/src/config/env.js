@@ -17,6 +17,13 @@ module.exports = {
   sessionTtlHours: parseInt(process.env.SESSION_TTL_HOURS, 10) || 168,
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
+  // Razorpay issues this SEPARATELY from the API key secret, on the
+  // Dashboard's Webhooks screen, when you register the webhook URL — it is
+  // not the same value as RAZORPAY_KEY_SECRET. Falls back to the key secret
+  // only so a dev environment that hasn't configured a webhook yet doesn't
+  // need a second placeholder to get past the "gateway not configured" 501;
+  // a real deployment should set this to the actual webhook secret.
+  razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET || '',
   // Absolute origin used to build <loc> URLs in the sitemap (see
   // routes/sitemap.routes.js) — mirrors frontend/app/src/lib/siteConfig.ts's
   // same fallback, so both halves of the app agree on the canonical domain

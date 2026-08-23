@@ -16,7 +16,8 @@ async function list(q, { search, verificationStatus, tier, isFeatured, city, min
   params.push(perPage, (page - 1) * perPage);
   const { rows } = await q(
     `SELECT p.id, p.slug, u.full_name AS name, u.city, u.state, p.verification_status, p.current_tier,
-            p.avg_rating, p.review_count, p.is_featured, p.is_available, p.rank_score, p.created_at
+            p.avg_rating, p.review_count, p.is_featured, p.is_available, p.rank_score, p.created_at,
+            p.is_paused, p.paused_reason, p.paused_at
      FROM pandits p JOIN users u ON u.id = p.user_id
      ${whereSql} ORDER BY p.created_at DESC LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params,
@@ -74,6 +75,32 @@ async function toggleFeatured(q, id, featured, featuredUntil) {
 async function setTier(q, id, tier, expiresAt) {
   const { rowCount } = await q('UPDATE pandits SET current_tier = $2, subscription_expires_at = $3 WHERE id = $1', [id, tier, expiresAt || null]);
   if (rowCount > 0) await q('UPDATE pandits SET rank_score = calculate_pandit_rank(id) WHERE id = $1', [id]);
+  return rowCount > 0;
+}
+
+/**
+ * Manual admin pause/unpause — hides (or restores) a profile from every
+ * public surface and the lead-distribution engine, independent of
+ * subscription state. Runs under the admin-context `req.db` (adminHandler
+ * already wraps every admin route in withUserContext(adminId, ...)), which
+ * satisfies pandits_update_admin the same way setTier() above already does
+ * — no SECURITY DEFINER function needed here, unlike the SYSTEM-context
+ * writes (webhook, expiry cron) in migration 32, which have no admin
+ * identity at all and genuinely cannot pass RLS any other way.
+ *
+ * A manual pause's reason is preserved until another manual admin action or
+ * a fresh plan activation (activate_pandit_subscription) clears it — an
+ * admin pausing someone for cause should never have that silently undone.
+ */
+async function setPaused(q, id, paused, reason) {
+  const { rowCount } = await q(
+    `UPDATE pandits
+        SET is_paused = $2,
+            paused_reason = CASE WHEN $2 THEN $3 ELSE NULL END,
+            paused_at = CASE WHEN $2 THEN NOW() ELSE NULL END
+      WHERE id = $1`,
+    [id, paused, reason || null],
+  );
   return rowCount > 0;
 }
 
@@ -324,6 +351,7 @@ async function getFullById(q, id) {
             p.specializations, p.whatsapp_number, p.public_phone, p.public_email,
             p.vedic_education, p.gotra, p.tradition, p.responds_within,
             p.verification_status, p.current_tier, p.is_featured, p.is_available, p.avg_rating, p.review_count,
+            p.is_paused, p.paused_reason, p.paused_at,
             u.id AS user_id, u.full_name AS name, u.email, u.phone, u.city, u.state
      FROM pandits p JOIN users u ON u.id = p.user_id WHERE p.id = $1`,
     [id],
@@ -560,6 +588,6 @@ async function setDateOfBirth(q, panditId, dateOfBirth) {
 
 module.exports = {
   createFull, resetPassword, setDateOfBirth,
-  list, verificationQueue, findIdBySlug, setVerification, toggleFeatured, setTier, analytics, notifyUser,
+  list, verificationQueue, findIdBySlug, setVerification, toggleFeatured, setTier, setPaused, analytics, notifyUser,
   getFullById, update, syncServices, syncTemples,
 };

@@ -2,9 +2,11 @@ const social = require('../repositories/social.repository');
 const dashboard = require('../repositories/dashboard.repository');
 const authRepo = require('../repositories/auth.repository');
 const qualifiedLeads = require('../repositories/qualifiedLeads.repository');
+const payments = require('../repositories/payments.repository');
 const { withUserContext } = require('../config/db');
 const { readPaging, paginationEnvelope } = require('../utils/paginate');
 const { QUALIFIED_LEAD_DEDUP_HOURS, LEAD_REPORTING_TIMEZONE } = require('../config/leads');
+const { countryFromPhone } = require('../services/distribution/market');
 
 const listSavedPandits = async (req, res) => res.json(await social.savedPandits(req.user.id));
 const listSavedTemples = async (req, res) => res.json(await social.savedTemples(req.user.id));
@@ -88,7 +90,7 @@ async function panditDashboard(req, res) {
     const legacy = await dashboard.forPandit(req.user.id, q);
     const counts = await qualifiedLeads.countsForPandit(pandit.id, q);
     const analytics = await qualifiedLeads.analyticsForPandit(pandit.id, q);
-    const subscription = await dashboard.subscriptionForPandit(pandit.id, q);
+    const subscription = await dashboard.subscriptionForPandit(pandit.id, pandit.current_tier, q);
     const recentLeads = await qualifiedLeads.recentForPandit(pandit.id, 5, q);
 
     return {
@@ -97,6 +99,9 @@ async function panditDashboard(req, res) {
         profileSlug: pandit.slug,
         verificationStatus: pandit.verification_status,
         isAvailable: pandit.is_available,
+        isPaused: pandit.is_paused,
+        pausedReason: pandit.paused_reason,
+        pausedAt: pandit.paused_at,
       },
       plan: {
         tier: pandit.current_tier,
@@ -104,7 +109,7 @@ async function panditDashboard(req, res) {
         status: subscription?.is_active ? 'active' : (pandit.current_tier === 'free' ? 'free' : 'inactive'),
         billingCycle: subscription?.billing_cycle || null,
         startedAt: subscription?.starts_at || null,
-        expiresAt: subscription?.expires_at || pandit.subscription_expires_at || null,
+        expiresAt: pandit.subscription_expires_at || null,
         autoRenew: subscription?.auto_renew ?? null,
       },
       qualifiedLeads: {
@@ -135,7 +140,7 @@ async function panditDashboard(req, res) {
 }
 
 const LEAD_STATUSES = ['new', 'viewed', 'contacted', 'completed', 'not_reachable'];
-const LEAD_PERIODS = ['today', '7d', '30d', 'all'];
+const LEAD_PERIODS = ['today', '7d', '30d', '90d', 'all'];
 const LEAD_METHODS = { call: 'phone_call', phone_call: 'phone_call', whatsapp: 'whatsapp' };
 
 /**
@@ -255,8 +260,130 @@ async function updateOwnPanditProfile(req, res) {
   res.json(updated);
 }
 
+const { COUNTRY_NAMES } = require('../config/countryNames');
+
+/**
+ * GET /api/me/leads/trend?days=7|30|90 — daily leads + views for a chart.
+ * Same ownership pattern as listLeads: panditId is always resolved from the
+ * session, never accepted from the client.
+ */
+async function leadsTrend(req, res) {
+  const days = Number(req.query.days) || 30;
+  if (!qualifiedLeads.TREND_DAYS_ALLOWED.includes(days)) {
+    return res.status(400).json({ error: `days must be one of: ${qualifiedLeads.TREND_DAYS_ALLOWED.join(', ')}` });
+  }
+
+  const points = await withUserContext(req.user.id, async (q) => {
+    const pandit = await dashboard.panditForUser(req.user.id, q);
+    if (!pandit) return null;
+    return qualifiedLeads.trendForPandit(pandit.id, days, q);
+  });
+
+  if (points === null) return res.status(404).json({ error: 'No pandit profile for this account' });
+  res.json({ days, points });
+}
+
+/**
+ * GET /api/me/leads/geo?period=today|7d|30d|all — where qualified leads are
+ * coming from. Country is derived from the devotee's verified phone (the
+ * same evidence record_qualified_lead() required to create the lead in the
+ * first place); city/state is whatever the devotee put in their own profile.
+ *
+ * Deliberately NOT available for profile views — a view is anonymous by
+ * design (see panditDashboard above) and stays that way here too.
+ */
+async function leadsGeo(req, res) {
+  const period = req.query.period;
+  if (period && !LEAD_PERIODS.includes(period)) {
+    return res.status(400).json({ error: `period must be one of: ${LEAD_PERIODS.join(', ')}` });
+  }
+
+  const rows = await withUserContext(req.user.id, async (q) => {
+    const pandit = await dashboard.panditForUser(req.user.id, q);
+    if (!pandit) return null;
+    return qualifiedLeads.geoForPandit(pandit.id, period === 'all' ? undefined : period, q);
+  });
+
+  if (rows === null) return res.status(404).json({ error: 'No pandit profile for this account' });
+
+  const countryCounts = new Map();
+  const cityCounts = new Map();
+  let unresolved = 0;
+
+  for (const row of rows) {
+    const code = countryFromPhone(row.phone);
+    if (code) countryCounts.set(code, (countryCounts.get(code) || 0) + 1);
+    else unresolved += 1;
+
+    const city = (row.city || '').trim();
+    if (city) {
+      const key = `${city}|${row.state || ''}`;
+      const entry = cityCounts.get(key) || { city, state: row.state || null, count: 0 };
+      entry.count += 1;
+      cityCounts.set(key, entry);
+    }
+  }
+
+  const countries = [...countryCounts.entries()]
+    .map(([code, count]) => ({ code, name: COUNTRY_NAMES[code] || code, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const cities = [...cityCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+
+  res.json({ total: rows.length, unresolved, countries, cities });
+}
+
+/**
+ * GET /api/me/analytics/detail?period=today|7d|30d|90d|all — row-level
+ * qualified-lead facts for the Analytics page's "Lead Explorer": pick any
+ * field for X, any measure for Y, and re-aggregate client-side, the way a
+ * PowerBI visual lets you swap fields. Same ownership pattern as every other
+ * /me/* route (panditId resolved from session) and the same country-from-
+ * phone derivation leadsGeo already does — the phone number itself never
+ * reaches the client, only the country it resolves to.
+ */
+async function analyticsDetail(req, res) {
+  const period = req.query.period;
+  if (period && !LEAD_PERIODS.includes(period)) {
+    return res.status(400).json({ error: `period must be one of: ${LEAD_PERIODS.join(', ')}` });
+  }
+
+  const rows = await withUserContext(req.user.id, async (q) => {
+    const pandit = await dashboard.panditForUser(req.user.id, q);
+    if (!pandit) return null;
+    return qualifiedLeads.detailForPandit(pandit.id, period === 'all' ? undefined : period, q);
+  });
+
+  if (rows === null) return res.status(404).json({ error: 'No pandit profile for this account' });
+  res.json({ rows: rows.map(qualifiedLeads.mapDetailRow) });
+}
+
+/**
+ * GET /api/me/payments — the pandit's own billing/payment history.
+ *
+ * Same ownership pattern as listLeads/leadsTrend/leadsGeo: the pandit id is
+ * always resolved from the session, never accepted from the client, and the
+ * repository query additionally scopes by pandit_id itself (belt-and-braces
+ * alongside RLS).
+ */
+async function listMyPayments(req, res) {
+  const paging = readPaging(req.query, 20, 100);
+
+  const result = await withUserContext(req.user.id, async (q) => {
+    const pandit = await dashboard.panditForUser(req.user.id, q);
+    if (!pandit) return null;
+    return payments.listPaymentsForPandit(pandit.id, { page: paging.page, limit: paging.perPage }, q);
+  });
+
+  if (!result) return res.status(404).json({ error: 'No pandit profile for this account' });
+  res.json(paginationEnvelope(result.data, paging, result.total));
+}
+
 module.exports = {
   listSavedPandits, listSavedTemples, addSavedPandit, removeSavedPandit, addSavedTemple, removeSavedTemple,
   listNotifications, readNotification, inbox, updateInquiry, panditDashboard, exportData, deleteAccount,
   listLeads, updateLeadStatus, getOwnPanditProfile, updateOwnPanditProfile,
+  leadsTrend, leadsGeo, analyticsDetail, listMyPayments,
 };

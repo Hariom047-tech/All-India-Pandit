@@ -2,6 +2,8 @@ const repo = require('../../repositories/admin/subscriptions.repository');
 const pandits = require('../../repositories/admin/pandits.repository');
 const { readPaging, paginationEnvelope } = require('../../utils/paginate');
 const { logAdminAction } = require('../../utils/adminLog');
+const razorpay = require('../../services/billing/razorpayClient');
+const reconciliationRepo = require('../../repositories/admin/billingReconciliation.repository');
 
 const listPlans = async (req, res) => res.json(await repo.listPlans(req.db));
 
@@ -69,15 +71,84 @@ async function getPayment(req, res) {
   res.json(payment);
 }
 
+/**
+ * Issues a REAL Razorpay refund (super_admin only — see the route) when a
+ * gateway account is configured and the payment has a real
+ * gateway_payment_id; otherwise falls back to the DB-only status flip this
+ * always did, so test/dev environments without Razorpay keys keep working.
+ * Never marks refunded in the database before the gateway call itself
+ * succeeds — an admin must never believe money moved when it didn't.
+ */
 async function refund(req, res) {
   const { amount, reason } = req.body || {};
-  if (!amount) return res.status(400).json({ error: 'amount is required' });
-  const payment = await repo.refund(req.db, req.params.id, amount, reason);
+  if (!amount || Number(amount) <= 0) return res.status(400).json({ error: 'amount must be a positive number' });
+
+  const existing = await repo.getPayment(req.db, req.params.id);
+  if (!existing || existing.status !== 'completed') {
+    return res.status(404).json({ error: 'Payment not found or not refundable (must be completed)' });
+  }
+  if (Number(amount) > Number(existing.amount) - Number(existing.refund_amount || 0)) {
+    return res.status(400).json({ error: 'Refund amount exceeds what remains refundable on this payment' });
+  }
+
+  let gatewayRefundId = null;
+  if (razorpay.isConfigured() && existing.gateway_payment_id) {
+    try {
+      const rzRefund = await razorpay.refundPayment(existing.gateway_payment_id, {
+        amountPaise: Math.round(Number(amount) * 100),
+        notes: reason ? { reason } : undefined,
+      });
+      gatewayRefundId = rzRefund.id;
+    } catch (err) {
+      return res.status(502).json({ error: `Razorpay refund failed — no changes made: ${err.message}` });
+    }
+  }
+
+  const payment = await repo.refund(req.db, req.params.id, amount, reason, gatewayRefundId);
   if (!payment) return res.status(404).json({ error: 'Payment not found or not refundable (must be completed)' });
-  await logAdminAction({ adminUserId: req.adminUser.id, action: 'PAYMENT_REFUNDED', targetType: 'payment_transaction', targetId: req.params.id, details: { amount, reason }, ip: req.ip });
+  await logAdminAction({
+    adminUserId: req.adminUser.id, action: 'PAYMENT_REFUNDED', targetType: 'payment_transaction',
+    targetId: req.params.id, details: { amount, reason, gatewayRefundId, viaGateway: Boolean(gatewayRefundId) }, ip: req.ip,
+  });
   res.json(payment);
 }
 
 const revenueOverview = async (req, res) => res.json(await repo.revenueOverview(req.db));
 
-module.exports = { listPlans, createPlan, updatePlan, listSubscriptions, grant, listPayments, getPayment, refund, revenueOverview };
+/** Read-only — flags mismatches for a human to review, never auto-repairs
+ *  anything. See billingReconciliation.repository.js for what each section means. */
+const reconciliation = async (req, res) => res.json(await reconciliationRepo.report(req.db));
+
+const RENEWAL_STATUSES = ['renewed', 'one_time_active', 'churned'];
+
+/**
+ * Renewal/retention report — "did this pandit come back and buy again"
+ * (same tier or a different one both count) vs "bought once and never
+ * returned". See subscriptions.repository.js's renewals() doc comment.
+ *
+ * Deliberately NOT run through paginationEnvelope — that wraps the list as
+ * { data, meta }, and adminApi.ts's client auto-flattens ANY { data, meta }
+ * shaped response into { data, ...meta }, which would silently drop
+ * `summary` (a sibling of data/meta, not inside either). Flat top-level
+ * fields here instead.
+ */
+async function renewalReport(req, res) {
+  const paging = readPaging(req.query, 25, 100);
+  const { status } = req.query;
+  if (status && !RENEWAL_STATUSES.includes(status)) {
+    return res.status(400).json({ error: `status must be one of: ${RENEWAL_STATUSES.join(', ')}` });
+  }
+  const [summary, { data, total }] = await Promise.all([
+    repo.renewalSummary(req.db),
+    repo.renewals(req.db, { status, page: paging.page, perPage: paging.perPage }),
+  ]);
+  res.json({
+    summary, data, total,
+    page: paging.page, perPage: paging.perPage, totalPages: Math.max(1, Math.ceil(total / paging.perPage)),
+  });
+}
+
+module.exports = {
+  listPlans, createPlan, updatePlan, listSubscriptions, grant, listPayments, getPayment, refund,
+  revenueOverview, reconciliation, renewalReport,
+};

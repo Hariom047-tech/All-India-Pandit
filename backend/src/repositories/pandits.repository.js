@@ -38,7 +38,7 @@ const BASE_SELECT = `
 /** Filterable, sortable, paginated pandit list. Every filter is optional and
  *  additive (AND'ed together); city/service/lang accept one or many values. */
 async function list({ q, city, service, lang, minExp, minRating, verified, sort, page, perPage, market }) {
-  const where = ['u.status = \'active\'', 'p.deleted_at IS NULL', 'u.deleted_at IS NULL'];
+  const where = ['u.status = \'active\'', 'p.deleted_at IS NULL', 'u.deleted_at IS NULL', 'p.is_paused = FALSE'];
   const params = [];
 
   if (q) {
@@ -102,7 +102,7 @@ async function hydrate(pandits) {
 }
 
 async function getBySlug(slug) {
-  const { rows } = await query(`${BASE_SELECT} WHERE p.slug = $1 AND p.deleted_at IS NULL`, [slug]);
+  const { rows } = await query(`${BASE_SELECT} WHERE p.slug = $1 AND p.deleted_at IS NULL AND p.is_paused = FALSE`, [slug]);
   if (!rows[0]) return null;
   const [hydrated] = await hydrate([rows[0]]);
 
@@ -134,8 +134,11 @@ async function getBySlug(slug) {
   };
 }
 
+/** Gates every public write path (enquiry submission, click/view tracking) the
+ *  same way getBySlug gates reads — a paused pandit is unreachable, not just
+ *  unlisted, so a stale bookmarked link cannot still generate a lead for them. */
 async function findIdBySlug(slug) {
-  const { rows } = await query('SELECT id FROM pandits WHERE slug = $1 AND deleted_at IS NULL', [slug]);
+  const { rows } = await query('SELECT id FROM pandits WHERE slug = $1 AND deleted_at IS NULL AND is_paused = FALSE', [slug]);
   return rows[0]?.id || null;
 }
 
@@ -160,7 +163,7 @@ async function forServiceOnline(serviceSlug, market) {
        AND ps.offers_online = TRUE
        AND p.accepts_online = TRUE
        AND sv.is_online_available = TRUE
-       AND p.deleted_at IS NULL AND u.status = 'active'
+       AND p.deleted_at IS NULL AND u.status = 'active' AND p.is_paused = FALSE
        ${marketCond ? `AND ${marketCond}` : ''}
      ORDER BY p.rank_score DESC, p.avg_rating DESC`,
     params,
@@ -174,7 +177,7 @@ async function forService(serviceSlug, market) {
   const { rows } = await query(
     `${BASE_SELECT} JOIN pandit_services ps ON ps.pandit_id = p.id
      JOIN services sv ON sv.id = ps.service_id
-     WHERE sv.slug = $1 AND ps.is_active = TRUE
+     WHERE sv.slug = $1 AND ps.is_active = TRUE AND p.is_paused = FALSE
        ${marketCond ? `AND ${marketCond}` : ''}
      ORDER BY p.avg_rating DESC`,
     params,
@@ -187,7 +190,7 @@ async function forTemple(templeId, market) {
   const marketCond = marketCondition(params, market);
   const { rows } = await query(
     `${BASE_SELECT} JOIN pandit_temples pt ON pt.pandit_id = p.id
-     WHERE pt.temple_id = $1 AND pt.is_active = TRUE
+     WHERE pt.temple_id = $1 AND pt.is_active = TRUE AND p.is_paused = FALSE
        ${marketCond ? `AND ${marketCond}` : ''}
      ORDER BY p.avg_rating DESC`,
     params,
@@ -210,7 +213,7 @@ async function pickForTemple(templeId, serviceSlug, market) {
        JOIN pandit_temples pt ON pt.pandit_id = p.id
        JOIN pandit_services ps ON ps.pandit_id = p.id
        JOIN services sv ON sv.id = ps.service_id
-       WHERE pt.temple_id = $1 AND pt.is_active = TRUE AND sv.slug = $2
+       WHERE pt.temple_id = $1 AND pt.is_active = TRUE AND sv.slug = $2 AND p.is_paused = FALSE
          ${marketCond ? `AND ${marketCond}` : ''}
        ORDER BY p.avg_rating DESC LIMIT 1`,
       params,
@@ -221,7 +224,7 @@ async function pickForTemple(templeId, serviceSlug, market) {
   const marketCond = marketCondition(params, market);
   const { rows } = await query(
     `SELECT p.id FROM pandits p JOIN pandit_temples pt ON pt.pandit_id = p.id
-     WHERE pt.temple_id = $1 AND pt.is_active = TRUE
+     WHERE pt.temple_id = $1 AND pt.is_active = TRUE AND p.is_paused = FALSE
        ${marketCond ? `AND ${marketCond}` : ''}
      ORDER BY p.avg_rating DESC LIMIT 1`,
     params,

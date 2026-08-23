@@ -375,6 +375,15 @@ export function useHomeHero() {
   return useApi<HeroImage[]>("/home-hero", { cacheTtl: 300_000 });
 }
 
+export interface PublicSettings {
+  /** Admin-configurable pandit cards per page on the /pandits directory. */
+  pandits_per_page: number;
+}
+
+export function usePublicSettings() {
+  return useApi<PublicSettings>("/settings", { cacheTtl: 300_000 });
+}
+
 export function useFaqs() {
   return useApi<ApiFaq[]>("/faqs", { cacheTtl: 300_000 });
 }

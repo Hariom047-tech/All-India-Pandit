@@ -22,6 +22,9 @@ import Distribution from "./pages/Distribution";
 import AiKnowledge from "./pages/AiKnowledge";
 import AiAnalytics from "./pages/AiAnalytics";
 import Plans from "./pages/Plans";
+import AdminSubscriptions from "./pages/Subscriptions";
+import AdminPayments from "./pages/Payments";
+import AdminRevenue from "./pages/Revenue";
 import HomeSettings from "./pages/HomeSettings";
 import "./admin.css";
 
@@ -49,6 +52,9 @@ export default function AdminApp() {
           <Route path="ai-knowledge" element={<AiKnowledge />} />
           <Route path="ai-analytics" element={<AiAnalytics />} />
           <Route path="plans" element={<Plans />} />
+          <Route path="subscriptions" element={<AdminSubscriptions />} />
+          <Route path="payments" element={<AdminPayments />} />
+          <Route path="revenue" element={<AdminRevenue />} />
           <Route path="home" element={<HomeSettings />} />
           <Route path="security" element={<AdminSecurity />} />
           <Route path="settings" element={<AdminSettings />} />

@@ -7,7 +7,7 @@ async function list(q, { status, panditSlug, page, perPage }) {
 
   params.push(perPage, (page - 1) * perPage);
   const { rows } = await q(
-    `SELECT i.id, i.full_name, i.phone, i.email, i.status, i.created_at,
+    `SELECT i.id, i.full_name, i.phone, i.email, i.status, i.created_at, i.message,
             p.slug AS pandit_slug, u.full_name AS pandit_name, t.name AS temple, sv.name AS service
      FROM inquiries i
      JOIN pandits p ON p.id = i.pandit_id JOIN users u ON u.id = p.user_id

@@ -30,7 +30,7 @@ SELECT
   p.experience_years, p.completed_ceremonies,
   p.avg_rating, p.review_count,
   p.verification_status, p.video_kyc_completed,
-  p.is_available, p.accepts_online, p.current_tier,
+  p.is_available, p.accepts_online, p.current_tier, p.is_paused,
   p.subscription_expires_at, p.specializations, p.primary_specialization,
   p.whatsapp_number, p.public_phone,
   u.status AS user_status, u.city, u.state, u.created_at AS joined_at,
@@ -117,6 +117,7 @@ async function fetchCandidates({ templeId = null, serviceId = null, market, wind
     isActive: r.user_status === 'active',
     isVerified: r.verification_status === 'verified',
     isAvailable: r.is_available === true,
+    isPaused: r.is_paused === true,
     subscriptionActive: !r.subscription_expires_at
       || new Date(r.subscription_expires_at).getTime() > Date.now(),
 

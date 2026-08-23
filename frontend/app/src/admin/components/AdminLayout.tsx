@@ -36,11 +36,19 @@ const NAV: { group: string; items: { to: string; label: string; icon: string; en
     ],
   },
   {
+    group: "Subscriptions",
+    items: [
+      { to: `${ADMIN_BASE}/plans`, label: "Plans & Pricing", icon: "star" },
+      { to: `${ADMIN_BASE}/subscriptions`, label: "Active Subscriptions", icon: "credit-card" },
+      { to: `${ADMIN_BASE}/payments`, label: "Payments", icon: "credit-card" },
+      { to: `${ADMIN_BASE}/revenue`, label: "Revenue", icon: "trending-up" },
+    ],
+  },
+  {
     group: "Platform",
     items: [
       { to: `${ADMIN_BASE}/analytics`, label: "Analytics", icon: "bar-chart" },
       { to: `${ADMIN_BASE}/distribution`, label: "Distribution Controls", icon: "sliders" },
-      { to: `${ADMIN_BASE}/plans`, label: "Plans & Pricing", icon: "star" },
       { to: `${ADMIN_BASE}/home`, label: "Home Page", icon: "home" },
       { to: `${ADMIN_BASE}/security`, label: "Security", icon: "shield-check" },
       { to: `${ADMIN_BASE}/settings`, label: "Settings", icon: "settings" },

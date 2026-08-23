@@ -15,8 +15,10 @@ router.put('/:id', adminHandler(ctrl.update));
 router.post('/:id/verify', adminHandler(ctrl.verify));
 router.post('/:id/toggle-featured', adminHandler(ctrl.toggleFeatured));
 router.get('/:id/analytics', adminHandler(ctrl.analytics));
+router.get('/:id/analytics/detail', adminHandler(ctrl.analyticsDetail));
 router.get('/:id/leads', adminHandler(ctrl.leads));
 router.post('/:id/subscription', adminHandler(ctrl.setSubscription));
+router.post('/:id/pause', adminHandler(ctrl.setPaused));
 
 // Support path for a locked-out pandit. A reset, never a reveal: the stored
 // value is a bcrypt hash, so the old password cannot be recovered by design.

@@ -46,7 +46,7 @@ async function forPandit(userId, q = query) {
 async function panditForUser(userId, q = query) {
   const { rows } = await q(
     `SELECT p.id, p.slug, p.current_tier, p.verification_status, p.is_available,
-            p.subscription_expires_at, u.full_name
+            p.subscription_expires_at, p.is_paused, p.paused_reason, p.paused_at, u.full_name
        FROM pandits p JOIN users u ON u.id = p.user_id
       WHERE p.user_id = $1 AND p.deleted_at IS NULL`,
     [userId],
@@ -54,12 +54,35 @@ async function panditForUser(userId, q = query) {
   return rows[0] || null;
 }
 
-/** Live plan record for the pandit's dashboard header. */
-async function subscriptionForPandit(panditId, q = query) {
-  const { rows } = await q(
-    `SELECT sp.name, sp.tier, sp.price_monthly, sp.price_quarterly, sp.price_yearly,
-            sp.currency, sp.features, sp.description, sp.tagline,
-            ps.billing_cycle, ps.starts_at, ps.expires_at, ps.is_active, ps.auto_renew
+/**
+ * Live plan record for the pandit's dashboard header.
+ *
+ * `pandits.current_tier` (passed in, already read by panditForUser) is the
+ * single source of truth for WHICH plan a pandit is on — the same field the
+ * distribution engine, search and admin's quick tier-set all read/write.
+ * `pandit_subscriptions` is only ever a purchase-history log, so this always
+ * resolves the display name/price/features from subscription_plans by that
+ * tier, never from a subscription row's own tier.
+ *
+ * Billing metadata (cycle, started, auto-renew) is separately pulled from
+ * the pandit's most recent subscription row, but ONLY trusted when that
+ * row's plan actually matches current_tier — an admin quick-set (which
+ * only touches pandits.current_tier, not this table) would otherwise leave
+ * a stale paid purchase's dates showing under a plan the pandit is no
+ * longer on. Without a match, billing fields come back null and the
+ * dashboard falls back to pandits.subscription_expires_at for the date.
+ */
+async function subscriptionForPandit(panditId, currentTier, q = query) {
+  const { rows: planRows } = await q(
+    `SELECT name, tier, price_monthly, price_quarterly, price_yearly,
+            currency, features, description, tagline
+       FROM subscription_plans WHERE tier = $1`,
+    [currentTier],
+  );
+  const plan = planRows[0] || null;
+
+  const { rows: subRows } = await q(
+    `SELECT sp.tier, ps.billing_cycle, ps.starts_at, ps.expires_at, ps.is_active, ps.auto_renew
        FROM pandit_subscriptions ps
        JOIN subscription_plans sp ON sp.id = ps.plan_id
       WHERE ps.pandit_id = $1
@@ -67,7 +90,24 @@ async function subscriptionForPandit(panditId, q = query) {
       LIMIT 1`,
     [panditId],
   );
-  return rows[0] || null;
+  const sub = subRows[0];
+  const billing = sub && sub.tier === currentTier ? sub : null;
+
+  return {
+    name: plan?.name || null,
+    tier: currentTier,
+    price_monthly: plan?.price_monthly ?? null,
+    price_quarterly: plan?.price_quarterly ?? null,
+    price_yearly: plan?.price_yearly ?? null,
+    currency: plan?.currency ?? 'INR',
+    features: plan?.features ?? [],
+    description: plan?.description ?? null,
+    tagline: plan?.tagline ?? null,
+    billing_cycle: billing?.billing_cycle ?? null,
+    starts_at: billing?.starts_at ?? null,
+    is_active: billing ? billing.is_active : currentTier !== 'free',
+    auto_renew: billing?.auto_renew ?? null,
+  };
 }
 
 /**

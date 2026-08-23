@@ -193,7 +193,8 @@ export default function AdminServices() {
         )}
       </div>
 
-      <Modal open={editing !== null} onClose={() => setEditing(null)}>
+      <Modal open={editing !== null} onClose={() => setEditing(null)} size="full">
+        <div style={{ padding: 24 }}>
         <h3 style={{ fontSize: "1.3rem" }}>{editing === "new" ? "Add a service" : `Edit ${(editing as ServiceRow)?.name || ""}`}</h3>
         <form onSubmit={onSaveService} style={{ marginTop: 16 }}>
           <div className="admin-form-grid">
@@ -278,15 +279,18 @@ export default function AdminServices() {
           </div>
           <button className="btn btn-gold btn-block" type="submit" style={{ marginTop: 18 }}>Save</button>
         </form>
+        </div>
       </Modal>
 
       <Modal open={catModalOpen} onClose={() => setCatModalOpen(false)}>
+        <div style={{ padding: 24 }}>
         <h3 style={{ fontSize: "1.3rem" }}>Add a category</h3>
         <form onSubmit={onSaveCategory} style={{ marginTop: 16 }}>
           <div className="admin-field"><label>Name</label><input className="input" name="name" required /></div>
           <div className="admin-field" style={{ marginTop: 12 }}><label>Slug</label><input className="input" name="slug" required /></div>
           <button className="btn btn-gold btn-block" type="submit" style={{ marginTop: 18 }}>Save</button>
         </form>
+        </div>
       </Modal>
     </>
   );
