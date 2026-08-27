@@ -3,6 +3,48 @@
    Glassmorphism, golden animations, sacred decorations
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ─────────────────────── WHY PANDITSUGGEST (trust section) ─────────────── */
+.hp-trust-top { gap: 40px; }
+/* This source file is a flat JPG with a checkerboard baked into its right
+   edge (not real alpha transparency) — cropped to a circle the same way
+   .sp-hero__img (services-page.css) already crops it. Three layers, not
+   one: the drop-shadow has to sit on a box with no overflow:hidden (it
+   would clip its own shadow otherwise), the circular clip needs its own
+   fixed-size box, and the img inside is scaled up past cover-fit so the
+   checkerboard sliver lands safely outside the circle instead of right at
+   its edge. */
+.hp-trust-art {
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 18px 34px rgba(212, 160, 23, .28));
+}
+.hp-trust-art__frame {
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.hp-trust-art__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.14);
+}
+
+.hp-whatis-card__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+}
+
+@media (max-width: 620px) {
+  .hp-trust-art { order: -1; }
+  .hp-trust-art__frame { max-width: 220px; }
+}
+
 /* ─────────────────────── SACRED SECTION BACKGROUND ─────────────────────── */
 .hp-sacred-section {
   background: linear-gradient(180deg, #faf7f0 0%, #fff9ed 40%, #fdf8f0 100%);
@@ -39,7 +81,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--gold-bright, #f0c246);
+  background: var(--gold-bright);
   opacity: 0;
   animation: hp-particle-float 14s ease-in-out infinite;
   box-shadow: 0 0 8px rgba(240, 194, 70, 0.4);
@@ -125,7 +167,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold-deep, #b8860b);
+  color: var(--gold-deep);
   margin-bottom: 20px;
 }
 .hp-feature-card__icon-wrap--alt {
@@ -136,8 +178,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 600;
-  color: var(--gold-deep, #b8860b);
+  font-weight: var(--fw-semibold);
+  color: var(--gold-deep);
   transition: opacity 0.2s, transform 0.2s;
   align-self: flex-start;
 }
@@ -211,25 +253,25 @@
 }
 
 .hp-service-tile__title {
-  color: #ffffff;
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.8rem;
-  font-weight: 700;
+  color: var(--text-inverse);
+  font-family: var(--font-display);
+  font-size: var(--fs-1000);
+  font-weight: var(--fw-bold);
   margin-bottom: 8px;
 }
 
 .hp-service-tile__desc {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 1rem;
+  font-size: var(--fs-body);
   margin-bottom: 16px;
   max-width: 90%;
-  line-height: 1.4;
+  line-height: var(--lh-normal);
 }
 
 .hp-service-tile__link {
-  color: var(--gold-bright, #f0c246);
-  font-weight: 600;
-  font-size: 0.95rem;
+  color: var(--gold-bright);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-400);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -242,17 +284,17 @@
 
 /* Dark theme section override */
 .hp-dark-section {
-  background: var(--text, #1a1714);
-  color: #fff;
+  background: var(--text);
+  color: var(--text-inverse);
 }
 .hp-dark-section .section-title {
-  color: #fff;
+  color: var(--text-inverse);
 }
 .hp-dark-section .section-sub {
   color: rgba(255, 255, 255, 0.7);
 }
 .hp-dark-section .ornament path {
-  stroke: var(--gold-bright, #f0c246);
+  stroke: var(--gold-bright);
 }
 
 @media (max-width: 992px) {
@@ -281,35 +323,35 @@
     border-radius: 14px;
   }
   .hp-service-tile__title {
-    font-size: 1.02rem;
+    font-size: var(--fs-500);
     margin-bottom: 2px;
   }
   .hp-service-tile__desc {
     display: none;
   }
   .hp-service-tile__link {
-    font-size: .78rem;
+    font-size: var(--fs-200);
   }
 }
 
 /* text */
 .hp-feature-card__title {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: var(--text, #1a1714);
+  font-family: var(--font-display);
+  font-size: var(--fs-800);
+  font-weight: var(--fw-bold);
+  color: var(--text);
   margin-bottom: 12px;
-  line-height: 1.3;
+  line-height: var(--lh-snug);
 }
 .hp-feature-card__text {
-  color: #5a5650;
-  font-size: 0.95rem;
-  line-height: 1.7;
+  color: var(--text-2);
+  font-size: var(--fs-400);
+  line-height: var(--lh-relaxed);
   margin-bottom: 24px;
   flex: 1;
 }
 .hp-feature-card__text em {
-  color: var(--gold-deep, #b8860b);
+  color: var(--gold-deep);
   font-style: italic;
 }
 
@@ -388,14 +430,14 @@
 .ohp-hero .eyebrow { margin-bottom: 16px; }
 .ohp-hero-title {
   font-family: var(--font-head); font-size: clamp(1.6rem, 3.5vw, 2.6rem);
-  font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 14px;
+  font-weight: var(--fw-bold); color: var(--text); line-height: var(--lh-snug); margin-bottom: 14px;
 }
-.ohp-hero-sub { font-size: 1.1rem; color: var(--text-2); max-width: 560px; margin: 0 auto; }
+.ohp-hero-sub { font-size: var(--fs-600); color: var(--text-2); max-width: 560px; margin: 0 auto; }
 
 /* ——— SHARED HEADING ——— */
 .ohp-heading {
   font-family: var(--font-head); font-size: clamp(1.3rem, 2.4vw, 1.8rem);
-  font-weight: 700; color: var(--text); margin-bottom: 4px;
+  font-weight: var(--fw-bold); color: var(--text); margin-bottom: 4px;
 }
 
 /* ═══════ HOW IT WORKS — white ═══════ */
@@ -422,7 +464,7 @@
   background: linear-gradient(145deg, #fffcf5, #f4e3bd);
   border: 2.5px solid var(--gold);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.7rem; color: var(--gold-deep); margin-bottom: 16px;
+  font-size: var(--fs-900); color: var(--gold-deep); margin-bottom: 16px;
   box-shadow: 0 6px 20px rgba(212, 160, 23, 0.15);
   transition: transform 0.25s, box-shadow 0.25s;
 }
@@ -430,10 +472,10 @@
   transform: scale(1.08); box-shadow: 0 8px 28px rgba(212, 160, 23, 0.25);
 }
 .ohp-step h4 {
-  font-family: var(--font-head); font-size: 0.95rem; font-weight: 700;
+  font-family: var(--font-head); font-size: var(--fs-400); font-weight: var(--fw-bold);
   color: var(--text); margin-bottom: 6px;
 }
-.ohp-step p { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; max-width: 190px; }
+.ohp-step p { font-size: var(--fs-300); color: var(--text-2); line-height: var(--lh-normal); max-width: 190px; }
 
 /* ═══════ POPULAR PUJAS — cream ═══════ */
 .ohp-pujas-wrap {
@@ -484,7 +526,7 @@
 
 /* Emoji / image container */
 .ohp-puja-emoji {
-  font-size: 2.2rem;
+  font-size: var(--fs-1100);
   margin-bottom: 4px;
   display: block;
   line-height: 1;
@@ -499,17 +541,17 @@
 
 .ohp-puja-name {
   font-family: var(--font-head);
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: var(--fs-400);
+  font-weight: var(--fw-bold);
   color: var(--text);
   margin: 0;
-  line-height: 1.3;
+  line-height: var(--lh-snug);
 }
 
 .ohp-puja-desc {
-  font-size: 0.78rem;
+  font-size: var(--fs-200);
   color: var(--text-2);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   margin: 0;
   flex: 1;
   display: -webkit-box;
@@ -523,7 +565,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 0.74rem;
+  font-size: var(--fs-100);
   margin: 0;
 }
 .ohp-puja-dur {
@@ -531,7 +573,7 @@
   color: var(--text-2);
 }
 .ohp-puja-live {
-  color: #16a34a; font-weight: 700; font-size: 0.72rem;
+  color: #16a34a; font-weight: var(--fw-bold); font-size: var(--fs-100);
   animation: ohp-pulse 2s infinite;
 }
 @keyframes ohp-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -542,8 +584,8 @@
   align-items: center;
   justify-content: center;
   padding: 6px 16px;
-  font-size: 0.76rem;
-  font-weight: 600;
+  font-size: var(--fs-200);
+  font-weight: var(--fw-semibold);
   border-radius: 50px;
   width: auto !important;
   min-width: 0;
@@ -568,7 +610,7 @@
   box-shadow: 0 4px 24px rgba(212, 160, 23, 0.08);
 }
 .ohp-sankalp-subtitle {
-  font-family: var(--font-head); font-size: 1.08rem; font-weight: 600;
+  font-family: var(--font-head); font-size: var(--fs-600); font-weight: var(--fw-semibold);
   color: var(--gold-deep); margin-bottom: 26px;
 }
 .ohp-sankalp-grid {
@@ -578,13 +620,13 @@
 .ohp-sankalp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 .ohp-sankalp-list li {
   display: flex; align-items: center; gap: 10px;
-  font-size: 0.93rem; color: var(--text); font-weight: 500;
+  font-size: var(--fs-400); color: var(--text); font-weight: var(--fw-medium);
 }
 .ohp-sankalp-list li svg { color: var(--gold); flex-shrink: 0; }
 .ohp-sankalp-help {
   background: linear-gradient(90deg, rgba(212, 160, 23, 0.08), rgba(212, 160, 23, 0.15), rgba(212, 160, 23, 0.08));
   border-radius: 30px; padding: 12px 24px;
-  font-size: 0.86rem; color: var(--gold-deep); font-weight: 600;
+  font-size: var(--fs-300); color: var(--gold-deep); font-weight: var(--fw-semibold);
   display: inline-block; border: 1px solid rgba(212, 160, 23, 0.2);
 }
 
@@ -610,7 +652,7 @@
   transform: scale(1.12) translateY(-3px);
   box-shadow: 0 8px 24px rgba(212, 160, 23, 0.2); border-color: var(--gold);
 }
-.ohp-receive-item span { font-size: 0.84rem; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
+.ohp-receive-item span { font-size: var(--fs-300); font-weight: var(--fw-semibold); color: var(--text); text-align: center; line-height: var(--lh-snug); }
 
 
 
@@ -622,9 +664,9 @@
 }
 @media (max-width: 620px) {
   .ohp-hero { padding: 56px 0 42px; }
-  .ohp-hero-title { font-size: 1.35rem; }
+  .ohp-hero-title { font-size: var(--fs-800); }
   .ohp-steps-wrap { padding: 44px 0; }
-  .ohp-step-circle { width: 58px; height: 58px; font-size: 1.4rem; }
+  .ohp-step-circle { width: 58px; height: 58px; font-size: var(--fs-800); }
   .ohp-pujas-wrap { padding: 44px 0; }
   .ohp-puja-grid {
     gap: 10px;
@@ -632,12 +674,12 @@
   }
   .ohp-puja-card { padding: 16px 10px 14px; gap: 6px; }
   .ohp-puja-img { width: 46px; height: 46px; }
-  .ohp-puja-emoji { font-size: 1.8rem; margin-bottom: 2px; }
-  .ohp-puja-name { font-size: 0.82rem; }
+  .ohp-puja-emoji { font-size: var(--fs-1000); margin-bottom: 2px; }
+  .ohp-puja-name { font-size: var(--fs-300); }
   /* Hide description and meta on small mobile — icon + name + button only */
   .ohp-puja-desc { display: none; }
   .ohp-puja-meta { display: none; }
-  .ohp-puja-btn { padding: 6px 14px; font-size: 0.75rem; min-width: 80px; }
+  .ohp-puja-btn { padding: 6px 14px; font-size: var(--fs-200); min-width: 80px; }
   .ohp-sankalp-wrap { padding: 44px 0; }
   .ohp-sankalp-card { padding: 28px 20px 24px; }
   .ohp-sankalp-grid { grid-template-columns: 1fr; }
@@ -645,7 +687,7 @@
   .ohp-receive-row { gap: 16px; }
   .ohp-receive-item { width: 95px; }
   .ohp-receive-icon { width: 48px; height: 48px; }
-  .ohp-receive-item span { font-size: 0.74rem; }
+  .ohp-receive-item span { font-size: var(--fs-100); }
 
 }
 
@@ -660,7 +702,7 @@
 /* ═══════════════════════════ ADVANCED REVIEWS CAROUSEL ═══════════════════════════ */
 .hp-reviews-section {
   position: relative;
-  background: var(--gold-soft, #fdfaf3);
+  background: var(--gold-soft);
   overflow: hidden;
   padding: 80px 0;
 }
@@ -743,9 +785,9 @@
 
 /* ── Text with line-clamp (collapses on mobile) ── */
 .review-card__text {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--text, #1a1714);
+  font-size: var(--fs-400);
+  line-height: var(--lh-normal);
+  color: var(--text);
   margin: 12px 0 12px 0;
   flex: 1;
   display: -webkit-box;
@@ -771,9 +813,9 @@
   border: none;
   padding: 0;
   margin: 0 0 12px 0;
-  color: var(--gold, #b8860b);
-  font-size: 0.78rem;
-  font-weight: 600;
+  color: var(--gold);
+  font-size: var(--fs-200);
+  font-weight: var(--fw-semibold);
   font-family: var(--font-body);
   cursor: pointer;
   text-align: left;
@@ -781,7 +823,7 @@
   transition: color 0.2s;
 }
 .review-card__read-more:hover {
-  color: var(--gold-bright, #d4a017);
+  color: var(--gold-bright);
 }
 
 .review-card__author {
@@ -802,12 +844,12 @@
 }
 .review-card__author-name {
   font-family: var(--font-head);
-  font-size: 0.95rem;
+  font-size: var(--fs-400);
   display: block;
 }
 .review-card__author-detail {
   display: block;
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
 }
 
 /* ── Variants ── */
@@ -852,18 +894,18 @@
   object-fit: cover;
 }
 .review-card--featured .review-card__text {
-  font-size: 1rem;
+  font-size: var(--fs-body);
   font-style: italic;
 }
 
 /* 4. Short (Punchy) */
 .review-card--short {
   width: 260px;
-  background: var(--gold-bright, #f0c246);
+  background: var(--gold-bright);
 }
 .review-card--short .review-card__text {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: var(--fs-600);
+  font-weight: var(--fw-semibold);
   font-family: var(--font-head);
   text-align: center;
 }
@@ -891,8 +933,8 @@
     padding: 14px;
   }
   .review-card__text {
-    font-size: 0.85rem;
-    line-height: 1.45;
+    font-size: var(--fs-300);
+    line-height: var(--lh-normal);
     margin: 8px 0 8px 0;
     -webkit-line-clamp: 3;
   }
@@ -901,10 +943,10 @@
     height: 36px;
   }
   .review-card__author-name {
-    font-size: 0.85rem;
+    font-size: var(--fs-300);
   }
   .review-card__author-detail {
-    font-size: 0.75rem;
+    font-size: var(--fs-200);
   }
 
   /* All card variants shrink on mobile */
@@ -926,13 +968,13 @@
     height: 140px;
   }
   .review-card--featured .review-card__text {
-    font-size: 0.85rem;
+    font-size: var(--fs-300);
   }
   .review-card--short {
     width: 240px;
   }
   .review-card--short .review-card__text {
-    font-size: 0.95rem;
+    font-size: var(--fs-400);
   }
 }
 
@@ -952,36 +994,36 @@
   .hp-cards-2up .astro-card__avatar { width: 48px; height: 48px; margin: 0 auto; }
   .hp-cards-2up .astro-card__header-info { width: 100%; display: flex; flex-direction: column; align-items: center; }
   .hp-cards-2up .astro-card__name-row { justify-content: center; gap: 4px; width: 100%; }
-  .hp-cards-2up .astro-card__name { font-size: 0.85rem; white-space: normal; line-height: 1.1; text-align: center; }
-  .hp-cards-2up .astro-card__meta-short { font-size: 0.65rem; text-align: center; }
-  .hp-cards-2up .astro-card__tags { padding: 0 4px; gap: 4px; margin-bottom: 6px; justify-content: center; }
-  .hp-cards-2up .astro-card__tag { font-size: 0.58rem; padding: 2px 5px; text-align: center; }
+  .hp-cards-2up .astro-card__name { font-size: var(--fs-300); white-space: normal; line-height: var(--lh-tight); text-align: center; }
+  .hp-cards-2up .astro-card__meta-short { font-size: var(--fs-50); text-align: center; }
+  .hp-cards-2up .astro-card__tags { padding: 0 4px; gap: 4px; margin-bottom: 6px; }
+  .hp-cards-2up .astro-card__tag { font-size: var(--fs-50); padding: 2px 5px; text-align: center; }
   .hp-cards-2up .astro-card__stats-row { padding: 0 6px; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; justify-content: space-between; }
-  .hp-cards-2up .astro-card__rating, .hp-cards-2up .astro-card__online { font-size: 0.65rem; }
+  .hp-cards-2up .astro-card__rating, .hp-cards-2up .astro-card__online { font-size: var(--fs-50); }
   .hp-cards-2up .astro-card__orders { display: none; } /* least essential number when space is tight */
   .hp-cards-2up .astro-card__footer { padding: 8px 6px; flex-direction: column; align-items: stretch; gap: 6px; }
   .hp-cards-2up .astro-card__price-col { display: none; }
   .hp-cards-2up .astro-card__actions { width: 100%; display: flex; gap: 6px; flex-direction: row; }
-  .hp-cards-2up .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: 0.7rem; }
+  .hp-cards-2up .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: var(--fs-100); }
 
   /* -- temple card (.card) -- */
   .hp-cards-2up .card-body { padding: 12px; }
   /* Clamp title to exactly 2 lines so both column cards have equal title height */
   .hp-cards-2up .card-title {
-    font-size: 0.88rem; margin-bottom: 4px;
+    font-size: var(--fs-300); margin-bottom: 4px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden; min-height: 2.4em; /* 2 lines × line-height */
   }
   .hp-cards-2up .card-title::after { display: none; }
   /* Clamp meta-lines to 1 line each so city/timing always same height */
   .hp-cards-2up .meta-line {
-    font-size: 0.68rem; gap: 4px;
+    font-size: var(--fs-50); gap: 4px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     display: flex; align-items: center;
   }
   .hp-cards-2up .meta-line svg { width: 12px; height: 12px; flex: none; }
   .hp-cards-2up .thumb-badge {
-    font-size: 0.62rem; padding: 4px 8px; top: 8px; left: 8px;
+    font-size: var(--fs-50); padding: 4px 8px; top: 8px; left: 8px;
     max-width: 108px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
   }
   .hp-cards-2up .thumb-badge svg { flex: none; }
@@ -989,25 +1031,25 @@
   .hp-cards-2up .thumb-fav svg { width: 14px; height: 14px; }
   /* Push card-foot to the bottom of the card always */
   .hp-cards-2up .card-foot { flex-direction: column; align-items: stretch; gap: 8px; margin-top: auto; padding-top: 10px; }
-  .hp-cards-2up .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: 0.74rem; }
+  .hp-cards-2up .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: var(--fs-100); }
 
   /* ── service card (svc-card) in 2-up mobile layout ── */
   .svc-2up .svc-card { padding: 18px 10px 14px; }
-  .svc-2up .svc-ico--emoji { font-size: 2rem; margin-bottom: 6px; }
+  .svc-2up .svc-ico--emoji { font-size: var(--fs-1000); margin-bottom: 6px; }
   /* Clamp name to 2 lines for equal height */
   .svc-2up .svc-card h3 {
-    font-size: 0.82rem; line-height: 1.3;
+    font-size: var(--fs-300); line-height: var(--lh-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden; min-height: 2.2em;
   }
   /* Clamp tag/desc to 2 lines for equal height */
   .svc-2up .svc-card p:not(.muted) {
-    font-size: 0.72rem; margin: 4px 0 10px;
+    font-size: var(--fs-100); margin: 4px 0 10px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden; min-height: 2.6em;
   }
   /* Push Find Pandits btn to bottom always */
-  .svc-2up .svc-card .btn-block { font-size: 0.74rem; padding: 7px; margin-top: auto; }
+  .svc-2up .svc-card .btn-block { font-size: var(--fs-100); padding: 7px; margin-top: auto; }
   /* Hide duration/pandits row on mobile to keep cards compact */
   .svc-2up .svc-card .muted { display: none; }
 }
@@ -1024,7 +1066,7 @@
   object-fit: cover;
   display: block;
   margin: 0 auto 10px;
-  background: var(--ivory, #fff8e7);
+  background: var(--ivory);
 }
 @media (max-width: 420px) {
   .ohp-puja-img { width: 54px; height: 54px; }
@@ -1036,15 +1078,15 @@
   gap: 10px; flex-wrap: wrap;
 }
 .review-card__date {
-  font-size: .74rem; color: var(--text-2, #6b6b6b); white-space: nowrap;
+  font-size: var(--fs-100); color: var(--text-2); white-space: nowrap;
 }
 .review-card__title {
   font-family: var(--font-head);
-  font-size: .98rem;
-  font-weight: 700;
-  color: var(--text, #2d2d2d);
+  font-size: var(--fs-500);
+  font-weight: var(--fw-bold);
+  color: var(--text);
   margin: 10px 0 0;
-  line-height: 1.35;
+  line-height: var(--lh-normal);
   /* A title is a headline, not an essay — two lines then ellipsis, so one
      long title cannot push the body text out of the card. */
   display: -webkit-box;
@@ -1060,12 +1102,12 @@
 }
 .review-card__thumb {
   width: 56px; height: 56px; flex: none;
-  padding: 0; border: 1px solid var(--border, #e8d5b7); border-radius: 10px;
-  overflow: hidden; cursor: pointer; background: var(--ivory, #fff8e7);
+  padding: 0; border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; cursor: pointer; background: var(--ivory);
 }
 .review-card__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.review-card__thumb:hover { border-color: var(--gold, #d4a017); }
-.review-card__thumb:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 2px; }
+.review-card__thumb:hover { border-color: var(--gold); }
+.review-card__thumb:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 @media (max-width: 420px) {
   .review-card__thumb { width: 48px; height: 48px; }

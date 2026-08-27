@@ -47,11 +47,11 @@ services:
       # "APPLICATION ROLE" section for why (RLS enforcement).
       DATABASE_URL: postgresql://panditconnect_app:panditconnect_app_dev@db:5432/panditconnect
       SESSION_TTL_HOURS: 720
-      # Placeholders — no real payment gateway account is wired up yet (see
-      # README "Known placeholders"). Subscription/payment endpoints work
-      # end-to-end against Razorpay's test mode once real test keys are set.
-      RAZORPAY_KEY_ID: ""
-      RAZORPAY_KEY_SECRET: ""
+      # Subscription/payment endpoints work end-to-end against Razorpay's
+      # test mode once these are set in the root .env — see README "Known
+      # placeholders". Empty (the default) leaves /subscribe 501ing.
+      RAZORPAY_KEY_ID: "${RAZORPAY_KEY_ID:-}"
+      RAZORPAY_KEY_SECRET: "${RAZORPAY_KEY_SECRET:-}"
       # Dev-only key (32 random bytes, hex) for AES-256-GCM encryption of the
       # one field that needs it — an admin's TOTP secret at rest (see
       # backend/src/utils/crypto.js, docs/ADMIN.md). Same posture as
@@ -67,6 +67,11 @@ services:
       OPENAI_API_KEY: "${OPENAI_API_KEY}"
       GEMINI_API_KEY: "${GEMINI_API_KEY}"
       GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}"
+      # WhatsApp OTP delivery — see backend/.env.example and
+      # services/notifications/hyperSender.js. Optional: unset (the default)
+      # leaves phone OTP requests on the existing dev-only console log.
+      HYPERSENDER_INSTANCE_ID: "${HYPERSENDER_INSTANCE_ID:-}"
+      HYPERSENDER_API_KEY: "${HYPERSENDER_API_KEY:-}"
       # S3 + CloudFront media storage — see docs/S3_CLOUDFRONT_MIGRATION.md
       # and backend/.env.example. All optional: unset (the default), media
       # stays on local disk under backend/public/uploads exactly as before

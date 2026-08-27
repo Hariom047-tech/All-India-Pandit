@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useService, usePandits } from "../hooks/useData";
 import { normService, normPandits } from "../lib/normalize";
 import { useFairRanking, useReportExposure } from "../lib/api";
@@ -79,12 +79,7 @@ export default function ServicePandits() {
         path={`/services/${s.id}/pandits`}
       />
       <div className="shell">
-        <nav className="crumbs" aria-label="Breadcrumb">
-          <Link to="/">Home</Link> <span>/</span>{" "}
-          <Link to="/services">Services</Link> <span>/</span>{" "}
-          <Link to={`/services/${s.id}`}>{s.name}</Link> <span>/</span> Pandits
-        </nav>
-        <h1 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginTop: 10 }}>
+        <h1 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)" }}>
           Pandits who perform {s.name}
         </h1>
         <p className="muted" style={{ marginTop: 8 }}>{pandits.length} verified Pandits</p>

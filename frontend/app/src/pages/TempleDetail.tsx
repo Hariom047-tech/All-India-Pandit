@@ -1,8 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
-
-/** Marks a dropdown value as a temple-specific ritual rather than a catalogue
- *  slug. Chosen to be impossible in a slug, which is [a-z0-9-] only. */
-const CUSTOM_PREFIX = "custom::";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "../lib/icons";
@@ -11,14 +7,12 @@ import { PanditCard } from "../components/ui/PanditCard";
 import { ServiceCard } from "../components/ui/ServiceCard";
 import { ReviewCard } from "../components/ui/ReviewCard";
 import { TempleCard } from "../components/ui/TempleCard";
-import { Modal } from "../components/ui/Modal";
 import { Lightbox } from "../components/ui/Lightbox";
 import { WriteReview } from "../components/ui/WriteReview";
 import { TempleBanner, type HeroSlide } from "../components/temple/TempleBanner";
-import { SacredBackground } from "../components/temple/SacredBackground";
 import { useToast } from "../components/ui/Toast";
 import { onImgError } from "../lib/format";
-import { api, useFairRanking, useReportExposure } from "../lib/api";
+import { useFairRanking, useReportExposure } from "../lib/api";
 import { useTemple, useTemples, usePandits, useReviews, useServices } from "../hooks/useData";
 import { useUrlTab } from "../hooks/useUrlTab";
 import { normTemple, normTemples, normPandits, normReviews, normServices } from "../lib/normalize";
@@ -117,10 +111,7 @@ export default function TempleDetail() {
   const visiblePandits = tab === "pandits" ? pandits : previewPandits;
   useReportExposure(visiblePandits.map((p) => p.id), { temple: t?.id, enabled: Boolean(t) });
 
-  const [reviewOpen, setReviewOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  /** Controlled so a custom-service card can pre-select the enquiry dropdown. */
-  const [enquiryService, setEnquiryService] = useState("");
   const toast = useToast();
 
   useEffect(() => {
@@ -193,52 +184,12 @@ export default function TempleDetail() {
   let nearby = allTemples.filter((x) => x.id !== t.id && (x.state === t.state || x.deity === t.deity)).slice(0, 3);
   if (!nearby.length) nearby = allTemples.filter((x) => x.id !== t.id).slice(0, 3);
 
-  /**
-   * Jump to the enquiry form with a custom service pre-selected.
-   *
-   * The value is prefixed because the same <select> holds catalogue slugs and
-   * temple-specific names, and a name is not a slug — without the marker,
-   * submit could not tell which kind it was looking at.
-   */
+  /** No dedicated page exists for a temple-specific ritual, so "Enquire"
+   *  sends the devotee to the Pandits tab to Chat/Call someone directly
+   *  instead — there is no separate inquiry form anymore. */
   function askAbout(serviceName: string) {
-    setEnquiryService(`${CUSTOM_PREFIX}${serviceName}`);
-    // The form is a sidebar on desktop and far below the fold on mobile, so a
-    // tap that silently changed an off-screen dropdown would look like nothing
-    // happened.
-    document.getElementById("iqSvc")?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-      block: "center",
-    });
-  }
-
-  async function onInquiry(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const selected = String(data.get("service") || "");
-    const isCustom = selected.startsWith(CUSTOM_PREFIX);
-    const customName = isCustom ? selected.slice(CUSTOM_PREFIX.length) : "";
-
-    const payload = {
-      name: String(data.get("name") || ""),
-      phone: String(data.get("phone") || ""),
-      // A custom ritual has no catalogue row, so `service` would fail the slug
-      // lookup and be stored as NULL — the pandit would receive a lead with no
-      // idea what was asked for. Send it as the message instead.
-      service: isCustom ? "" : selected,
-      ...(isCustom ? { message: `Service requested: ${customName}` } : {}),
-      date: String(data.get("date") || ""),
-    };
-    if (!t) return;   // the form only renders once the temple has loaded
-    try { await api.templeInquiry(t.id, payload); } catch { /* soft-fail */ }
-    toast(`Inquiry sent to ${t.pandits} pandits at this temple.`);
-    e.currentTarget.reset();
-    setEnquiryService("");
-  }
-
-  function onReviewSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setReviewOpen(false);
-    toast("Review submitted for verification. Dhanyavaad!");
+    toast(`Chat with a pandit at this temple to ask about ${serviceName}.`);
+    setTab("pandits");
   }
 
   return (
@@ -275,8 +226,7 @@ export default function TempleDetail() {
 
       {/* ═══ MAIN CONTENT ═══ */}
       <section className="section td-section">
-        <SacredBackground />
-        <div className={`shell td-content${tab === "pandits" ? " td-content--pandits-3up" : ""}`} style={{ position: "relative", zIndex: 1 }}>
+        <div className="shell" style={{ position: "relative", zIndex: 1 }}>
 
           {/* ── LEFT COLUMN: tab panels ── */}
           <div style={{ minWidth: 0 }}>
@@ -338,8 +288,8 @@ export default function TempleDetail() {
                             </button>
                           )}
                         </div>
-                        <div className="grid g-4" style={{ marginTop: 14 }}>
-                          {linkedServices.slice(0, 4).map((s, i) => <ServiceCard s={s} key={s.id} index={i} variant="grid" />)}
+                        <div className="grid g-4 grid-2up-mobile svc-related-grid" style={{ marginTop: 14 }}>
+                          {linkedServices.slice(0, 4).map((s, i) => <ServiceCard s={s} key={s.id} index={i} variant="grid" hideTag />)}
                         </div>
                       </motion.div>
                       <hr className="sacred-divider" />
@@ -361,7 +311,7 @@ export default function TempleDetail() {
                             All {pandits.length} <Icon name="chevron-right" size={16} />
                           </button>
                         </div>
-                        <div className="grid g-3" style={{ marginTop: 14 }}>
+                        <div className="grid g-3 grid-2up-mobile" style={{ marginTop: 14 }}>
                           {previewPandits.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="temple_detail_preview" />)}
                         </div>
                       </motion.div>
@@ -535,10 +485,10 @@ export default function TempleDetail() {
                   {hasAnyService ? (
                     <>
                       {linkedServices.length > 0 && (
-                        <motion.div className="svc-row-list" variants={stagger} initial="initial" animate="animate">
-                          {linkedServices.map((s) => (
+                        <motion.div className="grid g-4 grid-2up-mobile svc-related-grid" variants={stagger} initial="initial" animate="animate">
+                          {linkedServices.map((s, i) => (
                             <motion.div key={s.id} variants={cardReveal}>
-                              <ServiceCard s={s} />
+                              <ServiceCard s={s} index={i} variant="grid" hideTag />
                             </motion.div>
                           ))}
                         </motion.div>
@@ -628,15 +578,6 @@ export default function TempleDetail() {
                     )}
                   </div>
 
-                  <motion.button
-                    className="btn btn-outline"
-                    style={{ marginTop: 22 }}
-                    onClick={() => setReviewOpen(true)}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <Icon name="edit" size={17} /> Write a review
-                  </motion.button>
                 </motion.div>
               )}
 
@@ -673,7 +614,6 @@ export default function TempleDetail() {
                     </motion.div>
                     <motion.div className="glass-card" style={{ padding: 0, overflow: "hidden" }} {...cardReveal} transition={{ ...cardReveal.transition, delay: 0.15 }}>
                       <div style={{ aspectRatio: "4/3", background: "linear-gradient(145deg, rgba(250,247,240,0.9), rgba(255,255,255,0.95))", display: "grid", placeItems: "center", textAlign: "center", padding: 24, position: "relative" }}>
-                        <SacredBackground />
                         <div style={{ position: "relative", zIndex: 1 }}>
                           <Icon name="map" size={54} style={{ color: "var(--gold)" }} />
                           <p style={{ fontFamily: "var(--font-head)", fontWeight: 600, marginTop: 10, fontSize: "1.1rem" }}>{t.name}</p>
@@ -690,59 +630,11 @@ export default function TempleDetail() {
               )}
             </AnimatePresence>
           </div>
-
-          {/* ── RIGHT COLUMN: Inquiry sidebar ── */}
-          <aside>
-            <motion.div
-              className="td-inquiry"
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
-            >
-              <SacredBackground />
-              <div style={{ position: "relative", zIndex: 1 }}>
-                <h3 className="td-inquiry__title">
-                  <span className="td-inquiry__title-icon"><Icon name="send" size={18} /></span>
-                  Inquiry
-                </h3>
-                <form onSubmit={onInquiry}>
-                  <div className="field-group"><label className="label" htmlFor="iqName">Your name</label><input className="input" id="iqName" name="name" required placeholder="Your name" /></div>
-                  <div className="field-group"><label className="label" htmlFor="iqPhone">Phone number</label><input className="input" id="iqPhone" name="phone" type="tel" required placeholder="Phone number" /></div>
-                  <div className="field-group">
-                    <label className="label" htmlFor="iqSvc">Select your service</label>
-                    <select
-                      className="select" id="iqSvc" name="service"
-                      value={enquiryService}
-                      onChange={(e) => setEnquiryService(e.target.value)}
-                    >
-                      {/* Without a placeholder the first option is submitted by
-                          default, so a devotee who never touched the dropdown
-                          sends an enquiry for a ritual they did not choose. */}
-                      <option value="">Select a service…</option>
-                      {linkedServices.map((s) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                      {customServices.map((cs) => (
-                        <option key={cs.name} value={`${CUSTOM_PREFIX}${cs.name}`}>{cs.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="field-group"><label className="label" htmlFor="iqDate">Date picker</label><input className="input" id="iqDate" name="date" type="date" /></div>
-                  <motion.button className="btn btn-gold btn-block" type="submit" style={{ marginTop: 18 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                    <Icon name="send" size={17} /> Send Inquiry
-                  </motion.button>
-                  <p className="form-note">Free to send. No commission — you deal with pandit ji directly.</p>
-                </form>
-              </div>
-            </motion.div>
-          </aside>
-
         </div>
       </section>
 
       {/* ═══ NEARBY TEMPLES ═══ */}
       <section className="section td-section td-nearby">
-        <SacredBackground />
         <div className="shell" style={{ position: "relative", zIndex: 1 }}>
           <motion.h2
             className="td-heading"
@@ -780,16 +672,6 @@ export default function TempleDetail() {
         onIndexChange={setLightboxIndex}
       />
 
-      {/* ═══ REVIEW MODAL ═══ */}
-      <Modal open={reviewOpen} onClose={() => setReviewOpen(false)}>
-        <h3 style={{ fontSize: "1.4rem" }}>Write a review</h3>
-        <p className="muted" style={{ marginTop: 6 }}>Only devotees who have had a ceremony performed can post — we verify before publishing.</p>
-        <form style={{ marginTop: 18 }} onSubmit={onReviewSubmit}>
-          <div className="field-group"><label className="label" htmlFor="rvName">Your name</label><input className="input" id="rvName" required /></div>
-          <div className="field-group"><label className="label" htmlFor="rvText">Your experience</label><textarea className="textarea" id="rvText" required /></div>
-          <button className="btn btn-gold btn-block" type="submit">Submit review</button>
-        </form>
-      </Modal>
     </>
   );
 }

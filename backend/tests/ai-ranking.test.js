@@ -504,6 +504,25 @@ test('"haan" after an offer shows the cards', () => {
   }
 });
 
+/*
+ * Regression: a real devotee rarely replies with a single bare "haan" — a
+ * polite "ha please karo" or "haan kar do please" is at least as common, and
+ * every word in it is individually a yes/filler word. The old whole-string
+ * match required the ENTIRE reply to be one exact listed phrase, so these
+ * fell through, got no cards, and were met with the same offer question
+ * again — the devotee had already said yes and the assistant asked again.
+ */
+test('a short reply built entirely of yes/filler words still shows the cards', () => {
+  for (const yes of [
+    'ha please karo', 'haan please', 'ha kardo', 'haan kar do please',
+    'theek hai batao please', 'ji haan please kro', 'ok please suggest karo',
+  ]) {
+    const d = decide(yes, { offeredRecommendations: true, problemCategory: 'career' });
+    assert.strictEqual(d.showCards, true, `"${yes}" did not accept the offer`);
+    assert.strictEqual(d.ask, null, `"${yes}" was met with a question`);
+  }
+});
+
 test('a yes with no offer pending does not conjure cards', () => {
   assert.strictEqual(decide('haan').showCards, false,
     'agreeing to nothing should not trigger recommendations');

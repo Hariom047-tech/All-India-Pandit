@@ -150,44 +150,69 @@ export default function Home() {
       <div style={{ position: "relative", zIndex: 1 }}>
         <HeroAstrotalk />
 
-        {/* ============================== WHAT IS PANDITSUGGEST ============================== */}
+        {/* ============================== WHY PANDITSUGGEST ============================== */}
         {/* Visible-HTML explanation of the platform for a first-time visitor
             (and a non-JS crawler) — the homepage previously jumped straight
             from hero to cards with nothing explaining what the site actually
-            is (master SEO prompt Part 11, docs/SEO_ARCHITECTURE.md §16). */}
-        <section className="section" style={{ position: "relative" }}>
+            is (master SEO prompt Part 11, docs/SEO_ARCHITECTURE.md §16).
+            Rewritten to open on the real reason a family is here (a griha
+            pravesh, a wedding, a prayer for someone they love) rather than a
+            directory disclaimer — the trust facts (verified, direct contact,
+            no commission) still follow, just after the "why", not instead of
+            a "who". Same voice as About.tsx's mission section. */}
+        <section className="section hp-trust" style={{ position: "relative" }}>
           <div className="shell">
-            <span className="eyebrow">What is PanditSuggest</span>
-            <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.6rem,2.8vw,2.2rem)", marginTop: 10, maxWidth: 760 }}>
-              Find and talk to a real Pandit — no middleman
-            </h2>
-            <p className="section-sub" style={{ textAlign: "left", maxWidth: 760, margin: "16px 0 0" }}>
-              PanditSuggest is a directory of verified Pandits and temples across India — not a booking agent.
-              Every profile is real: document-checked, video-verified, and confirmed with the temple where the
-              pandit ji actually serves. Browse temples, compare Pandits by city, language and experience, and
-              contact the one you choose directly on WhatsApp or by phone. You agree the vidhi, the date and the
-              dakshina between yourselves — we never take a cut, and we never assign someone you didn't pick.
-              {" "}<Link to="/how-it-works" style={{ fontWeight: 600, whiteSpace: "nowrap" }}>See how it works →</Link>
-            </p>
+            <div className="grid g-2 hp-trust-top" style={{ alignItems: "center" }}>
+              <div>
+                <span className="eyebrow">Why PanditSuggest</span>
+                <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.6rem,2.8vw,2.2rem)", marginTop: 10 }}>
+                  Because some prayers deserve more than a stranger
+                </h2>
+                <p className="section-sub" style={{ textAlign: "left", margin: "16px 0 0" }}>
+                  A griha pravesh. A wedding. A prayer whispered for someone you love. These aren't
+                  moments to gamble on — yet most families still find a pandit ji through guesswork,
+                  or whoever a booking app happens to assign them.
+                </p>
+                <p className="section-sub" style={{ textAlign: "left", margin: "12px 0 0" }}>
+                  Every Pandit ji and temple here is real: documents checked, video-verified, and
+                  confirmed with the temple where they actually serve. You speak to them directly —
+                  WhatsApp or call — and decide the vidhi, the date and the dakshina together. We
+                  never take a cut, and we never choose for you.
+                  {" "}<Link to="/how-it-works" style={{ fontWeight: 600, whiteSpace: "nowrap" }}>See how it works →</Link>
+                </p>
+              </div>
 
-            <div className="grid g-4 hp-whatis-grid" style={{ marginTop: 32 }}>
-              <Link to="/pandits" className="card card-pad">
-                <Icon name="users" size={28} />
+              <div className="hp-trust-art" aria-hidden="true">
+                <div className="hp-trust-art__frame">
+                  <img
+                    src="/assets/img/services/pandit-hero.jpg"
+                    alt=""
+                    className="hp-trust-art__img"
+                    loading="lazy"
+                    width={420} height={420}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid g-4 hp-whatis-grid" style={{ marginTop: 40 }}>
+              <Link to="/pandits" className="card card--hover card-pad">
+                <span className="hp-whatis-card__icon"><Icon name="users" size={24} /></span>
                 <h3 className="hp-whatis-card__title">Find Pandits</h3>
                 <p className="muted hp-whatis-card__desc">Verified profiles by city, language and specialization.</p>
               </Link>
-              <Link to="/temples" className="card card-pad">
-                <Icon name="temple" size={28} />
+              <Link to="/temples" className="card card--hover card-pad">
+                <span className="hp-whatis-card__icon"><Icon name="temple" size={24} /></span>
                 <h3 className="hp-whatis-card__title">Explore Temples</h3>
                 <p className="muted hp-whatis-card__desc">Real temples with photos, timings and the Pandits who serve them.</p>
               </Link>
-              <Link to="/services" className="card card-pad">
-                <Icon name="sparkles" size={28} />
+              <Link to="/services" className="card card--hover card-pad">
+                <span className="hp-whatis-card__icon"><Icon name="sparkles" size={24} /></span>
                 <h3 className="hp-whatis-card__title">Puja &amp; Havan Services</h3>
                 <p className="muted hp-whatis-card__desc">What each ritual involves, and who performs it near you.</p>
               </Link>
-              <Link to="/ai-recommender" className="card card-pad">
-                <Icon name="sparkles" size={28} />
+              <Link to="/ai-recommender" className="card card--hover card-pad">
+                <span className="hp-whatis-card__icon"><Icon name="sparkles" size={24} /></span>
                 <h3 className="hp-whatis-card__title">AI Recommender</h3>
                 <p className="muted hp-whatis-card__desc">Not sure which puja you need? Describe your situation and get a starting point.</p>
               </Link>

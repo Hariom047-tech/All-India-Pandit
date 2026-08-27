@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../lib/icons";
 import { useServices, useServiceCategories } from "../hooks/useData";
@@ -47,14 +47,25 @@ export default function Services() {
   }, [apiCategories, t]);
   const [query] = useState("");
   const [onlineOnly, setOnlineOnly] = useState(false);
+  // Which "Most Booked" tile (if any) the grid below is currently filtered
+  // to — those tiles used to be inert decoration with nothing to click
+  // through to; this is what makes them do something.
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const allServicesRef = useRef<HTMLElement>(null);
 
   const filtered = useMemo(() => {
     return services.filter((s) => {
       if (query && !`${s.name} ${s.tag} ${s.desc}`.toLowerCase().includes(query.toLowerCase())) return false;
       if (onlineOnly && !s.onlineAvailable) return false;
+      if (categoryFilter && s.cat !== categoryFilter) return false;
       return true;
     });
-  }, [services, query, onlineOnly]);
+  }, [services, query, onlineOnly, categoryFilter]);
+
+  function selectCategory(cat: string) {
+    setCategoryFilter((prev) => (prev === cat ? null : cat));
+    allServicesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   const onlineCount = useMemo(() => services.filter((s) => s.onlineAvailable).length, [services]);
 
@@ -114,9 +125,12 @@ export default function Services() {
             <h2 className="sp-section-title">{t("services.mostBooked")}</h2>
             <div className="sp-booked-row">
               {MOST_BOOKED.map((mb) => (
-                <div
+                <button
                   key={mb.cat}
-                  className="sp-booked-card"
+                  type="button"
+                  className={`sp-booked-card${categoryFilter === mb.cat ? " is-active" : ""}`}
+                  onClick={() => selectCategory(mb.cat)}
+                  aria-pressed={categoryFilter === mb.cat}
                 >
                   <img src={mb.img} alt={mb.label} className="sp-booked-card__img" loading="lazy" />
                   <div className="sp-booked-card__overlay" />
@@ -136,33 +150,44 @@ export default function Services() {
                             : null}
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
         </section>
 
         {/* ======================== ALL SERVICES GRID ======================== */}
-        <section className="section" style={{ paddingTop: 10, paddingBottom: 50 }}>
+        <section className="section" style={{ paddingTop: 10, paddingBottom: 50 }} ref={allServicesRef}>
           <div className="shell">
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-              <h2 className="sp-section-title" style={{ margin: 0 }}>{t("services.title")}</h2>
-              <div className="row" style={{ gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                {/* Rendered only when something is actually available online —
-                    an "Online" filter that always returns nothing is worse
-                    than no filter. */}
-                {onlineCount > 0 && (
-                  <button
-                    type="button"
-                    className={`sp-online-toggle${onlineOnly ? " is-on" : ""}`}
-                    aria-pressed={onlineOnly}
-                    onClick={() => setOnlineOnly((v) => !v)}
-                  >
-                    🌐 Online puja ({onlineCount})
-                  </button>
-                )}
-                <span className="muted" style={{ fontSize: ".92rem" }}>{filtered.length} {t("services.servicesFound")}</span>
+            <div className="sp-all-header">
+              <div className="sp-all-header__left">
+                <h2 className="sp-section-title" style={{ margin: 0 }}>{t("services.title")}</h2>
+                <span className="muted sp-all-header__count">{filtered.length} {t("services.servicesFound")}</span>
               </div>
+              {/* Set by clicking a "Most Booked" tile above — the only way
+                  this grid can be scoped to one category. */}
+              {categoryFilter && (
+                <button
+                  type="button"
+                  className="sp-online-toggle sp-all-header__online is-on"
+                  onClick={() => setCategoryFilter(null)}
+                >
+                  {MOST_BOOKED.find((mb) => mb.cat === categoryFilter)?.label || categoryFilter} ✕
+                </button>
+              )}
+              {/* Rendered only when something is actually available online —
+                  an "Online" filter that always returns nothing is worse
+                  than no filter. */}
+              {onlineCount > 0 && (
+                <button
+                  type="button"
+                  className={`sp-online-toggle sp-all-header__online${onlineOnly ? " is-on" : ""}`}
+                  aria-pressed={onlineOnly}
+                  onClick={() => setOnlineOnly((v) => !v)}
+                >
+                  🌐 Online puja ({onlineCount})
+                </button>
+              )}
             </div>
 
             {filtered.length ? (

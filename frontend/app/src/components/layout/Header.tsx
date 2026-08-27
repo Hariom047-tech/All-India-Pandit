@@ -14,22 +14,25 @@ const NAV = [
 
 // "Pandit Ji AI" (/pandit-ji) was removed: two AI entry points meant two
 // different answers to the same question, and only one of them was grounded in
-// the knowledge base and real pandit data. The AI Pooja Guide below is the
-// single surface now.
+// the knowledge base and real pandit data. The AI Pooja Guide surface still
+// exists at /ai-recommender (linked from the drawer's bottom CTA) — it's just
+// not duplicated as its own drawer-menu row.
 const NAV_EXTRA = [
   { to: "/temple-map", labelKey: "nav.templeMap", icon: "map" },
-  { to: "/ai-recommender", labelKey: "nav.aiRecommender", icon: "sparkles" },
-  { to: "/dashboard", labelKey: "nav.dashboard", icon: "layout-dashboard" },
+  // Straight to the pandit sign-in screen, not the public /dashboard preview
+  // page — someone tapping "Pandit Dashboard" from the menu wants to log in,
+  // not read marketing copy about the dashboard.
+  { to: "/pandit-login", labelKey: "nav.dashboard", icon: "layout-dashboard" },
   { to: "/about", labelKey: "nav.about", icon: "info" },
   { to: "/contact", labelKey: "nav.contact", icon: "mail" },
 ];
 
 const BOTTOM = [
   { to: "/", labelKey: "nav.home", icon: "diya" },
-  { to: "/temples", labelKey: "nav.temples", icon: "temple" },
+  { to: "/services", labelKey: "nav.services", icon: "flame" },
   { to: "/search", labelKey: "common.search", icon: "search" },
   { to: "/pandits", labelKey: "nav.pandits", icon: "users" },
-  { to: "/dashboard", labelKey: "common.profile", icon: "user" },
+  { to: "/temples", labelKey: "nav.temples", icon: "temple" },
 ];
 
 function Brand({ size }: { size?: string }) {
@@ -223,9 +226,28 @@ export function Header() {
           <LangSwitch />
         </div>
         <nav className="drawer-links">
-          {[...NAV.map((n) => ({ ...n, icon: undefined as string | undefined })), ...NAV_EXTRA].map((n) => (
+          {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === "/"} className={({ isActive }) => (isActive ? "is-active" : "")} onClick={() => setOpen(false)}>
-              {n.icon ? <Icon name={n.icon} size={19} /> : null}
+              {t(n.labelKey)}
+            </NavLink>
+          ))}
+          {/* Temple Map, then My Profile/Login, then the rest — grouped with
+              Pandit Dashboard rather than sitting at the very top of the
+              menu. Mirrors the desktop header-cta's My Profile/Login link
+              (same destination logic). */}
+          <NavLink to={NAV_EXTRA[0].to} className={({ isActive }) => (isActive ? "is-active" : "")} onClick={() => setOpen(false)}>
+            <Icon name={NAV_EXTRA[0].icon} size={19} />
+            {t(NAV_EXTRA[0].labelKey)}
+          </NavLink>
+          {!loading && (
+            <NavLink to={user ? "/dashboard" : "/login"} className={({ isActive }) => (isActive ? "is-active" : "")} onClick={() => setOpen(false)}>
+              <Icon name="user" size={19} />
+              {user ? t("nav.myProfile") : t("nav.login")}
+            </NavLink>
+          )}
+          {NAV_EXTRA.slice(1).map((n) => (
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? "is-active" : "")} onClick={() => setOpen(false)}>
+              <Icon name={n.icon} size={19} />
               {t(n.labelKey)}
             </NavLink>
           ))}

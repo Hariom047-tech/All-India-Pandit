@@ -1,5 +1,29 @@
 const { addBillingPeriod } = require('../../utils/billingPeriod');
 
+/** Ascending value order — index comparison is how payments.controller.js
+ *  tells an upgrade from a downgrade. */
+const TIER_ORDER = ['free', 'silver', 'gold', 'diamond'];
+
+function tierRank(tier) {
+  return TIER_ORDER.indexOf(tier);
+}
+
+/** How many days before expiry a pandit may renew their CURRENT tier.
+ * Buying the same tier again while it still has plenty of time left just
+ * stacks a second payment on top of unused time for no real reason — the
+ * same pattern domain registrars, telecom recharges and OTT subscriptions
+ * use an early-renewal window for. Product decision: 4 days. */
+const RENEWAL_WINDOW_DAYS = 4;
+
+/** True once a same-tier renewal purchase is actually allowed — inside the
+ *  window, or already expired. payments.controller.js rejects the purchase
+ *  attempt outside it rather than silently stacking time on an active plan. */
+function isWithinRenewalWindow(currentExpiresAt) {
+  if (!currentExpiresAt) return true; // nothing on record to protect
+  const msRemaining = new Date(currentExpiresAt).getTime() - Date.now();
+  return msRemaining <= RENEWAL_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+}
+
 /**
  * Decides the (starts_at, expires_at) pair for a new purchase.
  *
@@ -27,4 +51,4 @@ function resolveNewPeriod({ currentTier, currentExpiresAt, targetTier, billingCy
   return { startsAt, expiresAt, isRenewal: hasActiveSamePlan };
 }
 
-module.exports = { resolveNewPeriod };
+module.exports = { resolveNewPeriod, TIER_ORDER, tierRank, RENEWAL_WINDOW_DAYS, isWithinRenewalWindow };

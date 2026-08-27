@@ -183,45 +183,148 @@ export default function AiRecommender() {
         description="Describe your situation in Hindi or English and get a traditional ritual recommendation, with the verified Pandits who perform it."
         path="/ai-recommender"
       />
-      {/* ── Intro, replaced by the thread once the conversation starts ── */}
-      {!started && (
-        <section className="aig-hero">
-          <span className="aig-hero__badge"><Icon name="sparkles" size={14} /> AI Pooja Guide</span>
-          <h1 className="aig-hero__title">Apni Samasya Batayein</h1>
-          <p className="aig-hero__sub">
-            PanditSuggest AI aapki zarurat samajhkar suitable Puja, Havan aur Pandit ji
-            dhoondhne mein madad karega. Hindi, Hinglish ya English — jo aaram se aaye.
-          </p>
 
-          <ul className="aig-chips" aria-label="Common concerns">
-            {QUICK_PROMPTS.map((p) => (
-              <li key={p.label}>
-                <button
-                  type="button" className="aig-chip" disabled={busy}
-                  aria-label={p.prompt}
-                  onClick={() => ask(p.prompt)}
-                >
-                  {p.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {enabled === false && (
-            <p className="aig-offline">
-              AI guide abhi available nahi hai. Aap{" "}
-              <Link to="/pandits">Pandit ji</Link> aur <Link to="/services">puja</Link>{" "}
-              seedhe search kar sakte hain.
+      {/* aig-box is the "app" — it claims one viewport (minus header/bottom
+          nav) in BOTH states, composer always the last flex child inside it,
+          exactly the technique .aig--active already used successfully for
+          the thread. Applying it here too means a first-time visitor sees
+          the input box without scrolling past marketing copy to find it —
+          the single biggest complaint about the old layout, where the
+          composer sat below a full "How it works" + FAQ block. */}
+      <div className="aig-box">
+        {/* ── Intro, replaced by the thread once the conversation starts ── */}
+        {!started && (
+          <section className="aig-hero">
+            <span className="aig-hero__badge"><Icon name="sparkles" size={14} /> AI Pooja Guide</span>
+            <h1 className="aig-hero__title">Apni Samasya Batayein</h1>
+            <p className="aig-hero__sub">
+              PanditSuggest AI aapki zarurat samajhkar suitable Puja, Havan aur Pandit ji
+              dhoondhne mein madad karega. Hindi, Hinglish ya English — jo aaram se aaye.
             </p>
-          )}
 
-          {/* Visible explanation + FAQ, not just a bare chat box (master SEO
-              prompt Parts 32-33, 125, docs/SEO_ARCHITECTURE.md §16) — shown
-              before a conversation starts, so it's in the page's initial DOM
-              for a crawler and a first-time visitor alike. */}
-          <div className="aig-explain" style={{ textAlign: "left", maxWidth: 640, margin: "0 auto" }}>
-            <h2 style={{ fontSize: "1.3rem", marginTop: 40 }}>How the AI Recommender works</h2>
-            <p className="muted" style={{ marginTop: 10, maxWidth: 640 }}>
+            <ul className="aig-chips" aria-label="Common concerns">
+              {QUICK_PROMPTS.map((p) => (
+                <li key={p.label}>
+                  <button
+                    type="button" className="aig-chip" disabled={busy}
+                    aria-label={p.prompt}
+                    onClick={() => ask(p.prompt)}
+                  >
+                    {p.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {enabled === false && (
+              <p className="aig-offline">
+                AI guide abhi available nahi hai. Aap{" "}
+                <Link to="/pandits">Pandit ji</Link> aur <Link to="/services">puja</Link>{" "}
+                seedhe search kar sakte hain.
+              </p>
+            )}
+
+            <a href="#aig-explain" className="aig-learnmore">
+              Yeh kaam kaise karta hai? <Icon name="arrow-right" size={12} />
+            </a>
+          </section>
+        )}
+
+        {/* ── Conversation ────────────────────────────────────────────── */}
+        {started && (
+          <div className="aig-thread" ref={threadRef} role="log" aria-live="polite" aria-label="Conversation">
+            {turns.map((turn) => (
+              <div key={turn.id} className={`aig-turn aig-turn--${turn.role}`}>
+                {turn.role === "ai" && (
+                  <span className="aig-turn__avatar" aria-hidden="true">
+                    <Icon name="sparkles" size={15} />
+                  </span>
+                )}
+
+                <div className="aig-turn__body">
+                  <p className={`aig-bubble${turn.error ? " aig-bubble--error" : ""}`}>{turn.text}</p>
+
+                  {turn.response && <Recommendations res={turn.response} />}
+
+                  {turn.role === "ai" && turn.response && !turn.response.isCrisis && !turn.error && (
+                    <div className="aig-vote">
+                      {voted[turn.id] === undefined ? (
+                        <>
+                          <span>Kya yeh madadgar tha?</span>
+                          <button type="button" onClick={() => vote(turn.id, true)} aria-label="Helpful">👍</button>
+                          <button type="button" onClick={() => vote(turn.id, false)} aria-label="Not helpful">👎</button>
+                        </>
+                      ) : (
+                        <span className="aig-vote__done">Dhanyavaad 🙏</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {busy && (
+              <div className="aig-turn aig-turn--ai">
+                <span className="aig-turn__avatar" aria-hidden="true"><Icon name="sparkles" size={15} /></span>
+                <div className="aig-turn__body">
+                  <p className="aig-bubble aig-bubble--thinking">
+                    <span className="aig-dots"><i /><i /><i /></span>
+                    {STAGES[stage]}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Composer ────────────────────────────────────────────────── */}
+        <form className="aig-composer" onSubmit={onSubmit}>
+          <label className="sr-only" htmlFor="aig-input">Apni samasya likhiye</label>
+          <textarea
+            id="aig-input"
+            ref={inputRef}
+            className="aig-composer__input"
+            value={input}
+            rows={1}
+            maxLength={1000}
+            disabled={busy || enabled === false}
+            placeholder="Apni samasya likhiye…"
+            onChange={(e) => { setInput(e.target.value); autoGrow(e.currentTarget); }}
+            onKeyDown={onKeyDown}
+          />
+          <button
+            type="submit"
+            className="aig-composer__send"
+            disabled={busy || !input.trim() || enabled === false}
+            aria-label="Bhejein"
+          >
+            <Icon name="send" size={18} />
+          </button>
+        </form>
+
+        {started && (
+          <button type="button" className="aig-reset" onClick={reset} disabled={busy}>
+            Nayi baat shuru karein
+          </button>
+        )}
+
+        <p className="aig-disclaimer">
+          Yeh aadhyatmik margdarshan hai. Kisi bhi medical, kanooni ya vittiya samasya ke liye
+          yogya professional ki salah zaroor lein.
+        </p>
+      </div>
+
+      {/* ── Below the fold: visible explanation + FAQ, not just a bare chat
+          box (master SEO prompt Parts 32-33, 125, docs/SEO_ARCHITECTURE.md
+          §16) — still in the page's initial DOM for a crawler and reachable
+          by scrolling, but no longer standing between a first-time visitor
+          and the input box above. Gone once a conversation starts, same as
+          before. */}
+      {!started && (
+        <section className="aig-explain" id="aig-explain">
+          <div className="aig-explain__inner">
+            <h2>How the AI Recommender works</h2>
+            <p className="muted">
               Describe what you're looking for — a life event, a concern, or a specific ritual
               you've heard of — in your own words. The recommender matches your description
               against PanditSuggest's actual catalogue of pujas, havans and anushthans, and
@@ -231,106 +334,30 @@ export default function AiRecommender() {
               promises a specific outcome from any ritual.
             </p>
 
-            <h3 style={{ fontSize: "1.05rem", marginTop: 26 }}>Example questions people ask</h3>
-            <ul className="dot-list" style={{ marginTop: 10, maxWidth: 640 }}>
+            <h3>Example questions people ask</h3>
+            <ul className="dot-list">
               <li>"Business mein rukawat aa rahi hai" — business facing obstacles</li>
               <li>"Shaadi mein deri ho rahi hai" — marriage getting delayed</li>
               <li>"Griha Pravesh karna hai" — planning a house-warming ceremony</li>
               <li>"Maa Baglamukhi puja karani hai" — wanting a Baglamukhi puja specifically</li>
             </ul>
 
-            <h3 style={{ fontSize: "1.05rem", marginTop: 26 }}>Frequently asked questions</h3>
-            <div style={{ marginTop: 10, maxWidth: 640 }}>
+            <h3>Frequently asked questions</h3>
+            {/* Plain, always-visible text — not a collapsible accordion — so
+                what a crawler indexes via faqPageSchema() above always
+                matches what a visitor actually sees on first paint, no
+                interaction required (master SEO prompt Parts 32-33). */}
+            <div className="aig-faqlist">
               {AI_FAQS.map((f) => (
-                <p key={f.q} style={{ marginTop: 12 }}><strong>{f.q}</strong><br />{f.a}</p>
+                <div key={f.q} className="aig-faq">
+                  <strong>{f.q}</strong>
+                  <p>{f.a}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
-
-      {/* ── Conversation ────────────────────────────────────────────── */}
-      {started && (
-        <div className="aig-thread" ref={threadRef} role="log" aria-live="polite" aria-label="Conversation">
-          {turns.map((turn) => (
-            <div key={turn.id} className={`aig-turn aig-turn--${turn.role}`}>
-              {turn.role === "ai" && (
-                <span className="aig-turn__avatar" aria-hidden="true">
-                  <Icon name="sparkles" size={15} />
-                </span>
-              )}
-
-              <div className="aig-turn__body">
-                <p className={`aig-bubble${turn.error ? " aig-bubble--error" : ""}`}>{turn.text}</p>
-
-                {turn.response && <Recommendations res={turn.response} />}
-
-                {turn.role === "ai" && turn.response && !turn.response.isCrisis && !turn.error && (
-                  <div className="aig-vote">
-                    {voted[turn.id] === undefined ? (
-                      <>
-                        <span>Kya yeh madadgar tha?</span>
-                        <button type="button" onClick={() => vote(turn.id, true)} aria-label="Helpful">👍</button>
-                        <button type="button" onClick={() => vote(turn.id, false)} aria-label="Not helpful">👎</button>
-                      </>
-                    ) : (
-                      <span className="aig-vote__done">Dhanyavaad 🙏</span>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {busy && (
-            <div className="aig-turn aig-turn--ai">
-              <span className="aig-turn__avatar" aria-hidden="true"><Icon name="sparkles" size={15} /></span>
-              <div className="aig-turn__body">
-                <p className="aig-bubble aig-bubble--thinking">
-                  <span className="aig-dots"><i /><i /><i /></span>
-                  {STAGES[stage]}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Composer ────────────────────────────────────────────────── */}
-      <form className="aig-composer" onSubmit={onSubmit}>
-        <label className="sr-only" htmlFor="aig-input">Apni samasya likhiye</label>
-        <textarea
-          id="aig-input"
-          ref={inputRef}
-          className="aig-composer__input"
-          value={input}
-          rows={1}
-          maxLength={1000}
-          disabled={busy || enabled === false}
-          placeholder="Apni samasya likhiye…"
-          onChange={(e) => { setInput(e.target.value); autoGrow(e.currentTarget); }}
-          onKeyDown={onKeyDown}
-        />
-        <button
-          type="submit"
-          className="aig-composer__send"
-          disabled={busy || !input.trim() || enabled === false}
-          aria-label="Bhejein"
-        >
-          <Icon name="send" size={18} />
-        </button>
-      </form>
-
-      {started && (
-        <button type="button" className="aig-reset" onClick={reset} disabled={busy}>
-          Nayi baat shuru karein
-        </button>
-      )}
-
-      <p className="aig-disclaimer">
-        Yeh aadhyatmik margdarshan hai. Kisi bhi medical, kanooni ya vittiya samasya ke liye
-        yogya professional ki salah zaroor lein.
-      </p>
     </div>
   );
 }

@@ -8,6 +8,7 @@ const { logSecurityEvent } = require('../utils/securityLog');
 const { sessionTtlHours, nodeEnv } = require('../config/env');
 const { logActivityEvent, deviceTypeFromUserAgent } = require('../utils/activityLog');
 const { browsingMarketFor } = require('../services/distribution/market');
+const hyperSender = require('../services/notifications/hyperSender');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BCRYPT_ROUNDS = 10;
@@ -169,10 +170,15 @@ function otpMatches(candidate, record) {
   return candidateHash === record.otp_hash;
 }
 
-/** POST /api/auth/otp/request — no real SMS/email provider is wired up (see
- *  README "Known placeholders"); in non-production the OTP is returned in
- *  the response body so the flow is testable end-to-end without one. 4
- *  digits to match the OTP entry UI (Login.tsx's 4-box input). */
+/** POST /api/auth/otp/request — a phone target is sent over WhatsApp via
+ *  Hypersender when configured (services/notifications/hyperSender.js); no
+ *  email provider is wired up (see README "Known placeholders"). The OTP
+ *  itself is always generated and stored locally exactly as before —
+ *  Hypersender is only ever the delivery channel, never the source of truth
+ *  (see verifyOtp/phoneLogin's otpMatches below). In non-production the OTP
+ *  is ALSO returned in the response body so the flow is still testable
+ *  end-to-end without WhatsApp configured. 4 digits to match the OTP entry
+ *  UI (Login.tsx's 4-box input). */
 async function requestOtp(req, res) {
   const { target, targetType } = req.body || {};
   if (!target || !['phone', 'email'].includes(targetType)) {
@@ -180,12 +186,21 @@ async function requestOtp(req, res) {
   }
   const otp = String(crypto.randomInt(1000, 10000));
   const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+  const expiresMinutes = 10;
+  const expiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
   await repo.createOtp({ target, targetType, otpHash, expiresAt });
 
-  // Dev-only: log OTP to console so local testing works without SMS/email.
-  // NEVER include in staging — use nodeEnv === 'development', NOT !== 'production'.
-  if (nodeEnv === 'development') {
+  if (targetType === 'phone' && hyperSender.isConfigured()) {
+    // Soft-fail, same posture as templeInquiry elsewhere: the OTP record
+    // already exists and remains valid either way — a Hypersender outage
+    // should not block requestOtp itself. Logged so a real delivery problem
+    // is still visible in the server logs rather than silently swallowed.
+    const sent = await hyperSender.sendWhatsAppOtp(target, otp, expiresMinutes);
+    if (!sent.ok) console.error(`[auth] WhatsApp OTP delivery failed for ${target}: ${sent.error}`);
+  } else if (nodeEnv === 'development') {
+    // Dev-only: log OTP to console so local testing works without WhatsApp
+    // configured. NEVER include in staging — use nodeEnv === 'development',
+    // NOT !== 'production'.
     console.log(`[auth] OTP for ${targetType}:${target} = ${otp} (dev-only log)`);
   }
   res.status(201).json({ ok: true, expiresAt, ...(nodeEnv === 'development' ? { devOtp: otp } : {}) });
@@ -242,9 +257,13 @@ async function phoneLogin(req, res) {
       user.phone_verified = true;
     }
   } else {
-    const placeholderEmail = `phone-${phone.replace(/[^a-zA-Z0-9]/g, '')}@otp.panditsuggest.local`;
+    // No email at all — better than a fake `phone-xxx@otp...` placeholder
+    // that looked like real data everywhere it was displayed (admin Users
+    // list, the devotee's own profile). email is nullable for exactly this
+    // (33-nullable-email-and-status-fix.sql); the UNIQUE constraint still
+    // holds since Postgres allows any number of NULLs under it.
     try {
-      user = await repo.create({ email: placeholderEmail, phone, fullName: 'Devotee', role: 'devotee' });
+      user = await repo.create({ email: null, phone, fullName: 'Devotee', role: 'devotee' });
     } catch (err) {
       if (err.code === '23505') return res.status(409).json({ error: 'An account with this number already exists — please try again' });
       throw err;

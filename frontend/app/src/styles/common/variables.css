@@ -1,0 +1,26 @@
+/* ==========================================================================
+   Common / Variables — non-color, non-type design tokens.
+   Geometry, elevation, layout. Colors live in colors.css, type in
+   typography.css — kept apart so each file stays skimmable on its own.
+   ========================================================================== */
+
+:root {
+  /* --- Elevation (gold-tinted shadows, the site's signature) --- */
+  --sh-xs: 0 1px 2px rgba(45, 45, 45, .05);
+  --sh-sm: 0 2px 10px rgba(168, 122, 18, .08);
+  --sh-md: 0 6px 22px rgba(168, 122, 18, .12);
+  --sh-lg: 0 16px 44px rgba(168, 122, 18, .16);
+  --sh-gold: 0 8px 24px rgba(212, 160, 23, .28);
+
+  /* --- Geometry --- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --r-pill: 999px;
+
+  /* --- Layout --- */
+  --shell: 1240px;
+  --header-h: 78px;
+  --bottom-nav-h: 0px; /* re-published to 68px by base.css at <=900px, where the tab bar is visible */
+}

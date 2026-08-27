@@ -11,6 +11,10 @@ const CYCLES = [
 
 const TIER_ORDER = ["free", "silver", "gold", "diamond"];
 
+/** Keep in sync with RENEWAL_WINDOW_DAYS in
+ *  backend/src/services/billing/subscriptionPeriod.js. */
+const RENEWAL_WINDOW_DAYS = 4;
+
 const PAYMENT_STATUS_LABEL: Record<string, string> = {
   pending: "Pending", completed: "Successful", failed: "Failed",
   refunded: "Refunded", cancelled: "Cancelled",
@@ -140,6 +144,18 @@ export default function Plan() {
   const currentTier = current.plan.tier;
   const currentIdx = TIER_ORDER.indexOf(currentTier);
 
+  // Mirrors the backend's RENEWAL_WINDOW_DAYS (services/billing/subscriptionPeriod.js):
+  // renewing the SAME tier only becomes an actionable button this close to
+  // (or past) expiry — buying it again with weeks still left would just
+  // stack a second payment on unused time. The API enforces this
+  // independently; this is only so the button isn't a dead click before then.
+  const currentExpiresAt = current.plan.expiresAt ? new Date(current.plan.expiresAt) : null;
+  const canRenewNow = currentTier !== "free" && currentExpiresAt !== null
+    && currentExpiresAt.getTime() - Date.now() <= RENEWAL_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+  const renewalOpensAt = currentExpiresAt
+    ? new Date(currentExpiresAt.getTime() - RENEWAL_WINDOW_DAYS * 24 * 60 * 60 * 1000)
+    : null;
+
   return (
     <div className="pandit-page">
       <PageHead title="My Plan" sub="Apna current plan dekhein aur upgrade karein." />
@@ -204,8 +220,22 @@ export default function Plan() {
                 </p>
               )}
 
+              {isCurrent && !canRenewNow && renewalOpensAt && (
+                <p className="pandit-plan__note">
+                  Renewal {formatDate(renewalOpensAt.toISOString())} se available hoga — abhi bacha hua time hai.
+                </p>
+              )}
+
               {isCurrent ? (
-                <button className="pandit-btn pandit-btn--block" disabled>Current Plan</button>
+                canRenewNow ? (
+                  <button className="pandit-btn pandit-btn--primary pandit-btn--block"
+                    disabled={busyTier === plan.tier || isConfirming}
+                    onClick={() => upgrade(plan)}>
+                    {busyTier === plan.tier ? "Shuru ho raha hai…" : isConfirming ? "Confirm ho raha hai…" : "Renew"}
+                  </button>
+                ) : (
+                  <button className="pandit-btn pandit-btn--block" disabled>Current Plan</button>
+                )
               ) : isDowngrade ? (
                 <button className="pandit-btn pandit-btn--ghost pandit-btn--block" disabled
                   title="Downgrade ke liye support se sampark karein">Downgrade</button>

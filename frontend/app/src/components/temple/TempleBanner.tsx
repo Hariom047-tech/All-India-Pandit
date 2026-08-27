@@ -170,9 +170,6 @@ export function TempleBanner({
         </button>
       )}
 
-      {/* golden shimmer overlay */}
-      <div className="banner-golden-shimmer" />
-
       <div className="shell">
         <motion.div
           className="banner-card"

@@ -11,9 +11,13 @@ interface ServiceCardProps {
    *  for grid layouts (e.g. ServiceDetail's "Related services"), where the
    *  row layout squeezes into an unreadably small strip. */
   variant?: "row" | "grid";
+  /** "grid" variant only — omits the description line, for surfaces (e.g.
+   *  TempleDetail's compact previews) where the card is just a link to the
+   *  service, not a place to read about it. */
+  hideTag?: boolean;
 }
 
-export function ServiceCard({ s, index = 0, variant = "row" }: ServiceCardProps) {
+export function ServiceCard({ s, index = 0, variant = "row", hideTag = false }: ServiceCardProps) {
   if (variant === "grid") {
     return (
       <motion.article
@@ -25,7 +29,7 @@ export function ServiceCard({ s, index = 0, variant = "row" }: ServiceCardProps)
       >
         <span className="svc-grid-card__emoji">{serviceEmoji(s.icon)}</span>
         <span className="svc-grid-card__name">{s.name}</span>
-        {s.tag && <span className="svc-grid-card__tag">{s.tag}</span>}
+        {s.tag && !hideTag && <span className="svc-grid-card__tag">{s.tag}</span>}
         <Link className="svc-grid-card__cta" to={`/services/${s.id}`}>
           View <span aria-hidden>›</span>
         </Link>

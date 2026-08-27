@@ -63,8 +63,8 @@
   margin-bottom: 4px;
 }
 .astro-card__name {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: var(--fs-700);
+  font-weight: var(--fw-bold);
   color: var(--text);
   margin: 0;
   white-space: normal;
@@ -73,7 +73,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: 1.25;
+  line-height: var(--lh-snug);
 }
 .astro-card__verified {
   color: #10b981; /* green */
@@ -81,7 +81,7 @@
 }
 
 .astro-card__meta-short {
-  font-size: 0.8rem;
+  font-size: var(--fs-200);
   color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
@@ -95,7 +95,7 @@
   align-items: center;
   gap: 4px;
   margin-top: 2px;
-  font-size: 0.78rem;
+  font-size: var(--fs-200);
   color: var(--text-2);
 }
 .astro-card__location svg { flex: none; color: var(--gold); }
@@ -107,27 +107,34 @@
 }
 
 /* ── Tags ── */
-/* min-height reserves space for 2 rows of chips regardless of whether THIS
-   card's services actually wrap that far. Without it, a card with short
-   service labels (1 row) sits inside a grid-stretched row next to a card
-   with long labels (2 rows) and ends up with a visibly larger gap before its
-   stats row/footer — same outer card height (grid already equalizes that),
-   but an inconsistent internal rhythm. Measured empirically: two chip rows
-   (28px each) plus the row gap is ~62px. */
+/* Single-row horizontal slider instead of wrapping to a second row: nowrap +
+   overflow-x:auto, chips never shrink (flex:none) so they keep their natural
+   width and just scroll past the edge. This also fixes the old 2-row layout's
+   uneven card rhythm for free — every card's tag row is now the same one-line
+   height regardless of how many services it lists, so the min-height hack
+   that used to reserve space for a possible second row isn't needed. Applies
+   the same way on mobile/tablet/desktop; only the chip size changes per
+   breakpoint below. */
 .astro-card__tags {
   padding: 0 20px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   gap: 6px;
   margin-bottom: 14px;
-  min-height: 62px;
-  align-content: flex-start;
 }
+.astro-card__tags::-webkit-scrollbar { display: none; }
 .astro-card__tag {
+  flex: none;
+  white-space: nowrap;
   background: var(--ivory);
   border: 1px solid var(--border);
   color: var(--text-2);
-  font-size: 0.75rem;
+  font-size: var(--fs-200);
   padding: 3px 10px;
   border-radius: 20px;
 }
@@ -144,14 +151,14 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.85rem;
+  font-size: var(--fs-300);
 }
 .astro-card__star {
   color: var(--gold);
-  font-size: 1.1rem;
+  font-size: var(--fs-600);
 }
 .astro-card__rating-num {
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   color: var(--text);
 }
 .astro-card__orders {
@@ -163,9 +170,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: var(--fs-300);
   color: #10b981;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .astro-card__online-dot {
   width: 8px;
@@ -191,14 +198,14 @@
   flex-direction: column;
 }
 .astro-card__price {
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-600);
   color: var(--text);
 }
 .astro-card__free {
-  font-size: 0.75rem;
+  font-size: var(--fs-200);
   color: var(--gold-deep);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 
 .astro-card__actions {
@@ -208,8 +215,8 @@
 .astro-card__btn {
   padding: 6px 10px;
   border-radius: 24px;
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-200);
   display: inline-flex;
   gap: 4px;
   background: #fff;
@@ -280,8 +287,8 @@ a.card:hover .svc-ico--emoji {
   border-radius: var(--r-pill);
   border: 1px solid var(--border);
   background: var(--white);
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: var(--fs-300);
+  font-weight: var(--fw-medium);
   color: var(--text-2);
   cursor: pointer;
   transition: all 0.18s ease;
@@ -303,11 +310,11 @@ a.card:hover .svc-ico--emoji {
   border: 1.5px solid var(--border);
   border-radius: var(--r-pill);
   padding: 9px 34px 9px 16px;
-  font-size: 0.86rem;
-  font-weight: 500;
+  font-size: var(--fs-300);
+  font-weight: var(--fw-medium);
   color: var(--text);
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a017' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: var(--icon-select-chevron);
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 15px;
@@ -379,8 +386,8 @@ a.card:hover .svc-ico--emoji {
   backdrop-filter: blur(6px);
   color: #fff;
   font-family: var(--font-head);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: var(--fs-300);
+  font-weight: var(--fw-semibold);
   border: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: background 0.2s ease;
@@ -422,7 +429,7 @@ a.card:hover .svc-ico--emoji {
   margin-top: 14px;
   color: #fff;
   font-family: var(--font-head);
-  font-size: 0.95rem;
+  font-size: var(--fs-400);
   text-align: center;
 }
 .lightbox__close {
@@ -442,7 +449,7 @@ a.card:hover .svc-ico--emoji {
   transition: background 0.18s ease;
 }
 .lightbox__close:hover { background: rgba(255, 255, 255, 0.22); }
-.lightbox__close:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
+.lightbox__close:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 .lightbox__nav {
   position: absolute;
   top: 50%;
@@ -460,7 +467,7 @@ a.card:hover .svc-ico--emoji {
   transition: background 0.18s ease;
 }
 .lightbox__nav:hover { background: rgba(255, 255, 255, 0.22); }
-.lightbox__nav:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
+.lightbox__nav:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 .lightbox__nav--prev { left: 16px; }
 .lightbox__nav--next { right: 16px; }
 .lightbox__counter {
@@ -470,13 +477,13 @@ a.card:hover .svc-ico--emoji {
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.8);
   font-family: var(--font-head);
-  font-size: 0.82rem;
+  font-size: var(--fs-300);
   letter-spacing: 0.04em;
 }
 @media (max-width: 640px) {
   .lightbox { padding: 16px; }
   .lightbox__nav { width: 42px; height: 42px; }
-  .banner-view-gallery { right: 16px; bottom: 16px; padding: 8px 14px; font-size: 0.78rem; }
+  .banner-view-gallery { right: 16px; bottom: 16px; padding: 8px 14px; font-size: var(--fs-200); }
 }
 
 /* --------------------------------------------------------------- 404 page */
@@ -489,52 +496,61 @@ a.card:hover .svc-ico--emoji {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
   }
-  
+
+  /* A lone last card in an odd-count grid used to sit stuck to the left,
+     stranded next to an empty half-row. Span the full row and constrain it
+     back to a single card's width so it centers in the gap instead. */
+  .grid-2up-mobile > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 5px);
+    margin: 0 auto;
+  }
+
   .grid-2up-mobile .astro-card { height: 100%; display: flex; flex-direction: column; }
   .grid-2up-mobile .astro-card__header { padding: 10px 6px 6px; flex-direction: column; text-align: center; gap: 4px; }
   .grid-2up-mobile .astro-card__avatar { width: 48px; height: 48px; margin: 0 auto; }
   .grid-2up-mobile .astro-card__header-info { width: 100%; display: flex; flex-direction: column; align-items: center; }
   .grid-2up-mobile .astro-card__name-row { justify-content: center; gap: 4px; width: 100%; }
-  .grid-2up-mobile .astro-card__name { font-size: 0.85rem; white-space: normal; line-height: 1.1; text-align: center; }
-  .grid-2up-mobile .astro-card__meta-short { font-size: 0.65rem; text-align: center; }
-  .grid-2up-mobile .astro-card__tags { padding: 0 4px; gap: 4px; margin-bottom: 6px; justify-content: center; }
-  .grid-2up-mobile .astro-card__tag { font-size: 0.58rem; padding: 2px 5px; text-align: center; }
+  .grid-2up-mobile .astro-card__name { font-size: var(--fs-300); white-space: normal; line-height: var(--lh-tight); text-align: center; }
+  .grid-2up-mobile .astro-card__meta-short { font-size: var(--fs-50); text-align: center; }
+  .grid-2up-mobile .astro-card__tags { padding: 0 4px; gap: 4px; margin-bottom: 6px; }
+  .grid-2up-mobile .astro-card__tag { font-size: var(--fs-50); padding: 2px 5px; text-align: center; }
   .grid-2up-mobile .astro-card__stats-row { padding: 0 6px; margin-bottom: 8px; flex-wrap: wrap; gap: 4px; justify-content: space-between; }
-  .grid-2up-mobile .astro-card__rating, .grid-2up-mobile .astro-card__online { font-size: 0.65rem; }
+  .grid-2up-mobile .astro-card__rating, .grid-2up-mobile .astro-card__online { font-size: var(--fs-50); }
   .grid-2up-mobile .astro-card__orders { display: none; }
   .grid-2up-mobile .astro-card__footer { padding: 8px 6px; flex-direction: column; align-items: stretch; gap: 6px; margin-top: auto; }
   .grid-2up-mobile .astro-card__price-col { display: none; }
   .grid-2up-mobile .astro-card__actions { width: 100%; display: flex; gap: 6px; flex-direction: row; }
-  .grid-2up-mobile .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: 0.7rem; }
+  .grid-2up-mobile .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: var(--fs-100); }
 
   /* -- temple card (.card) alignment in grid-2up-mobile -- */
   .grid-2up-mobile .card-body { padding: 12px; }
   /* Clamp title to 2 lines so both column cards have equal title height */
   .grid-2up-mobile .card-title {
-    font-size: 0.88rem; margin-bottom: 4px;
+    font-size: var(--fs-300); margin-bottom: 4px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden; min-height: 2.4em;
   }
   .grid-2up-mobile .card-title::after { display: none; }
   /* Clamp meta-lines to 1 line so city/timing always same height */
   .grid-2up-mobile .meta-line {
-    font-size: 0.68rem; gap: 4px;
+    font-size: var(--fs-50); gap: 4px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     display: flex; align-items: center;
   }
   .grid-2up-mobile .meta-line svg { width: 12px; height: 12px; flex: none; }
   /* Push card-foot (rating + button) to bottom always */
   .grid-2up-mobile .card-foot { flex-direction: column; align-items: stretch; gap: 8px; margin-top: auto; padding-top: 10px; }
-  .grid-2up-mobile .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: 0.74rem; }
-  .grid-2up-mobile .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: 0.74rem; }
+  .grid-2up-mobile .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: var(--fs-100); }
+  .grid-2up-mobile .card-foot .btn { width: 100%; text-align: center; padding: 7px; font-size: var(--fs-100); }
   
   /* -- service card (.svc-card) alignment in grid-2up-mobile -- */
   .grid-2up-mobile .svc-card { height: 100%; display: flex; flex-direction: column; padding: 12px 8px; }
   .grid-2up-mobile .svc-ico--emoji { font-size: 1.8rem; width: 44px; height: 44px; margin: 0 auto 8px auto; border-radius: 12px; }
-  .grid-2up-mobile .svc-card h3 { font-size: 0.8rem; min-height: 2.2em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; line-height: 1.1; }
-  .grid-2up-mobile .svc-card p { font-size: 0.65rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; line-height: 1.2; }
-  .grid-2up-mobile .svc-card .btn { margin-top: auto; padding: 6px 4px; font-size: 0.7rem; }
-  .grid-2up-mobile .svc-card .muted { font-size: 0.58rem !important; margin-top: 6px !important; }
+  .grid-2up-mobile .svc-card h3 { font-size: var(--fs-200); min-height: 2.2em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; line-height: var(--lh-tight); }
+  .grid-2up-mobile .svc-card p { font-size: var(--fs-50); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; line-height: var(--lh-snug); }
+  .grid-2up-mobile .svc-card .btn { margin-top: auto; padding: 6px 4px; font-size: var(--fs-100); }
+  .grid-2up-mobile .svc-card .muted { font-size: var(--fs-50) !important; margin-top: 6px !important; }
 }
 
 /* ══════════════ PANDIT DIRECTORY: 4-UP GRID CARD COMPACTION ══════════════
@@ -552,11 +568,11 @@ a.card:hover .svc-ico--emoji {
 @media (min-width: 621px) {
   .pandit-results-grid .astro-card__header { padding: 14px 14px 10px; gap: 10px; }
   .pandit-results-grid .astro-card__avatar { width: 48px; height: 48px; }
-  .pandit-results-grid .astro-card__name { font-size: 0.92rem; line-height: 1.22; }
+  .pandit-results-grid .astro-card__name { font-size: var(--fs-400); line-height: var(--lh-snug); }
   .pandit-results-grid .astro-card__meta-short,
-  .pandit-results-grid .astro-card__location { font-size: 0.72rem; }
-  .pandit-results-grid .astro-card__tags { padding: 0 14px; gap: 5px; margin-bottom: 10px; min-height: 54px; }
-  .pandit-results-grid .astro-card__tag { font-size: 0.68rem; padding: 2px 8px; }
+  .pandit-results-grid .astro-card__location { font-size: var(--fs-100); }
+  .pandit-results-grid .astro-card__tags { padding: 0 14px; gap: 5px; margin-bottom: 10px; }
+  .pandit-results-grid .astro-card__tag { font-size: var(--fs-50); padding: 2px 8px; }
   .pandit-results-grid .astro-card__stats-row { padding: 0 14px; margin-bottom: 14px; }
   .pandit-results-grid .astro-card__orders { display: none; }
   .pandit-results-grid .astro-card__footer {
@@ -564,7 +580,7 @@ a.card:hover .svc-ico--emoji {
   }
   .pandit-results-grid .astro-card__price-col { display: none; }
   .pandit-results-grid .astro-card__actions { width: 100%; }
-  .pandit-results-grid .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: 0.74rem; }
+  .pandit-results-grid .astro-card__btn { flex: 1; justify-content: center; padding: 6px 4px; font-size: var(--fs-100); }
 }
 
 /* Narrowest 4-up columns (tablet portrait, ~768-900px, still above the
@@ -574,7 +590,7 @@ a.card:hover .svc-ico--emoji {
 @media (min-width: 621px) and (max-width: 900px) {
   .pandit-results-grid .astro-card__header { padding: 12px 10px 8px; gap: 8px; }
   .pandit-results-grid .astro-card__avatar { width: 42px; height: 42px; }
-  .pandit-results-grid .astro-card__name { font-size: 0.82rem; line-height: 1.2; }
+  .pandit-results-grid .astro-card__name { font-size: var(--fs-300); line-height: var(--lh-snug); }
   .pandit-results-grid .astro-card__meta-short,
-  .pandit-results-grid .astro-card__location { font-size: 0.68rem; }
+  .pandit-results-grid .astro-card__location { font-size: var(--fs-50); }
 }

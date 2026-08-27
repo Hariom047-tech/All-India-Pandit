@@ -5,7 +5,7 @@
   --reel-radius: 14px;
   --reel-gap: 14px;
   background: #fff;
-  border: 1px solid var(--border, #e8d5b7);
+  border: 1px solid var(--border);
   border-radius: var(--reel-radius);
   padding: 16px;
 }
@@ -15,24 +15,24 @@
   gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
 }
 .reels__title {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-display);
   font-size: clamp(1.05rem, 3.4vw, 1.25rem);
   margin: 0; display: flex; align-items: center; gap: 8px;
 }
 .reels__count {
-  font-family: inherit; font-size: .72rem; font-weight: 700;
-  background: var(--gold, #d4a017); color: #fff;
+  font-family: inherit; font-size: var(--fs-100); font-weight: var(--fw-bold);
+  background: var(--gold); color: var(--text-inverse);
   border-radius: 999px; padding: 2px 9px;
 }
 .reels__controls { display: flex; align-items: center; gap: 8px; }
 .reels__sound, .reels__arrow {
-  min-height: 40px; border: 1px solid var(--border, #e8d5b7); border-radius: 999px;
-  background: #fff; font: inherit; font-size: .82rem; cursor: pointer; padding: 6px 14px;
+  min-height: 40px; border: 1px solid var(--border); border-radius: 999px;
+  background: #fff; font: inherit; font-size: var(--fs-300); cursor: pointer; padding: 6px 14px;
 }
 .reels__arrows { display: none; gap: 6px; }
-.reels__arrow { width: 40px; padding: 0; font-size: 1.3rem; line-height: 1; }
+.reels__arrow { width: 40px; padding: 0; font-size: var(--fs-800); line-height: 1; }
 .reels__sound:focus-visible, .reels__arrow:focus-visible, .reels__dot:focus-visible {
-  outline: 2px solid var(--gold, #d4a017); outline-offset: 2px;
+  outline: 2px solid var(--gold); outline-offset: 2px;
 }
 .reels__arrow:disabled { opacity: .35; cursor: default; }
 
@@ -48,7 +48,7 @@
 }
 .reels__track::-webkit-scrollbar { height: 6px; }
 .reels__track::-webkit-scrollbar-thumb { background: #e6dcc6; border-radius: 999px; }
-.reels__track:focus-visible { outline: 2px solid var(--gold, #d4a017); outline-offset: 3px; }
+.reels__track:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
 .reel {
   position: relative;
@@ -75,10 +75,10 @@
 }
 .reel__meta {
   position: absolute; left: 12px; right: 12px; bottom: 12px;
-  color: #fff; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,.6);
+  color: var(--text-inverse); pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,.6);
 }
-.reel__meta strong { display: block; font-size: .92rem; }
-.reel__meta span { display: block; font-size: .78rem; opacity: .9; margin-top: 2px; }
+.reel__meta strong { display: block; font-size: var(--fs-400); }
+.reel__meta span { display: block; font-size: var(--fs-200); opacity: .9; margin-top: 2px; }
 .reel__live {
   position: absolute; top: 10px; right: 10px;
   width: 9px; height: 9px; border-radius: 50%;
@@ -91,7 +91,7 @@
   border: 0; background: #e0d6c0; cursor: pointer;
   transition: width .2s ease, background .2s ease;
 }
-.reels__dot.is-active { width: 22px; border-radius: 999px; background: var(--gold, #d4a017); }
+.reels__dot.is-active { width: 22px; border-radius: 999px; background: var(--gold); }
 
 /* ── Tablet: two full reels + a peek of the third ───────────────── */
 @media (min-width: 600px) {

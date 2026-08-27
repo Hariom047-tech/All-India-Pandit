@@ -26,8 +26,8 @@
 }
 
 .reviewer-info .city {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: var(--fs-300);
+  color: var(--text-2);
 }
 
 .stars {
@@ -40,17 +40,20 @@
 
 .review-body h5 {
   margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
+  font-size: var(--fs-600);
 }
 
 .service-tag {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: var(--fs-200);
   background: var(--ivory);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   margin-bottom: 0.5rem;
-  color: var(--saffron);
+  /* Was var(--saffron), a token that was never defined anywhere — with no
+     fallback, this tag was silently rendering in an invalid/inherited
+     color instead of the saffron-gold it was clearly meant to have. */
+  color: var(--gold-deep);
 }
 
 .review-photos {
@@ -102,7 +105,7 @@
   right: -2rem;
   background: none;
   border: none;
-  color: white;
-  font-size: 2rem;
+  color: var(--text-inverse);
+  font-size: var(--fs-1000);
   cursor: pointer;
 }

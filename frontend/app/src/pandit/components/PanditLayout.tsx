@@ -54,7 +54,7 @@ export function PanditLayout() {
         </button>
         <span className="pandit-topbar__brand">PanditSuggest</span>
         <span className="pandit-topbar__spacer" />
-        <span className="pandit-topbar__who" title={user?.email}>{user?.full_name || "Pandit Ji"}</span>
+        <span className="pandit-topbar__who" title={user?.email || undefined}>{user?.full_name || "Pandit Ji"}</span>
       </header>
 
       {drawerOpen && (

@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { adminApi } from "../lib/adminApi";
 
 interface UserProfile {
-  id: string; email: string; phone: string | null; full_name: string; status: string;
+  id: string; email: string | null; phone: string | null; full_name: string; status: string;
   city: string | null; state: string | null; country: string | null;
   email_verified: boolean; phone_verified: boolean;
   last_login_at: string | null; login_count: number; created_at: string;
@@ -60,7 +60,7 @@ export default function AdminUserDetail() {
       <div className="admin-page-head">
         <div>
           <h2 style={{ fontFamily: "var(--font-head)", fontSize: "1.4rem" }}>{profile.full_name}</h2>
-          <p>{profile.email} · Joined {new Date(profile.created_at).toLocaleDateString("en-IN")}</p>
+          <p>{profile.email ? `${profile.email} · ` : ""}Joined {new Date(profile.created_at).toLocaleDateString("en-IN")}</p>
         </div>
         <Link to="/admin-panel/users" className="btn btn-outline btn-sm">← Back to Users</Link>
       </div>
@@ -70,7 +70,7 @@ export default function AdminUserDetail() {
         <div className="admin-panel__body">
           <div className="grid g-4" style={{ gap: 14 }}>
             <div><span className="admin-stat-card__label">Mobile</span><div>{profile.phone || "—"} {profile.phone_verified && <span className="admin-pill admin-pill--green">Verified</span>}</div></div>
-            <div><span className="admin-stat-card__label">Email</span><div>{profile.email} {profile.email_verified && <span className="admin-pill admin-pill--green">Verified</span>}</div></div>
+            <div><span className="admin-stat-card__label">Email</span><div>{profile.email || "—"} {profile.email_verified && <span className="admin-pill admin-pill--green">Verified</span>}</div></div>
             <div><span className="admin-stat-card__label">Location</span><div>{[profile.city, profile.state, profile.country].filter(Boolean).join(", ") || "Unknown"}</div></div>
             <div><span className="admin-stat-card__label">Status</span><div><span className={`admin-pill ${profile.status === "active" ? "admin-pill--green" : "admin-pill--red"}`}>{profile.status}</span></div></div>
             <div><span className="admin-stat-card__label">Last login</span><div>{profile.last_login_at ? new Date(profile.last_login_at).toLocaleString("en-IN") : "Never"}</div></div>

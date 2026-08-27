@@ -3,7 +3,7 @@ const repo = require('../repositories/payments.repository');
 const { withUserContext, withSetting } = require('../config/db');
 const { logSecurityEvent } = require('../utils/securityLog');
 const { razorpayKeyId, razorpayKeySecret, razorpayWebhookSecret } = require('../config/env');
-const { resolveNewPeriod } = require('../services/billing/subscriptionPeriod');
+const { resolveNewPeriod, tierRank, RENEWAL_WINDOW_DAYS, isWithinRenewalWindow } = require('../services/billing/subscriptionPeriod');
 const { VALID_CYCLES } = require('../utils/billingPeriod');
 const razorpay = require('../services/billing/razorpayClient');
 const { getTaxSettings, computeTax } = require('../services/billing/tax');
@@ -30,11 +30,33 @@ async function subscribe(req, res) {
   const plan = await repo.findPlanByTier(tier);
   if (!plan) return res.status(404).json({ error: `No active plan for tier "${tier}"` });
 
-  // Checked BEFORE any Razorpay order is created — a devotee/pandit must
-  // never be charged for a plan that's already sold out. A renewal of the
-  // SAME tier the pandit already holds doesn't need a free seat (they're not
-  // taking a NEW one), so it's exempt from this check.
-  if (pandit.current_tier !== tier) {
+  // Three-way split on how `tier` relates to what the pandit already holds:
+  //
+  //  - SAME tier: this is a renewal, not a new seat — only allowed inside the
+  //    early-renewal window (RENEWAL_WINDOW_DAYS before expiry, or already
+  //    expired). Buying the same tier again with weeks still left would just
+  //    stack a second payment on top of unused time for no reason; the UI
+  //    (Plan.tsx) only shows this as an actionable button once the window is
+  //    open, but the API rejects it independently since the frontend guard
+  //    alone is not a real boundary.
+  //  - LOWER tier (downgrade): not self-service — Plan.tsx disables that
+  //    button and points to support, and this is the server-side half of the
+  //    same rule so a direct API call can't bypass it.
+  //  - HIGHER tier (upgrade): unrestricted, but — same as always — checked
+  //    against the seat cap first, since this DOES take a new seat.
+  if (pandit.current_tier === tier) {
+    if (!isWithinRenewalWindow(pandit.subscription_expires_at)) {
+      const renewalOpensAt = new Date(
+        new Date(pandit.subscription_expires_at).getTime() - RENEWAL_WINDOW_DAYS * 24 * 60 * 60 * 1000,
+      );
+      return res.status(409).json({
+        error: `Aap already ${tier} plan par hain, jo ${new Date(pandit.subscription_expires_at).toLocaleDateString('en-IN')} tak active hai. Renewal sirf expiry se ${RENEWAL_WINDOW_DAYS} din pehle available hota hai.`,
+        renewalAvailableFrom: renewalOpensAt.toISOString(),
+      });
+    }
+  } else if (tierRank(tier) < tierRank(pandit.current_tier)) {
+    return res.status(409).json({ error: 'Downgrade ke liye support se sampark karein.' });
+  } else {
     const seats = await repo.seatAvailability(tier);
     if (seats.seat_cap !== null && seats.available <= 0) {
       return res.status(409).json({ error: `${tier} plan is currently full. Please try a different plan or check back later.` });

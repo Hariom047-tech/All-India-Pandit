@@ -41,20 +41,6 @@ export default function PanditProfile() {
   /** The hero CTA row — the sticky bar appears only once this scrolls away. */
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  const handleAction = (e: React.MouseEvent, type: "whatsapp" | "call") => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!p) return;
-    contact({
-      panditSlug: p.id,
-      action: type,
-      phone: p.phone,
-      whatsapp: p.phone,
-      waMessage: `Namaste ${p.name}, I found your profile on PanditSuggest. I would like to enquire about a puja.`,
-      source: "pandit_profile",
-    });
-  };
-
   // The detail endpoint returns videos[]; normPandit() only carries the single
   // legacy video_intro_url, so fall back to that for profiles whose media has
   // not been re-uploaded through the new admin screen yet.
@@ -162,40 +148,26 @@ export default function PanditProfile() {
                     reads as a BAD pandit rather than a new one — actively worse
                     than showing nothing. Stars appear once there is something to
                     average. */}
-                <div className="row" style={{ justifyContent: "center", marginTop: 10 }}>
+                <div className="row" style={{ justifyContent: "center", alignItems: "center", gap: 8, marginTop: 8 }}>
                   {p.reviews > 0 ? (
                     <>
-                      <StarRow rating={p.rating} size={21} />
-                      <span className="rating-num" style={{ fontSize: "1.05rem" }}>({p.rating.toFixed(1)}/5)</span>
-                      <span className="muted">{p.reviews} {t("panditProfile.reviewsCount")}</span>
+                      <StarRow rating={p.rating} size={19} />
+                      <span className="rating-num">{p.rating.toFixed(1)}</span>
+                      <span className="muted">· {p.reviews} {t("panditProfile.reviewsCount")}</span>
                     </>
                   ) : (
                     <span className="pp-chip-new">{t("panditProfile.newOnPlatform")}</span>
                   )}
                 </div>
-                <div className="row" style={{ justifyContent: "center", marginTop: 14, flexWrap: "wrap" }}>
-                  <span className="meta-line"><Icon name="map-pin" size={17} /> {p.city}, {p.state}</span>
-                  <span className="tag">{t("panditProfile.yearsExperience", { exp: p.exp })}</span>
+                <div ref={ctaRef} className="row" style={{ justifyContent: "center", marginTop: 12, gap: 10, flexWrap: "wrap" }}>
+                  <span className="tag tag--soft">
+                    <Icon name="briefcase" size={15} /> {t("panditProfile.yearsExperience", { exp: p.exp })}
+                  </span>
+                  <span className="tag tag--soft">
+                    <Icon name="map-pin" size={15} /> {p.city}, {p.state}
+                  </span>
                 </div>
-                <div ref={ctaRef} className="row" style={{ justifyContent: "center", marginTop: 22, gap: 16, flexWrap: "wrap" }}>
-                  <button
-                    type="button" className="btn-icon btn-3d-wa"
-                    aria-label={`WhatsApp ${displayName}`}
-                    disabled={isPending(p.id, "whatsapp")}
-                    onClick={(e) => handleAction(e, "whatsapp")}
-                  >
-                    <Icon name="whatsapp" size={24} />
-                  </button>
-                  <button
-                    type="button" className="btn btn-3d-call btn-lg"
-                    disabled={isPending(p.id, "call")}
-                    onClick={(e) => handleAction(e, "call")}
-                  >
-                    <Icon name="phone" size={20} />{" "}
-                    {isPending(p.id, "call") ? "…" : t("panditProfile.callNow")}
-                  </button>
-                </div>
-                <p className="muted" style={{ marginTop: 14, fontSize: ".84rem" }}>
+                <p className="muted" style={{ marginTop: 16, fontSize: ".84rem" }}>
                   <Icon name="shield-check" size={14} /> {t("panditProfile.verifiedProfileNote")}
                 </p>
                 {/* Contact-data disclosure: stated up front, not buried. */}
@@ -323,8 +295,8 @@ export default function PanditProfile() {
       <section className="section section--cream">
         <div className="shell">
           <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginBottom: 26 }}>{t("panditProfile.similarPanditsTitle")}</h2>
-          <div className="grid g-2 grid-2up-mobile">
-            {similar.slice(0, 6).map((sp, i) => <PanditCard p={sp} key={sp.id} index={i} sourceSurface="similar_pandits" />)}
+          <div className="grid g-3 grid-2up-mobile">
+            {similar.slice(0, 12).map((sp, i) => <PanditCard p={sp} key={sp.id} index={i} sourceSurface="similar_pandits" />)}
           </div>
           <div className="text-c" style={{ marginTop: 32 }}>
             <Link className="btn btn-outline" to="/pandits">{t("panditProfile.seeAllPandits")}</Link>

@@ -1,0 +1,46 @@
+/* ==========================================================================
+   Common / Colors — the full palette, plus semantic text-color aliases.
+   Component CSS should reach for a var() here rather than writing a new hex
+   — a color used in more than one place belongs in this file, not repeated
+   at each call site.
+   ========================================================================== */
+
+:root {
+  /* --- Palette --- */
+  --white: #ffffff;
+  --ivory: #fff8e7;
+  --cream: #fdf7ea;
+  --cream-deep: #f7edd7;
+  --gold: #d4a017;
+  --gold-bright: #ffd700;
+  --gold-deep: #a87a12;
+  --gold-soft: #f0d9a0;
+  /* Was referenced (search.css) as var(--gold-light, #e6d08a) but never
+     actually defined — one call site had a fallback masking it, a second had
+     none and was silently rendering with an invalid/inherited color. Defined
+     here at the value the fallback already used, so both now render as the
+     gold that was clearly intended. */
+  --gold-light: #e6d08a;
+  --border: #e8d5b7;
+  --border-soft: #f1e4cb;
+  --whatsapp: #25d366;
+  --danger: #c0392b;
+  --success: #2e7d4f;
+
+  --gold-grad: linear-gradient(135deg, #e6be4f 0%, #d4a017 52%, #b0850f 100%);
+  --gold-grad-soft: linear-gradient(135deg, #fff8e7 0%, #f4e3bd 100%);
+
+  /* --- Text colors ---
+     --text/--text-2 are the pair nearly every component already reaches
+     for; the rest name patterns that were being re-typed as raw hex at each
+     call site (52x "color: #fff" for on-gold/on-dark text, three separate
+     "#fdf7ea" for the footer's on-dark headings, muted grays that were each
+     one component's private guess at "--text-2 but a bit lighter"). */
+  --text: #2d2d2d;
+  --text-2: #6b6b6b;
+  --text-muted: #8a867d;
+  --text-inverse: #ffffff;      /* on solid gold / solid dark surfaces */
+  --text-on-dark: #fdf7ea;      /* headings on the dark footer / dark panels */
+  --text-on-dark-2: rgba(255, 248, 231, .68);  /* body text on the same dark surfaces */
+  --text-on-dark-muted: rgba(255, 248, 231, .5);
+}

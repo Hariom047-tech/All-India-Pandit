@@ -4,11 +4,11 @@
    ════════════════════════════════════════════════════════════════════ */
 
 .search-page {
-  background: var(--ivory, #fff8e7);
+  background: var(--ivory);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  color: var(--text, #2d2d2d);
+  color: var(--text);
 }
 
 .search-page__content {
@@ -28,7 +28,7 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--gold, #d4a017);
+  border: 1px solid var(--gold);
   border-radius: 999px;
   padding: 12px 24px;
   box-shadow: 0 8px 24px rgba(212, 160, 23, 0.15);
@@ -42,7 +42,7 @@
 }
 
 .search-bar__icon {
-  color: var(--gold-deep, #a87a12);
+  color: var(--gold-deep);
   margin-right: 12px;
 }
 
@@ -50,22 +50,22 @@
   flex: 1;
   border: none;
   background: transparent;
-  font-size: 1.15rem;
+  font-size: var(--fs-700);
   font-family: var(--font-body);
   color: var(--text);
   outline: none;
 }
 
 .search-bar__input::placeholder {
-  color: #999;
-  font-weight: 400;
+  color: var(--text-muted);
+  font-weight: var(--fw-regular);
 }
 
 .search-bar__clear {
   background: none;
   border: none;
   padding: 4px;
-  color: #999;
+  color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -84,7 +84,7 @@
 
 .search-suggestions__title {
   font-family: var(--font-head);
-  font-size: 1rem;
+  font-size: var(--fs-500);
   color: var(--gold-deep);
   margin-bottom: 16px;
 }
@@ -101,11 +101,11 @@
   gap: 6px;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
-  border: 1px solid var(--border-soft, #f1e4cb);
+  border: 1px solid var(--border-soft);
   padding: 8px 16px;
   border-radius: 999px;
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: var(--fs-300);
+  font-weight: var(--fw-medium);
   color: var(--text-2);
   cursor: pointer;
   transition: all 0.2s;
@@ -133,8 +133,8 @@
 
 .search-group__title {
   font-family: var(--font-head);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--fs-700);
+  font-weight: var(--fw-bold);
   color: var(--gold-deep);
   margin-bottom: 16px;
   display: flex;
@@ -162,7 +162,7 @@
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--border-soft, #f1e4cb);
+  border: 1px solid var(--border-soft);
   padding: 16px;
   border-radius: 16px;
   text-decoration: none;
@@ -172,7 +172,7 @@
 
 .search-card:hover {
   background: rgba(255, 255, 255, 0.9);
-  border-color: var(--gold-light, #e6d08a);
+  border-color: var(--gold-light);
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(168, 122, 18, 0.1);
 }
@@ -212,8 +212,8 @@
 
 .search-card__title {
   font-family: var(--font-head);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--fs-500);
+  font-weight: var(--fw-semibold);
   color: var(--text);
   margin-bottom: 4px;
   white-space: nowrap;
@@ -229,7 +229,7 @@
 }
 
 .search-card__sub {
-  font-size: 0.8rem;
+  font-size: var(--fs-200);
   color: var(--text-2);
   margin-bottom: 8px;
   white-space: nowrap;
@@ -247,8 +247,8 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: var(--fs-50);
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 3px 8px;
@@ -280,8 +280,8 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--fs-200);
+  font-weight: var(--fw-semibold);
   color: var(--gold);
 }
 
@@ -302,14 +302,14 @@
 
 .search-empty h3 {
   font-family: var(--font-head);
-  font-size: 1.4rem;
+  font-size: var(--fs-800);
   color: var(--gold-deep);
   margin-bottom: 10px;
 }
 
 .search-empty p {
   color: var(--text-2);
-  font-size: 0.95rem;
+  font-size: var(--fs-400);
 }
 
 /* ── NLP Context & Did You Mean ── */
@@ -326,14 +326,14 @@
   color: var(--text);
   padding: 12px 16px;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: var(--fs-400);
 }
 
 .search-context__spell .btn-link {
   background: none;
   border: none;
   color: var(--gold-deep);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
@@ -350,7 +350,7 @@
   color: var(--text-2);
   padding: 10px 16px;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: var(--fs-300);
   box-shadow: 0 4px 12px rgba(168, 122, 18, 0.05);
 }
 
@@ -360,7 +360,7 @@
 
 .search-context__intent strong {
   color: var(--gold-deep);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 
 /* ═══════════════ RESPONSIVE ═══════════════ */
@@ -375,7 +375,7 @@
   }
 
   .search-bar__input {
-    font-size: 1rem;
+    font-size: var(--fs-500);
   }
 
   .search-suggestions__chips {
@@ -411,11 +411,11 @@
   }
 
   .search-card__title {
-    font-size: 0.95rem;
+    font-size: var(--fs-400);
   }
 
   .search-group__title {
-    font-size: 1.1rem;
+    font-size: var(--fs-600);
     margin-bottom: 12px;
   }
 }

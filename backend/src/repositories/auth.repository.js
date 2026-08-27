@@ -181,10 +181,20 @@ async function incrementOtpAttempts(id) {
   await query('UPDATE otp_verifications SET attempts = attempts + 1 WHERE id = $1', [id]);
 }
 
-/** Needs RLS context (users_update_self) — call via withUserContext. */
+/** Needs RLS context (users_update_self) — call via withUserContext.
+ *  Also promotes a brand-new account out of 'pending_verification' the
+ *  moment it proves ownership of a real phone or email — that's this
+ *  schema's bar for 'active' (01-schema.sql's account_status enum). Never
+ *  touches an account an admin has since suspended/banned/deactivated,
+ *  since the CASE only fires from 'pending_verification'. */
 async function markTargetVerified(userId, targetType, q = query) {
   const column = targetType === 'email' ? 'email_verified' : 'phone_verified';
-  await q(`UPDATE users SET ${column} = TRUE WHERE id = $1`, [userId]);
+  await q(
+    `UPDATE users SET ${column} = TRUE,
+            status = CASE WHEN status = 'pending_verification' THEN 'active' ELSE status END
+     WHERE id = $1`,
+    [userId],
+  );
 }
 
 module.exports = {

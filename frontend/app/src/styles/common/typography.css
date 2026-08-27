@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Common / Typography — the single source of truth for every font-family,
+   font-size, font-weight, line-height, heading, body-text and label/caption
+   style in the app. Component CSS should reference these tokens/classes
+   instead of hardcoding a new font-size or line-height at each call site —
+   that scatter (50+ near-duplicate font-size values like .95rem/.92rem/
+   .88rem across the old component files) is exactly what this file exists
+   to replace.
+   ========================================================================== */
+
+:root {
+  /* --- Font families ---
+     Devanagari fallbacks are appended so Hindi glyphs render in the right
+     family instead of silently falling back to the OS default mid-sentence
+     — none of Playfair/Poppins/Inter cover Devanagari themselves. */
+  --font-display: "Playfair Display", "Noto Serif Devanagari", "Georgia", serif;
+  --font-head: "Poppins", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+
+  /* --- Font-size scale ---
+     A numbered ladder (Tailwind-style) rather than semantic-only names —
+     component text sits at every rung, not just the "heading" ones, so the
+     scale needs to be reached for directly as well as through the
+     heading/body aliases below. */
+  --fs-50: 0.65rem;    /* 10.4px — tiny badges, pill counters */
+  --fs-100: 0.72rem;   /* 11.5px — captions, timestamps */
+  --fs-200: 0.78rem;   /* 12.5px — dense meta rows */
+  --fs-300: 0.85rem;   /* 13.6px — secondary labels */
+  --fs-400: 0.92rem;   /* 14.7px — card body text, form labels */
+  --fs-500: 1rem;      /* 16px   — base body copy */
+  --fs-600: 1.08rem;   /* 17.3px — lead paragraph, emphasis */
+  --fs-700: 1.2rem;    /* 19.2px — h6 / small heading */
+  --fs-800: 1.35rem;   /* 21.6px — h5 */
+  --fs-900: 1.6rem;    /* 25.6px — h4 */
+  --fs-1000: 1.9rem;   /* 30.4px — h3 */
+  --fs-1100: 2.2rem;   /* 35.2px — h2 */
+  --fs-1200: 2.6rem;   /* 41.6px — h1 */
+  --fs-1300: 3.2rem;   /* 51.2px — hero / display */
+
+  /* --- Font-weight scale --- */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* --- Line-height scale --- */
+  --lh-tight: 1.1;     /* large display headings */
+  --lh-snug: 1.25;      /* h2–h6 */
+  --lh-normal: 1.4;    /* UI text — buttons, labels, meta rows */
+  --lh-relaxed: 1.65;  /* long-form body copy (matches <body>'s own default) */
+  --lh-loose: 1.8;     /* extra breathing room for pull quotes / large paragraphs */
+
+  /* --- Semantic aliases ---
+     What most components actually want is "the h3 size" or "the caption
+     size", not "rung 900 of the scale" — these map the numbered ladder onto
+     names that read at the call site. */
+  --fs-h1: var(--fs-1200);
+  --fs-h2: var(--fs-1100);
+  --fs-h3: var(--fs-1000);
+  --fs-h4: var(--fs-900);
+  --fs-h5: var(--fs-800);
+  --fs-h6: var(--fs-700);
+  --fs-body: var(--fs-500);
+  --fs-body-sm: var(--fs-400);
+  --fs-caption: var(--fs-200);
+  --fs-label: var(--fs-300);
+}
+
+/* --------------------------------------------------------- base elements --- */
+/* Every page inherits these; a component only needs its own rule when it
+   deviates from the default, not to restate the default. */
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-relaxed);
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-head);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text);
+}
+h1 { font-size: var(--fs-h1); line-height: var(--lh-tight); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-tight); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+h5 { font-size: var(--fs-h5); }
+h6 { font-size: var(--fs-h6); }
+
+p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-relaxed);
+}
+
+small, label {
+  font-size: var(--fs-label);
+}
+
+/* --------------------------------------------------------- utility classes --- */
+/* For the common repeated patterns (a hero display headline, a muted
+   secondary line, an uppercase eyebrow tag, a caption) — reach for one of
+   these before writing a new one-off rule. */
+
+.text-display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  font-size: var(--fs-1300);
+}
+
+.text-body-sm {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-normal);
+}
+
+.text-caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-normal);
+}
+
+.text-label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+}
+
+.text-muted {
+  color: var(--text-2);
+}
+
+/* Small uppercase tag above a heading ("EXPLORE", "MOST BOOKED", …) — the
+   same pattern several components (footer accordions, section eyebrows)
+   were each re-declaring letter-spacing/text-transform/font-weight for. */
+.text-eyebrow {
+  font-family: var(--font-head);
+  font-size: var(--fs-100);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

@@ -5,7 +5,7 @@ import { Pager } from "../../components/ui/Pager";
 
 interface UserRow {
   id: string;
-  email: string;
+  email: string | null;
   /** Present on the admin payload; devotees who signed up with Google may have none. */
   phone: string | null;
   full_name: string;

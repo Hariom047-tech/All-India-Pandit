@@ -210,9 +210,10 @@ export default function Dashboard() {
                       </div>
                       <div style={{ gridColumn: "1 / -1" }}>
                         <label style={{ display: "block", fontSize: "0.85rem", color: "#555", marginBottom: 6, fontWeight: 500 }}>Email Address</label>
-                        <input 
-                          value={user.email} 
-                          disabled 
+                        <input
+                          value={user.email || ""}
+                          placeholder="No email on file"
+                          disabled
                           style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: "1px solid #ddd", fontSize: "0.95rem", background: "#f9f9f9", color: "#888" }} 
                         />
                       </div>

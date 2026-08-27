@@ -3,7 +3,8 @@ import { api, setToken as setApiToken } from "./api";
 
 export interface User {
   id: string;
-  email: string;
+  /** Null for a phone-only signup (passwordless WhatsApp OTP) that never gave an email. */
+  email: string | null;
   full_name: string;
   role: "devotee" | "temple_admin" | "pandit" | "admin" | "super_admin";
   phone: string | null;

@@ -68,9 +68,11 @@ export function PanditCard({ p, index = 0, sourceSurface }: { p: Pandit; index?:
           </div>
         </div>
 
-        {/* Tags */}
+        {/* Services — a single-row horizontal slider (scrolls, never wraps)
+            rather than the old 2-row wrap, so there's room to list more than
+            just the first 3 without growing the card. */}
         <div className="astro-card__tags">
-          {p.services.slice(0, 3).map((s) => (
+          {p.services.slice(0, 6).map((s) => (
             <span className="astro-card__tag" key={s}>{s.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
           ))}
         </div>

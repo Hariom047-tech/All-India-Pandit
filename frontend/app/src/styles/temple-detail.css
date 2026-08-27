@@ -12,7 +12,7 @@
 /* ── premium tab bar ── */
 .td-tabs {
   position: sticky;
-  top: var(--header-h, 72px);
+  top: var(--header-h);
   z-index: 20;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
@@ -33,18 +33,18 @@
 .td-tab {
   position: relative;
   padding: 16px 24px;
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-2, #6d6a62);
+  font-family: var(--font-display);
+  font-size: var(--fs-400);
+  font-weight: var(--fw-semibold);
+  color: var(--text-2);
   background: none;
   border: none;
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.3s ease;
 }
-.td-tab:hover { color: var(--gold-deep, #b8860b); }
-.td-tab.is-active { color: var(--gold-deep, #b8860b); }
+.td-tab:hover { color: var(--gold-deep); }
+.td-tab.is-active { color: var(--gold-deep); }
 .td-tab.is-active::after {
   content: "";
   position: absolute;
@@ -53,7 +53,7 @@
   transform: translateX(-50%);
   width: 60%;
   height: 3px;
-  background: var(--gold-grad, linear-gradient(135deg, #f0c246, #d4a017));
+  background: var(--gold-grad);
   border-radius: 3px 3px 0 0;
   animation: tab-slide-in 0.3s ease;
 }
@@ -62,23 +62,20 @@
   to { width: 60%; opacity: 1; }
 }
 
-/* ── glassmorphism card ── */
+/* ── info / content card ── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 160, 23, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(212, 160, 23, 0.1);
   border-radius: 20px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
-.glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+/* ── section divider (plain, no shimmer) ── */
+.sacred-divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 32px 0;
+  border: 0;
 }
 
 /* ── golden info stat cards ── */
@@ -100,30 +97,30 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: var(--gold-grad, linear-gradient(180deg, #f0c246, #d4a017));
+  background: var(--gold-grad);
   border-radius: 4px 0 0 4px;
 }
 .td-info-label {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--fs-100);
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: var(--gold-deep, #b8860b);
+  color: var(--gold-deep);
   margin-bottom: 6px;
 }
 .td-info-value {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text, #1a1714);
+  font-size: var(--fs-600);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
 }
 
 /* ── section headers ── */
 .td-heading {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--text, #1a1714);
+  font-family: var(--font-display);
+  font-size: var(--fs-900);
+  font-weight: var(--fw-bold);
+  color: var(--text);
   margin-bottom: 18px;
   display: flex;
   align-items: center;
@@ -133,7 +130,7 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--gold-grad, linear-gradient(135deg, #f0c246, #d4a017));
+  background: var(--gold-grad);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,51 +171,9 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--gold-grad, linear-gradient(135deg, #f0c246, #d4a017));
+  background: var(--gold-grad);
   flex: none;
   box-shadow: 0 0 8px rgba(212, 160, 23, 0.4);
-}
-
-/* ── premium inquiry form ── */
-.td-inquiry {
-  position: sticky;
-  top: calc(var(--header-h, 72px) + 66px);
-  padding: 28px;
-  border-radius: 24px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(250, 247, 240, 0.95));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(212, 160, 23, 0.15);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-.td-inquiry::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--gold-grad, linear-gradient(90deg, #f0c246, #d4a017, #f0c246));
-}
-.td-inquiry__title {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.35rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.td-inquiry__title-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--gold-grad, linear-gradient(135deg, #f0c246, #d4a017));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
 }
 
 /* ── premium gallery grid ── */
@@ -240,7 +195,7 @@
 }
 .td-gallery__item:hover {
   transform: scale(1.03);
-  border-color: var(--gold, #d4a017);
+  border-color: var(--gold);
 }
 .td-gallery__item img {
   width: 100%;
@@ -257,9 +212,9 @@
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 14px;
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: var(--text-inverse);
+  font-size: var(--fs-300);
+  font-weight: var(--fw-semibold);
 }
 .td-gallery__item:hover .td-gallery__overlay {
   opacity: 1;
@@ -281,11 +236,11 @@
   border: 1px solid rgba(212, 160, 23, 0.12);
 }
 .td-review-score {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 3.2rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--fs-1300);
+  font-weight: var(--fw-extrabold);
   line-height: 1;
-  background: var(--gold-grad, linear-gradient(135deg, #d4a017, #f0c246));
+  background: var(--gold-grad);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -304,9 +259,9 @@
 }
 .td-bar-label {
   width: 38px;
-  font-size: 0.88rem;
-  color: var(--text-2, #6d6a62);
-  font-weight: 600;
+  font-size: var(--fs-300);
+  color: var(--text-2);
+  font-weight: var(--fw-semibold);
 }
 .td-bar-track {
   flex: 1;
@@ -318,21 +273,21 @@
 .td-bar-fill {
   height: 100%;
   border-radius: 5px;
-  background: var(--gold-grad, linear-gradient(90deg, #f0c246, #d4a017));
+  background: var(--gold-grad);
   transition: width 1s ease-out;
 }
 .td-bar-pct {
   width: 40px;
   text-align: right;
-  font-size: 0.82rem;
-  color: var(--text-2, #6d6a62);
+  font-size: var(--fs-300);
+  color: var(--text-2);
 }
 
 /* ── about text ── */
 .td-about-text {
-  color: #4d4a45;
-  line-height: 1.8;
-  font-size: 1rem;
+  color: var(--text);
+  line-height: var(--lh-loose);
+  font-size: var(--fs-body);
 }
 
 /* ── empty state (no pandits / no services) ── */
@@ -342,10 +297,10 @@
    enquiry, and a card that looks navigable but is not is worse than one that
    states its action. */
 .td-subheading {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text, #1a1714);
+  font-family: var(--font-display);
+  font-size: var(--fs-700);
+  font-weight: var(--fw-bold);
+  color: var(--text);
   margin: 30px 0 14px;
 }
 
@@ -367,40 +322,40 @@
 }
 .td-custom-service:hover {
   background: rgba(255, 248, 231, 0.95);
-  border-color: var(--gold, #d4a017);
+  border-color: var(--gold);
   transform: translateY(-2px);
 }
 .td-custom-service:focus-visible {
-  outline: 2px solid var(--gold, #d4a017);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .td-custom-service__icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 38px; height: 38px; flex: none;
   border-radius: 12px;
-  background: var(--gold-bright, #ffd700);
-  color: var(--text, #1a1714);
+  background: var(--gold-bright);
+  color: var(--text);
 }
 .td-custom-service__name {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.02rem;
-  font-weight: 700;
-  color: var(--text, #1a1714);
+  font-family: var(--font-display);
+  font-size: var(--fs-500);
+  font-weight: var(--fw-bold);
+  color: var(--text);
   overflow-wrap: anywhere;
 }
 .td-custom-service__desc {
-  font-size: .86rem;
-  line-height: 1.5;
-  color: var(--text-2, #6d6a62);
+  font-size: var(--fs-300);
+  line-height: var(--lh-normal);
+  color: var(--text-2);
   overflow-wrap: anywhere;
 }
 .td-custom-service__cta {
   display: inline-flex; align-items: center; gap: 5px;
   margin-top: auto;
   padding-top: 4px;
-  font-size: .84rem;
-  font-weight: 700;
-  color: var(--gold-deep, #b8860b);
+  font-size: var(--fs-300);
+  font-weight: var(--fw-bold);
+  color: var(--gold-deep);
 }
 @media (prefers-reduced-motion: reduce) {
   .td-custom-service, .td-custom-service:hover { transition: none; transform: none; }
@@ -419,10 +374,10 @@
   margin-bottom: 14px;
 }
 .td-empty-state__text {
-  font-family: var(--font-head, "Playfair Display", serif);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text, #1a1714);
+  font-family: var(--font-display);
+  font-size: var(--fs-600);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
   margin: 0;
 }
 
@@ -444,57 +399,17 @@
   background: linear-gradient(180deg, rgba(250, 247, 240, 0.8), rgba(255, 255, 255, 0.9));
 }
 
-/* ── content area layout ── */
-.td-content {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 36px;
-  align-items: start;
-}
-
-/* On the Pandits tab, the inquiry form competes with the thing devotees
-   actually came for — a full roster to browse. Desktop/tablet only: the
-   sidebar still earns its place on mobile, where there is no spare width
-   for a 3-up grid anyway (grid-2up-mobile forces 2 columns below 620px). */
-@media (min-width: 621px) {
-  .td-content--pandits-3up .td-inquiry {
-    display: none;
-  }
-}
-@media (min-width: 961px) {
-  .td-content--pandits-3up {
-    grid-template-columns: 1fr;
-  }
-}
-/* base.css has a sitewide rule dropping .g-3 to 2 columns at <=900px, tuned
-   for other pages' wider cards. This page's own tablet range already runs
-   to 960px (see .td-content's breakpoint above), and with the inquiry
-   sidebar gone there is room for 3 — so re-assert 3 columns across that
-   whole range, specific to this grid, without touching .g-3 sitewide. */
-@media (min-width: 621px) and (max-width: 960px) {
-  .td-content--pandits-3up .grid.g-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* ── responsive ── */
 @media (max-width: 960px) {
-  .td-content {
-    grid-template-columns: 1fr;
-  }
-  .td-inquiry {
-    position: static;
-    order: -1;
-  }
   .td-tab {
     padding: 14px 18px;
-    font-size: 0.88rem;
+    font-size: var(--fs-300);
   }
 }
 
 @media (max-width: 600px) {
   .td-heading {
-    font-size: 1.3rem;
+    font-size: var(--fs-800);
   }
   .td-review-summary {
     flex-direction: column;
@@ -507,12 +422,12 @@
     padding: 14px 12px;
   }
   .td-info-label {
-    font-size: 0.65rem;
+    font-size: var(--fs-50);
     margin-bottom: 4px;
     letter-spacing: 0.8px;
   }
   .td-info-value {
-    font-size: 0.95rem;
+    font-size: var(--fs-400);
   }
   /* Reviews carousel: remove negative margin on mobile to prevent overflow */
   .td-reviews-carousel-wrap {
@@ -528,7 +443,7 @@
   }
   .td-tab {
     padding: 12px 14px;
-    font-size: 0.82rem;
+    font-size: var(--fs-300);
   }
 }
 
@@ -546,7 +461,7 @@
   object-fit: cover;
   border-radius: 12px;
   background: #12100c;
-  border: 1px solid var(--border, #e8d5b7);
+  border: 1px solid var(--border);
 }
 @media (max-width: 600px) {
   .td-video-grid { grid-template-columns: 1fr; }

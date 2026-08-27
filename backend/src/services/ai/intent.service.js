@@ -160,6 +160,39 @@ const AFFIRMATIVE = new RegExp(
   + ')[\\s!.।]*$|^\\s*(हाँ|हां|जी|ठीक|बिल्कुल|ज़रूर)[\\s!।]*$', 'i',
 );
 
+/**
+ * Individual words that only ever mean "yes" or reinforce one — never a word
+ * that could carry NEW information on its own.
+ *
+ * AFFIRMATIVE above requires the whole message to be one exact listed phrase,
+ * so "ha please karo" (three words, each individually a yes/filler word) was
+ * falling through as a non-answer and re-triggering the same offer instead of
+ * showing cards — the app looked like it wasn't listening. isPureAffirmative()
+ * below covers that: every word in a short reply must be one of these, which
+ * still rejects a genuinely different follow-up ("haan lekin pehle ye batao
+ * ki kitna kharcha aayega" has real content words — lekin, kharcha — that
+ * aren't in this set) the same way the ai-ranking.test.js case already
+ * expects.
+ */
+const AFFIRMATIVE_WORDS = new Set([
+  'ha', 'haa', 'haan', 'han', 'haanji', 'ji', 'yes', 'yeah', 'yep', 'ok', 'okay', 'okey',
+  'theek', 'thik', 'sure', 'hai', 'kro', 'karo', 'kar', 'kardo', 'do', 'dikhao', 'batao', 'bta',
+  'suggest', 'zaroor', 'jarur', 'bilkul', 'please', 'plz',
+  'हाँ', 'हां', 'जी', 'ठीक', 'बिल्कुल', 'ज़रूर',
+]);
+
+/** A reply made up entirely of AFFIRMATIVE_WORDS (max 6, so a real sentence
+ *  can never slip through) — the "several reinforcing words" case AFFIRMATIVE
+ *  alone doesn't catch. Empty/overlong messages are never affirmative. */
+function isPureAffirmative(message) {
+  const trimmed = (message || '').trim();
+  if (!trimmed) return false;
+  if (AFFIRMATIVE.test(trimmed)) return true;
+  const words = trimmed.toLowerCase().replace(/[!.।,?]/g, '').split(/\s+/).filter(Boolean);
+  if (!words.length || words.length > 6) return false;
+  return words.every((w) => AFFIRMATIVE_WORDS.has(w));
+}
+
 const ONLINE_PATTERNS = /\b(online|video call|ghar baithe|ghar se|remote|virtual)\b|ऑनलाइन|घर बैठे/i;
 const TEMPLE_VISIT_PATTERNS = /\b(mandir me|mandir mein|temple me|temple mein|darshan|jaakar|jakar)\b|मंदिर में|दर्शन/i;
 
@@ -273,8 +306,9 @@ function extractIntent(text, vocab = {}, memory = {}) {
     isVague: isVague(hay, { temple, deity, problemCategory }),
     // Asked for a pandit / seva outright — show the cards, do not offer to.
     wantsRecommendations: WANTS_RECOMMENDATIONS.test(raw),
-    // A bare "haan" answering our offer.
-    isAffirmative: AFFIRMATIVE.test(raw),
+    // A bare "haan" — or several reinforcing words like "ha please karo" —
+    // answering our offer.
+    isAffirmative: isPureAffirmative(raw),
   };
 
   return mergeMemory(intent, memory);

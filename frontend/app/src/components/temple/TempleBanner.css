@@ -104,36 +104,6 @@
   .banner-view-gallery { bottom: 12px; right: 16px; }
 }
 
-/* ── golden shimmer overlay ── */
-.banner-golden-shimmer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg,
-      transparent 0%,
-      transparent 40%,
-      rgba(212, 160, 23, 0.06) 60%,
-      rgba(26, 23, 20, 0.65) 100%
-    );
-}
-.banner-golden-shimmer::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold-bright, #f0c246), var(--gold, #d4a017), var(--gold-bright, #f0c246), transparent);
-  background-size: 200% 100%;
-  animation: banner-shimmer-line 4s ease-in-out infinite;
-}
-@keyframes banner-shimmer-line {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
 /* ── banner card golden glow ── */
 .detail-banner--slider .banner-card {
   border: 1px solid rgba(212, 160, 23, 0.15);

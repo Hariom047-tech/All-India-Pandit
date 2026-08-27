@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Icon } from "../lib/icons";
 import { useService, useServices, usePandits, useTemples } from "../hooks/useData";
 import { normService, normServices, normPandits, normTemples } from "../lib/normalize";
@@ -23,6 +23,7 @@ const TAB_KEYS: readonly Tab[] = ["overview", "samagri", "pandits", "reviews"];
 
 export default function ServiceDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: rawService, loading, error } = useService(id || "");
   const { data: rawServices } = useServices();
   // 600: "limit" was never a real API param (silently ignored, falling back
@@ -224,7 +225,7 @@ export default function ServiceDetail() {
                 <div className="sd-hero__cta-wrap">
                   <button
                     className="sd-hero__cta"
-                    onClick={() => openEnquiry({ service: s.id })}
+                    onClick={() => pandits.length > 0 ? navigate(`/services/${s.id}/pandits`) : openEnquiry({ service: s.id })}
                   >
                     🙏 Connect with Pandit
                   </button>
@@ -256,130 +257,137 @@ export default function ServiceDetail() {
 
         {/* OVERVIEW TAB */}
         {activeTab === "overview" && (
-          <section className="section" style={{ paddingTop: 48 }}>
-            <div className="shell sd-content-grid">
+          <section className="section" style={{ paddingTop: 48, paddingBottom: 40 }}>
+            <div className="shell">
               <div className="sd-main">
-                {/* Spiritual Significance */}
-                <div className="sd-card">
-                  <h2 className="sd-card__title">
-                    <span className="sd-card__title-icon">🕉️</span>
-                    Spiritual Significance
-                  </h2>
-                  <p className="sd-card__text">{s.desc}</p>
-                  <p className="sd-card__text" style={{ marginTop: 12 }}>
-                    This sacred ceremony has been performed for centuries in the Hindu tradition. It is believed to purify the space, remove negative energies, and invite divine blessings for everyone involved. The mantras chanted during the puja create powerful vibrations that bring peace and positive energy.
-                  </p>
-                </div>
-
-                {/* Benefits — Premium Scroll Strip */}
-                {api?.is_online_available && (
-                  <div className="sd-online-card">
-                    <h3>🌐 Online puja / havan available</h3>
-                    <p>{api.online_note || "Yeh puja video call par live karvai ja sakti hai — sankalp aapke naam se."}</p>
-                    {api.onlinePandits?.length ? (
-                      <>
-                        <span className="sd-online-card__label">
-                          {api.onlinePandits.length} Pandit ji online available
-                        </span>
-                        <div className="sd-online-card__pandits">
-                          {api.onlinePandits.slice(0, 6).map((op) => (
-                            <Link key={op.id} to={`/pandits/${op.slug || op.id}`} className="sd-online-pandit">
-                              <img src={op.img || "/assets/img/pandits/default.jpg"} alt="" />
-                              <span>{op.name}</span>
-                            </Link>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <span className="sd-online-card__label">
-                        Online ke liye Pandit ji jald hi allocate honge.
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                <div className="sd-benefits-section">
-                  <div className="sd-benefits-header">
-                    <h2 className="sd-card__title" style={{ margin: 0 }}>
-                      <span className="sd-card__title-icon">✨</span>
-                      Benefits
+                {/* Text-heavy sections read better in a narrower, centered
+                    column than the full shell width — but the pandit/temple
+                    card grids below need the full shell width to render at
+                    the same card size used everywhere else on the site, so
+                    only these four sections get the narrow wrapper. */}
+                <div style={{ maxWidth: 860, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 28 }}>
+                  {/* Spiritual Significance */}
+                  <div className="sd-card">
+                    <h2 className="sd-card__title">
+                      <span className="sd-card__title-icon">🕉️</span>
+                      Spiritual Significance
                     </h2>
-                    <span className="sd-benefits-count">{benefits.length} blessings</span>
+                    <p className="sd-card__text">{s.desc}</p>
+                    <p className="sd-card__text" style={{ marginTop: 12 }}>
+                      This sacred ceremony has been performed for centuries in the Hindu tradition. It is believed to purify the space, remove negative energies, and invite divine blessings for everyone involved. The mantras chanted during the puja create powerful vibrations that bring peace and positive energy.
+                    </p>
                   </div>
-                  <div className="sd-benefits-strip">
-                    {benefits.map((b) => (
-                      <div className="sd-benefit-chip" key={b.title}>
-                        <div className="sd-benefit-chip__glow" />
-                        <div className="sd-benefit-chip__icon">{b.icon}</div>
-                        <span className="sd-benefit-chip__label">{b.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
-                {/* ── Puja Process — Sacred Journey Timeline ── */}
-                <div className="sd-journey-wrap">
-                  {/* Warm cream + golden glow background */}
-                  <div className="sd-journey-bg" />
-                  <div className="sd-journey-glow" />
+                  {/* Benefits — Premium Scroll Strip */}
+                  {api?.is_online_available && (
+                    <div className="sd-online-card">
+                      <h3>🌐 Online puja / havan available</h3>
+                      <p>{api.online_note || "Yeh puja video call par live karvai ja sakti hai — sankalp aapke naam se."}</p>
+                      {api.onlinePandits?.length ? (
+                        <>
+                          <span className="sd-online-card__label">
+                            {api.onlinePandits.length} Pandit ji online available
+                          </span>
+                          <div className="sd-online-card__pandits">
+                            {api.onlinePandits.slice(0, 6).map((op) => (
+                              <Link key={op.id} to={`/pandits/${op.slug || op.id}`} className="sd-online-pandit">
+                                <img src={op.img || "/assets/img/pandits/default.jpg"} alt="" />
+                                <span>{op.name}</span>
+                              </Link>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <span className="sd-online-card__label">
+                          Online ke liye Pandit ji jald hi allocate honge.
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-                  <div className="sd-journey-head">
-                    <span className="sd-journey-head__icon">🪔</span>
-                    <div>
-                      <h2 className="sd-journey-title">Sacred Journey</h2>
-                      <p className="sd-journey-sub">{process.length} steps · Complete Vidhi</p>
+                  <div className="sd-benefits-section">
+                    <div className="sd-benefits-header">
+                      <h2 className="sd-card__title" style={{ margin: 0 }}>
+                        <span className="sd-card__title-icon">✨</span>
+                        Benefits
+                      </h2>
+                      <span className="sd-benefits-count">{benefits.length} blessings</span>
+                    </div>
+                    <div className="sd-benefits-strip">
+                      {benefits.map((b) => (
+                        <div className="sd-benefit-chip" key={b.title}>
+                          <div className="sd-benefit-chip__glow" />
+                          <div className="sd-benefit-chip__icon">{b.icon}</div>
+                          <span className="sd-benefit-chip__label">{b.title}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="sd-journey-steps">
-                    {process.map((p, i) => (
-                      <motion.div
-                        className="sd-journey-step"
-                        key={p.step}
-                        initial={{ opacity: 0, x: -28 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ duration: 0.55, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        {/* Connector line */}
-                        {i < process.length - 1 && (
+                  {/* ── Puja Process — Sacred Journey Timeline ── */}
+                  <div className="sd-journey-wrap">
+                    {/* Warm cream + golden glow background */}
+                    <div className="sd-journey-bg" />
+                    <div className="sd-journey-glow" />
+
+                    <div className="sd-journey-head">
+                      <span className="sd-journey-head__icon">🪔</span>
+                      <div>
+                        <h2 className="sd-journey-title">Sacred Journey</h2>
+                        <p className="sd-journey-sub">{process.length} steps · Complete Vidhi</p>
+                      </div>
+                    </div>
+
+                    <div className="sd-journey-steps">
+                      {process.map((p, i) => (
+                        <motion.div
+                          className="sd-journey-step"
+                          key={p.step}
+                          initial={{ opacity: 0, x: -28 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true, margin: "-30px" }}
+                          transition={{ duration: 0.55, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          {/* Connector line */}
+                          {i < process.length - 1 && (
+                            <motion.div
+                              className="sd-journey-connector"
+                              initial={{ scaleY: 0 }}
+                              whileInView={{ scaleY: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.6, delay: i * 0.12 + 0.3 }}
+                              style={{ transformOrigin: "top" }}
+                            />
+                          )}
+
+                          {/* Badge */}
                           <motion.div
-                            className="sd-journey-connector"
-                            initial={{ scaleY: 0 }}
-                            whileInView={{ scaleY: 1 }}
+                            className="sd-journey-badge"
+                            initial={{ scale: 0, rotate: -30 }}
+                            whileInView={{ scale: 1, rotate: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: i * 0.12 + 0.3 }}
-                            style={{ transformOrigin: "top" }}
-                          />
-                        )}
+                            transition={{ duration: 0.4, delay: i * 0.12, type: "spring", stiffness: 200 }}
+                          >
+                            <span className="sd-journey-badge__num">{p.step}</span>
+                            <div className="sd-journey-badge__ring" />
+                          </motion.div>
 
-                        {/* Badge */}
-                        <motion.div
-                          className="sd-journey-badge"
-                          initial={{ scale: 0, rotate: -30 }}
-                          whileInView={{ scale: 1, rotate: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: i * 0.12, type: "spring", stiffness: 200 }}
-                        >
-                          <span className="sd-journey-badge__num">{p.step}</span>
-                          <div className="sd-journey-badge__ring" />
+                          {/* Content card */}
+                          <motion.div
+                            className="sd-journey-card"
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: i * 0.12 + 0.1 }}
+                            whileHover={{ scale: 1.02 }}
+                          >
+                            <h4 className="sd-journey-card__title">{p.title}</h4>
+                            <p className="sd-journey-card__desc">{p.desc}</p>
+                            <span className="sd-journey-card__step-label">Step {p.step} of {process.length}</span>
+                          </motion.div>
                         </motion.div>
-
-                        {/* Content card */}
-                        <motion.div
-                          className="sd-journey-card"
-                          initial={{ opacity: 0, y: 10 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: i * 0.12 + 0.1 }}
-                          whileHover={{ scale: 1.02 }}
-                        >
-                          <h4 className="sd-journey-card__title">{p.title}</h4>
-                          <p className="sd-journey-card__desc">{p.desc}</p>
-                          <span className="sd-journey-card__step-label">Step {p.step} of {process.length}</span>
-                        </motion.div>
-                      </motion.div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -391,7 +399,7 @@ export default function ServiceDetail() {
                     visiblePandits above, never a separate order. */}
                 {previewPandits.length > 0 && (
                   <div>
-                    <div className="row-between">
+                    <div className="row-between sd-pandits-preview-head">
                       <h2 className="sd-card__title" style={{ margin: 0 }}>
                         <span className="sd-card__title-icon">🙏</span>
                         Pandits who perform this puja
@@ -424,46 +432,35 @@ export default function ServiceDetail() {
                   </div>
                 )}
 
-                {/* FAQ */}
-                <div className="sd-card">
-                  <h2 className="sd-card__title">
-                    <span className="sd-card__title-icon">❓</span>
-                    Frequently Asked Questions
-                  </h2>
-                  <div className="sd-faq">
-                    {faqs.map((f, i) => (
-                      <div className={`sd-faq__item ${openFaq === i ? "sd-faq__item--open" : ""}`} key={i}>
-                        <button className="sd-faq__q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                          <span>{f.q}</span>
-                          <Icon name={openFaq === i ? "chevron-up" : "chevron-down"} size={18} />
-                        </button>
-                        {openFaq === i && <p className="sd-faq__a">{f.a}</p>}
-                      </div>
-                    ))}
+                {/* FAQ — back in the narrow readable column, same as the
+                    text sections above. */}
+                <div style={{ maxWidth: 860, width: "100%", margin: "0 auto" }}>
+                  <div className="sd-card">
+                    <h2 className="sd-card__title">
+                      <span className="sd-card__title-icon">❓</span>
+                      Frequently Asked Questions
+                    </h2>
+                    <div className="sd-faq">
+                      {faqs.map((f, i) => (
+                        <div className={`sd-faq__item ${openFaq === i ? "sd-faq__item--open" : ""}`} key={i}>
+                          <button className="sd-faq__q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                            <span>{f.q}</span>
+                            <Icon name={openFaq === i ? "chevron-up" : "chevron-down"} size={18} />
+                          </button>
+                          {openFaq === i && <p className="sd-faq__a">{f.a}</p>}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* RIGHT SIDEBAR */}
-              <aside className="sd-sidebar">
-                {/* Need Help */}
-                <div className="sd-sidebar-card sd-sidebar-card--help">
-                  <h3 className="sd-sidebar-card__title">Need Help?</h3>
-                  <p className="muted" style={{ margin: "8px 0 14px", fontSize: ".88rem" }}>
-                    Get answers from our expert team about this puja.
-                  </p>
-                  <a href="tel:+919876543210" className="btn btn-gold btn-block">
-                    <Icon name="phone" size={16} /> Contact Us
-                  </a>
-                </div>
-              </aside>
             </div>
           </section>
         )}
 
         {/* SAMAGRI TAB */}
         {activeTab === "samagri" && (
-          <section className="section" style={{ paddingTop: 48 }}>
+          <section className="section" style={{ paddingTop: 48, paddingBottom: 40 }}>
             <div className="shell" style={{ maxWidth: 860 }}>
               <div className="sd-card">
                 <h2 className="sd-card__title">
@@ -481,9 +478,6 @@ export default function ServiceDetail() {
                     </div>
                   ))}
                 </div>
-                <button className="btn btn-outline btn-sm" style={{ marginTop: 22 }} onClick={() => window.print()}>
-                  <Icon name="download" size={16} /> Print / save this list
-                </button>
               </div>
             </div>
           </section>
@@ -491,15 +485,15 @@ export default function ServiceDetail() {
 
         {/* PANDITS TAB */}
         {activeTab === "pandits" && (
-          <section className="section" style={{ paddingTop: 48 }}>
+          <section className="section" style={{ paddingTop: 48, paddingBottom: 40 }}>
             <div className="shell">
               <h2 className="section-title" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginBottom: 32 }}>
                 Pandits who perform {s.name}
               </h2>
               {pandits.length ? (
                 <>
-                  <div className="grid g-2 grid-2up-mobile">{pandits.slice(0, 6).map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="service_detail" />)}</div>
-                  {pandits.length > 6 && (
+                  <div className="grid g-3 grid-2up-mobile">{pandits.slice(0, 9).map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="service_detail" />)}</div>
+                  {pandits.length > 9 && (
                     <div className="text-c" style={{ marginTop: 26 }}>
                       <Link className="btn btn-outline" to={`/services/${s.id}/pandits`}>See all {pandits.length} pandits</Link>
                     </div>
@@ -514,7 +508,7 @@ export default function ServiceDetail() {
 
         {/* REVIEWS TAB */}
         {activeTab === "reviews" && (
-          <section className="section" style={{ paddingTop: 48 }}>
+          <section className="section" style={{ paddingTop: 48, paddingBottom: 40 }}>
             <div className="shell" style={{ maxWidth: 660 }}>
               <div className="sd-card text-c" style={{ padding: "50px 30px" }}>
                 <div style={{ fontSize: "3rem", marginBottom: 12 }}>⭐</div>
@@ -531,7 +525,7 @@ export default function ServiceDetail() {
         )}
 
         {/* ======================== RELATED SERVICES ======================== */}
-        <section className="section section--cream">
+        <section className="section section--cream" style={{ paddingTop: 40 }}>
           <div className="shell">
             <div className="row-between" style={{ marginBottom: 26, flexWrap: "wrap", gap: 12 }}>
               <h2 className="section-title section-title--left" style={{ fontSize: "clamp(1.5rem,2.6vw,2rem)", marginBottom: 0 }}>Related services</h2>

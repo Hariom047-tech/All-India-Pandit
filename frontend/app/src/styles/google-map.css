@@ -20,5 +20,5 @@
   justify-content: center;
   background: var(--ivory);
   color: var(--gold-deep);
-  font-weight: bold;
+  font-weight: var(--fw-bold);
 }

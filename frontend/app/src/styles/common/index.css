@@ -1,0 +1,14 @@
+/* ==========================================================================
+   Common — single entry point for the app's design tokens.
+
+   Import this ONE file, first, before any other stylesheet (base.css and
+   every component CSS file depend on the --fs-*, --fw-*, --text* etc.
+   custom properties defined here). Order matters: variables/colors/assets define
+   tokens with no dependencies on each other; typography's base-element
+   rules (body, h1–h6, p) come last so they can reference the color tokens.
+   ========================================================================== */
+
+@import "./variables.css";
+@import "./colors.css";
+@import "./assets.css";
+@import "./typography.css";

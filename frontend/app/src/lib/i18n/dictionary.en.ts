@@ -71,6 +71,7 @@ const en = {
     tagline: "Sacred Connections, Trusted Pandits. We are a directory, not a booking agent — you contact pandit ji directly and keep the relationship yours.",
     explore: "Explore",
     company: "Company",
+    support: "Support",
     weeklyMail: "Weekly Devotee Mail",
     templeDirectory: "Temple Directory",
     panditDirectory: "Pandit Directory",

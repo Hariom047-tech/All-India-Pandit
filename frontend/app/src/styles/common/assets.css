@@ -1,0 +1,18 @@
+/* ==========================================================================
+   Common / Assets — shared static-asset references used from CSS: the
+   inline-SVG icons painted as background-images, and a note on font
+   loading.
+
+   Font loading: Playfair Display / Poppins / Inter / Noto Sans+Serif
+   Devanagari are loaded ONCE, via the <link> tags in index.html — that is
+   the single source of truth. Do not add a second `@import
+   url(fonts.googleapis.com/...)` in a component stylesheet (pandit-chat.css
+   used to); it re-fetches a font already on the page and blocks that
+   stylesheet's own parsing until the request returns.
+   ========================================================================== */
+
+:root {
+  /* Custom <select> arrow — was byte-for-byte duplicated in base.css and
+     enhance.css. */
+  --icon-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4a017' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}

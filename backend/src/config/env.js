@@ -39,4 +39,11 @@ module.exports = {
   encryptionKey: process.env.NODE_ENV === 'test'
     ? (process.env.ENCRYPTION_KEY || '0'.repeat(64))
     : required('ENCRYPTION_KEY'),
+  // WhatsApp OTP delivery (services/notifications/hyperSender.js). Both unset
+  // (the default) means requestOtp() falls back to the dev-only console
+  // log/devOtp field exactly as before this existed — see README "Known
+  // placeholders". Never required: an OTP is still generated and stored
+  // locally either way, this only controls whether it's also sent.
+  hyperSenderInstanceId: process.env.HYPERSENDER_INSTANCE_ID || '',
+  hyperSenderApiKey: process.env.HYPERSENDER_API_KEY || '',
 };
