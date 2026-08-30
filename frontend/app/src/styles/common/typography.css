@@ -8,14 +8,60 @@
    to replace.
    ========================================================================== */
 
+/* Metric-matched fallbacks for Poppins/Inter — sized so a local Arial-
+ * compatible font occupies the exact line-height and average glyph width
+ * Poppins/Inter will once their woff2 finishes loading, instead of the
+ * browser's plain system-ui fallback (visibly narrower/shorter line box).
+ * Without this, the swap reflows every element below the fallback text —
+ * measured as the site's Cumulative Layout Shift, largest on the homepage
+ * H1 (font-head), which is the mobile LCP element.
+ *
+ * Values are computed directly from each font's own OS/2 table (not eyeballed):
+ *   ascent-override    = font_ascent / font_unitsPerEm
+ *   descent-override   = |font_descent| / font_unitsPerEm
+ *   line-gap-override  = font_lineGap / font_unitsPerEm
+ *   size-adjust        = (font_xAvgCharWidth / font_unitsPerEm)
+ *                         / (Arimo_xAvgCharWidth / Arimo_unitsPerEm)
+ * Arimo is Google's metric-compatible Arial substitute — used as the
+ * reference because Arial's own metrics aren't redistributable, but Arimo/
+ * Liberation Sans/Arial are metric-identical by design, so this holds
+ * regardless of which of the three the browser actually has locally.
+ *   Poppins 800 (the H1 weight): UPM 1000, ascent 1050, descent 350,
+ *     lineGap 100, xAvgCharWidth 880 — vs. Arimo's UPM 2048, xAvgCharWidth 1191.
+ *   Inter 400 (body weight): UPM 2048, ascent 1984, descent 494, lineGap 0,
+ *     xAvgCharWidth 1322.
+ */
+@font-face {
+  font-family: "Poppins Fallback";
+  src: local("Arial"), local("Arimo"), local("Liberation Sans"), local("Helvetica Neue");
+  ascent-override: 105%;
+  descent-override: 35%;
+  line-gap-override: 10%;
+  size-adjust: 151.32%;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Arimo"), local("Liberation Sans"), local("Helvetica Neue");
+  ascent-override: 96.88%;
+  descent-override: 24.12%;
+  line-gap-override: 0%;
+  size-adjust: 111.02%;
+}
+
 :root {
   /* --- Font families ---
      Devanagari fallbacks are appended so Hindi glyphs render in the right
      family instead of silently falling back to the OS default mid-sentence
-     — none of Playfair/Poppins/Inter cover Devanagari themselves. */
+     — none of Playfair/Poppins/Inter cover Devanagari themselves. The
+     "* Fallback" entries right after Poppins/Inter (see the @font-face
+     rules above) are metric-matched stand-ins for the gap between first
+     paint and the real webfont's arrival — Noto Sans Devanagari has no
+     Latin glyphs of its own, so a Devanagari-script visitor still gets the
+     plain, un-matched system fallback for Latin text either way; this only
+     closes the gap for the common (English/Latin) case. */
   --font-display: "Playfair Display", "Noto Serif Devanagari", "Georgia", serif;
-  --font-head: "Poppins", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
-  --font-body: "Inter", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  --font-head: "Poppins", "Poppins Fallback", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Inter Fallback", "Noto Sans Devanagari", "Segoe UI", system-ui, sans-serif;
 
   /* --- Font-size scale ---
      A numbered ladder (Tailwind-style) rather than semantic-only names —
