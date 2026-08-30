@@ -401,6 +401,7 @@
    slider can't affect that one. */
 .td-services-carousel-wrap {
   display: flex;
+  align-items: stretch;
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -410,10 +411,27 @@
 }
 .td-services-carousel-wrap::-webkit-scrollbar { display: none; }
 .td-services-carousel-wrap > * { flex: 0 0 min(220px, 42vw); scroll-snap-align: start; }
+/* Every card the same height regardless of name length (e.g. "Havan / Yagna"
+   vs "Mahamrityunjay Jaap") - reserves 2 lines for the name so a one-line
+   title doesn't leave the card shorter than its neighbors, then centers it
+   in that space. svc-grid-card__cta already has margin-top:auto, so once
+   every card is the same height the button lines up at the same y for all
+   of them. */
+.td-services-carousel-wrap .svc-grid-card__name {
+  min-height: calc(var(--fs-600) * var(--lh-snug) * 2);
+  display: flex;
+  align-items: center;
+}
 
 /* ── nearby temple section ── */
 .td-nearby {
   background: linear-gradient(180deg, rgba(250, 247, 240, 0.8), rgba(255, 255, 255, 0.9));
+  /* The section above this one (the tabs/Overview content) ends with its own
+     .section bottom padding (84px) - stacked with this section's own .section
+     top padding (also 84px), that's ~168px of blank space between the last
+     visible line of the Overview tab and this heading. .section is shared
+     site-wide, so it's overridden here rather than there. */
+  padding-top: 28px;
 }
 
 /* ── responsive ── */
