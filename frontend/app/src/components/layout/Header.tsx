@@ -38,7 +38,7 @@ const BOTTOM = [
 function Brand({ size }: { size?: string }) {
   return (
     <Link className="brand" to="/" aria-label="PanditSuggest home">
-      <img src="/assets/img/logo-new.png" alt="PanditSuggest Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
+      <img src="/assets/img/logo-header.webp" alt="PanditSuggest Logo" width={60} height={60} style={{ objectFit: 'contain' }} />
       <span className="brand-name" style={size ? { fontSize: size } : undefined}>
         Pandit <span>Suggest</span>
       </span>
