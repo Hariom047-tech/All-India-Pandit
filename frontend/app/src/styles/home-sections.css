@@ -710,7 +710,7 @@
 .hp-reviews-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/assets/img/review-bg.jpg');
+  background-image: url('/assets/img/review-bg.webp');
   background-size: cover;
   background-position: center;
   mix-blend-mode: multiply;
