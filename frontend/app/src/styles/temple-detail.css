@@ -394,6 +394,23 @@
 .td-reviews-carousel-wrap::-webkit-scrollbar { display: none; }
 .td-reviews-carousel-wrap > * { flex: 0 0 min(300px, 80vw); scroll-snap-align: start; }
 
+/* ── "Puja & havan performed here" horizontal carousel ──
+   Same pattern as .td-reviews-carousel-wrap above, not the shared
+   .svc-related-grid (also used by ServiceDetail.tsx's own related-services
+   section, which stays a fixed grid) - a separate class so this page's
+   slider can't affect that one. */
+.td-services-carousel-wrap {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 6px;
+}
+.td-services-carousel-wrap::-webkit-scrollbar { display: none; }
+.td-services-carousel-wrap > * { flex: 0 0 min(220px, 42vw); scroll-snap-align: start; }
+
 /* ── nearby temple section ── */
 .td-nearby {
   background: linear-gradient(180deg, rgba(250, 247, 240, 0.8), rgba(255, 255, 255, 0.9));

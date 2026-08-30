@@ -288,8 +288,8 @@ export default function TempleDetail() {
                             </button>
                           )}
                         </div>
-                        <div className="grid g-4 grid-2up-mobile svc-related-grid" style={{ marginTop: 14 }}>
-                          {linkedServices.slice(0, 4).map((s, i) => <ServiceCard s={s} key={s.id} index={i} variant="grid" hideTag />)}
+                        <div className="td-services-carousel-wrap" style={{ marginTop: 14 }}>
+                          {linkedServices.map((s, i) => <ServiceCard s={s} key={s.id} index={i} variant="grid" hideTag />)}
                         </div>
                       </motion.div>
                       <hr className="sacred-divider" />
