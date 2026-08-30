@@ -6,7 +6,10 @@ export interface ServiceMeta {
   tagline: string;
   benefits: { icon: string; title: string }[];
   process: { step: number; title: string; desc: string }[];
-  faq: { q: string; a: string }[];
+  // No faq field here on purpose - FAQs come only from services.faqs (the
+  // admin's real, per-service editor), never a hardcoded fallback. A generic
+  // "How long does this puja take?" list showing on every service with no
+  // real FAQs configured looked like real content but wasn't.
 }
 
 const DEFAULT_BENEFITS = [
@@ -24,13 +27,6 @@ const DEFAULT_PROCESS = [
   { step: 3, title: "Main Puja", desc: "Performing the core ritual with mantras" },
   { step: 4, title: "Havan", desc: "Sacred fire offering with ghee and samagri" },
   { step: 5, title: "Aarti & Prasad", desc: "Concluding with devotional aarti" },
-];
-
-const DEFAULT_FAQ = [
-  { q: "How long does this puja take?", a: "Typically 2–4 hours depending on the specific vidhi and the pandit's tradition." },
-  { q: "Do I need to arrange samagri myself?", a: "Most pandits bring a complete samagri kit. Confirm this when you connect with them." },
-  { q: "Can this be done on any day?", a: "While it can be done on most days, performing it during an auspicious muhurat is highly recommended for best results." },
-  { q: "What if I'm in a different city?", a: "You can book a pandit in your city through PanditSuggest. We have pandits across India." },
 ];
 
 const META: Record<string, Partial<ServiceMeta>> = {
@@ -51,12 +47,6 @@ const META: Record<string, Partial<ServiceMeta>> = {
       { step: 3, title: "Navagraha Havan", desc: "Appease the nine planets for family well-being" },
       { step: 4, title: "Griha Pravesh", desc: "Enter your new home with sacred rituals" },
       { step: 5, title: "Aarti & Prasad", desc: "Conclude with devotional aarti and blessings" },
-    ],
-    faq: [
-      { q: "When should Griha Pravesh be performed?", a: "Ideally during an auspicious muhurat. Avoid Rahu Kaal, and months of Ashwin and Bhadrapad are generally avoided." },
-      { q: "Can it be done for a rented house?", a: "Yes! Griha Pravesh is recommended for any new home — owned or rented — to bring positive energy." },
-      { q: "What should I carry when entering the new home?", a: "Typically a Kalash filled with water, coconut, mango leaves, and the household's first fire (diya)." },
-      { q: "How long does the complete ceremony take?", a: "The full Griha Pravesh with Vastu Shanti and Havan takes approximately 3–4 hours." },
     ],
   },
   "havan-yagna": {
@@ -90,6 +80,5 @@ export function getServiceMeta(serviceId: string): ServiceMeta {
     tagline: m.tagline || "Experience the divine power of this sacred ritual performed by verified Vedic pandits",
     benefits: m.benefits || DEFAULT_BENEFITS,
     process: m.process || DEFAULT_PROCESS,
-    faq: m.faq || DEFAULT_FAQ,
   };
 }

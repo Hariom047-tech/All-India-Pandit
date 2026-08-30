@@ -93,7 +93,7 @@ export default function ServiceDetail() {
   useStructuredData(s ? (() => {
     const apiRaw = rawService as { faqs?: { q: string; a: string }[]; short_description?: string | null; image_url?: string | null; meta_title?: string | null } | null;
     const staticFallback = getServiceMeta(s.id);
-    const faqsForSchema = apiRaw?.faqs?.length ? apiRaw.faqs : staticFallback.faq;
+    const faqsForSchema = apiRaw?.faqs?.length ? apiRaw.faqs : [];
     return [
       organizationSchema(),
       websiteSchema(),
@@ -153,7 +153,7 @@ export default function ServiceDetail() {
     ? api.process.map((p, i) => ({ step: p.step ?? i + 1, title: p.title, desc: p.detail || "", duration: p.duration }))
     : staticMeta.process.map((p) => ({ ...p, duration: undefined as string | undefined })));
 
-  const faqs = api?.faqs?.length ? api.faqs : staticMeta.faq;
+  const faqs = api?.faqs?.length ? api.faqs : [];
 
   // samagri arrives as [{item, qty}] from the admin editor, but older seeded
   // rows are a plain string[]. Normalise both to a display string.
@@ -433,26 +433,30 @@ export default function ServiceDetail() {
                 )}
 
                 {/* FAQ — back in the narrow readable column, same as the
-                    text sections above. */}
-                <div style={{ maxWidth: 860, width: "100%", margin: "0 auto" }}>
-                  <div className="sd-card">
-                    <h2 className="sd-card__title">
-                      <span className="sd-card__title-icon">❓</span>
-                      Frequently Asked Questions
-                    </h2>
-                    <div className="sd-faq">
-                      {faqs.map((f, i) => (
-                        <div className={`sd-faq__item ${openFaq === i ? "sd-faq__item--open" : ""}`} key={i}>
-                          <button className="sd-faq__q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                            <span>{f.q}</span>
-                            <Icon name={openFaq === i ? "chevron-up" : "chevron-down"} size={18} />
-                          </button>
-                          {openFaq === i && <p className="sd-faq__a">{f.a}</p>}
-                        </div>
-                      ))}
+                    text sections above. Only rendered when there are real,
+                    admin-entered FAQs (services.faqs) - an empty heading
+                    above blank space reads as a broken page. */}
+                {faqs.length > 0 && (
+                  <div style={{ maxWidth: 860, width: "100%", margin: "0 auto" }}>
+                    <div className="sd-card">
+                      <h2 className="sd-card__title">
+                        <span className="sd-card__title-icon">❓</span>
+                        Frequently Asked Questions
+                      </h2>
+                      <div className="sd-faq">
+                        {faqs.map((f, i) => (
+                          <div className={`sd-faq__item ${openFaq === i ? "sd-faq__item--open" : ""}`} key={i}>
+                            <button className="sd-faq__q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
+                              <span>{f.q}</span>
+                              <Icon name={openFaq === i ? "chevron-up" : "chevron-down"} size={18} />
+                            </button>
+                            {openFaq === i && <p className="sd-faq__a">{f.a}</p>}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </section>
