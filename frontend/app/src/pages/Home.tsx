@@ -91,6 +91,13 @@ export default function Home() {
   const { data: rawReviews } = useReviews();
 
   const pandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
+  // Real platform-wide count, not this page's 20-row fetch — meta.total is
+  // the paginator's total across every pandit, same value the Pandits page
+  // itself would show. Falls back to what's on hand while that's loading.
+  const panditsTotal = useMemo(() => {
+    if (!rawPandits) return pandits.length;
+    return Array.isArray(rawPandits) ? rawPandits.length : rawPandits.meta.total;
+  }, [rawPandits, pandits.length]);
   const temples = useMemo(() => normTemples(rawTemples), [rawTemples]);
   const services = useMemo(() => normServices(rawServices), [rawServices]);
   const featuredServices = useMemo(
@@ -185,7 +192,7 @@ export default function Home() {
               <div className="hp-trust-art" aria-hidden="true">
                 <div className="hp-trust-art__frame">
                   <img
-                    src="/assets/img/services/pandit-hero.jpg"
+                    src="https://media.panditsuggest.com/static/pandit-hero.webp"
                     alt=""
                     className="hp-trust-art__img"
                     loading="lazy"
@@ -266,7 +273,7 @@ export default function Home() {
             {topPandits.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="home" />)}
           </div>
           <div className="text-c" style={{ marginTop: 32 }}>
-            <Link className="btn btn-outline" to="/pandits">{t("home.allPandits")}</Link>
+            <Link className="btn btn-outline" to="/pandits">{t("home.allPandits", { count: panditsTotal })}</Link>
           </div>
         </div>
       </section>

@@ -115,7 +115,7 @@ const hi: Dictionary = {
     seeAllServices: "सभी सेवाएं देखें",
     featuredEyebrow: "इस महीने सबसे ज़्यादा रेटेड",
     featuredTitle: "विशेष पंडित जी",
-    allPandits: "सभी 500+ पंडित",
+    allPandits: "सभी {count} पंडित",
     templesEyebrow: "मंदिर पहले",
     templesTitle: "लोकप्रिय मंदिर",
     onTheMap: "मानचित्र पर देखें",

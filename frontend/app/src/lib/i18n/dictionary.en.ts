@@ -111,7 +111,7 @@ const en = {
     seeAllServices: "See all services",
     featuredEyebrow: "Top rated this month",
     featuredTitle: "Featured Pandit Ji",
-    allPandits: "All 500+ pandits",
+    allPandits: "All {count} pandits",
     templesEyebrow: "Temple first",
     templesTitle: "Popular Temples",
     onTheMap: "On the map",

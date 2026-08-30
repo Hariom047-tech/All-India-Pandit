@@ -422,7 +422,7 @@
 }
 .ohp-hero-bg {
   position: absolute; inset: 0;
-  background-image: url('/assets/img/epuja-illustration.jpg');
+  background-image: url('https://media.panditsuggest.com/static/epuja-illustration.webp');
   background-size: cover; background-position: center;
   opacity: 0.12; mix-blend-mode: multiply; pointer-events: none;
 }
@@ -710,7 +710,7 @@
 .hp-reviews-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/assets/img/review-bg.webp');
+  background-image: url('https://media.panditsuggest.com/static/review-bg.webp');
   background-size: cover;
   background-position: center;
   mix-blend-mode: multiply;
