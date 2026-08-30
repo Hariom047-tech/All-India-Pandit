@@ -90,7 +90,7 @@ export default function AdminPayments() {
     const next = new URLSearchParams(params);
     if (value) next.set(key, value);
     else next.delete(key);
-    next.delete("page");
+    if (key !== "page") next.delete("page");
     setParams(next);
   }
 

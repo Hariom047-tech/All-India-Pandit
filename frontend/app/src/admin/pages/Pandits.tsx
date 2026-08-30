@@ -60,7 +60,10 @@ export default function AdminPandits() {
     const next = new URLSearchParams(params);
     if (value) next.set(key, value);
     else next.delete(key);
-    next.delete("page");
+    // Changing a filter (search/tier/verification) should reset to page 1 -
+    // but not when the "update" IS the page change itself, or the Pager
+    // could never move past page 1.
+    if (key !== "page") next.delete("page");
     setParams(next);
   }
 
