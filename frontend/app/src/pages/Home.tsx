@@ -6,6 +6,7 @@ import { Icon } from "../lib/icons";
 import { PanditCard } from "../components/ui/PanditCard";
 import { TempleCard } from "../components/ui/TempleCard";
 import { ReviewCard } from "../components/ui/ReviewCard";
+import { Loading } from "../components/ui/DataState";
 
 import { usePandits, useTemples, useServices, useReviews, useFaqs } from "../hooks/useData";
 import { normPandits, normTemples, normServices, normReviews } from "../lib/normalize";
@@ -85,10 +86,10 @@ export default function Home() {
   }, []);
 
   /* ── Fetch data from API ── */
-  const { data: rawPandits } = usePandits({ perPage: 20 });
-  const { data: rawTemples } = useTemples({ perPage: 20, sort: "reviews" });
-  const { data: rawServices } = useServices();
-  const { data: rawReviews } = useReviews();
+  const { data: rawPandits, loading: panditsLoading } = usePandits({ perPage: 20 });
+  const { data: rawTemples, loading: templesLoading } = useTemples({ perPage: 20, sort: "reviews" });
+  const { data: rawServices, loading: servicesLoading } = useServices();
+  const { data: rawReviews, loading: reviewsLoading } = useReviews();
 
   const pandits = useMemo(() => normPandits(rawPandits), [rawPandits]);
   // Real platform-wide count, not this page's 20-row fetch — meta.total is
@@ -234,25 +235,29 @@ export default function Home() {
           <svg className="ornament" viewBox="0 0 190 16" aria-hidden="true"><path d="M6 8h64M120 8h64" fill="none" stroke="#d4a017" strokeWidth="1.6" /><path d="M84 8l11-6 11 6-11 6z" fill="none" stroke="#d4a017" strokeWidth="1.6" /></svg>
           <p className="section-sub">{t("home.servicesSub")}</p>
           
-          <div className="hp-services-grid">
-            {/* `priority` only ever existed on the bundled content.ts records —
-                the API does not return it, so this filter silently emptied the
-                entire grid once the site read from the database. Admin-managed
-                "Mark as popular" drives it now, falling back to the first six
-                services so the section is never blank. */}
-            {(featuredServices.length ? featuredServices : services.slice(0, 6))
-              .map((s) => (
-                <Link to={`/services/${s.id}`} key={s.id} className="hp-service-tile regular">
-                  <img src={s.img} alt={s.name} className="hp-service-tile__img" loading="lazy" />
-                  <div className="hp-service-tile__overlay" />
-                  <div className="hp-service-tile__content">
-                    <h3 className="hp-service-tile__title">{s.name}</h3>
-                    <p className="hp-service-tile__desc">{s.desc.substring(0, 80)}...</p>
-                    <div className="hp-service-tile__link">{t("home.findPandits")} <Icon name="arrow-right" size={16} /></div>
-                  </div>
-                </Link>
-            ))}
-          </div>
+          {servicesLoading && !services.length
+            ? <Loading type="card" lines={3} />
+            : (
+              <div className="hp-services-grid">
+                {/* `priority` only ever existed on the bundled content.ts records —
+                    the API does not return it, so this filter silently emptied the
+                    entire grid once the site read from the database. Admin-managed
+                    "Mark as popular" drives it now, falling back to the first six
+                    services so the section is never blank. */}
+                {(featuredServices.length ? featuredServices : services.slice(0, 6))
+                  .map((s) => (
+                    <Link to={`/services/${s.id}`} key={s.id} className="hp-service-tile regular">
+                      <img src={s.img} alt={s.name} className="hp-service-tile__img" loading="lazy" />
+                      <div className="hp-service-tile__overlay" />
+                      <div className="hp-service-tile__content">
+                        <h3 className="hp-service-tile__title">{s.name}</h3>
+                        <p className="hp-service-tile__desc">{s.desc.substring(0, 80)}...</p>
+                        <div className="hp-service-tile__link">{t("home.findPandits")} <Icon name="arrow-right" size={16} /></div>
+                      </div>
+                    </Link>
+                ))}
+              </div>
+            )}
 
           <div className="text-c" style={{ marginTop: 36 }}>
             <Link className="btn btn-gold btn-lg" to="/services">{t("home.seeAllServices")}</Link>
@@ -269,9 +274,13 @@ export default function Home() {
               <h2 className="section-title section-title--left" style={{ marginTop: 8 }}>{t("home.featuredTitle")}</h2>
             </div>
           </div>
-          <div className="grid g-3 hp-cards-2up">
-            {topPandits.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="home" />)}
-          </div>
+          {panditsLoading && !topPandits.length
+            ? <Loading type="card" lines={3} />
+            : (
+              <div className="grid g-3 hp-cards-2up">
+                {topPandits.map((p, i) => <PanditCard p={p} key={p.id} index={i} sourceSurface="home" />)}
+              </div>
+            )}
           <div className="text-c" style={{ marginTop: 32 }}>
             <Link className="btn btn-outline" to="/pandits">{t("home.allPandits", { count: panditsTotal })}</Link>
           </div>
@@ -416,9 +425,13 @@ export default function Home() {
               <Link className="btn btn-outline" to="/temples">{t("home.allTemples")}</Link>
             </div>
           </div>
-          <div className="grid g-3 hp-cards-2up">
-            {popularTemples.map((t, i) => <TempleCard t={t} key={t.id} index={i} />)}
-          </div>
+          {templesLoading && !popularTemples.length
+            ? <Loading type="card" lines={3} />
+            : (
+              <div className="grid g-3 hp-cards-2up">
+                {popularTemples.map((t, i) => <TempleCard t={t} key={t.id} index={i} />)}
+              </div>
+            )}
         </div>
       </section>
 
@@ -432,11 +445,15 @@ export default function Home() {
           <svg className="ornament" viewBox="0 0 190 16" aria-hidden="true"><path d="M6 8h64M120 8h64" fill="none" stroke="#d4a017" strokeWidth="1.6" /><path d="M84 8l11-6 11 6-11 6z" fill="none" stroke="#d4a017" strokeWidth="1.6" /></svg>
         </div>
 
-        <div className="hp-reviews-carousel">
-          {reviews.map((r) => (
-            <ReviewCard key={r.name} r={r} />
-          ))}
-        </div>
+        {reviewsLoading && !reviews.length
+          ? <Loading type="card" lines={3} />
+          : (
+            <div className="hp-reviews-carousel">
+              {reviews.map((r) => (
+                <ReviewCard key={r.name} r={r} />
+              ))}
+            </div>
+          )}
       </section>
 
       {/* ============================ FAQ ============================ */}

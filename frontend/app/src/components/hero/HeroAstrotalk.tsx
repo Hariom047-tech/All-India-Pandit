@@ -6,6 +6,7 @@ import { normPandits } from "../../lib/normalize";
 import { CountUp } from "../ui/CountUp";
 import { useLang } from "../../lib/i18n";
 import "./HeroAstrotalk.css";
+import "../ui/DataState.css";
 
 const STAT_KEYS = ["home.statPandits", "home.statTemples", "home.statCeremonies", "home.statCities"];
 
@@ -111,14 +112,23 @@ export function HeroAstrotalk() {
           {/* Right: Circular Portraits */}
           <div className="hero-astro__visual">
             <div className="hero-astro__circles">
-              {circles.map((c, i) => {
-                const pos = order[i]; // 0: center, 1: left, 2: right
-                return (
-                  <div key={c.key} className={`hero-astro__circle pos-${pos}`}>
-                    <img src={c.src} alt={c.alt} fetchPriority={pos === 0 ? "high" : undefined} />
-                  </div>
-                );
-              })}
+              {circles.length
+                ? circles.map((c, i) => {
+                    const pos = order[i]; // 0: center, 1: left, 2: right
+                    return (
+                      <div key={c.key} className={`hero-astro__circle pos-${pos}`}>
+                        <img src={c.src} alt={c.alt} fetchPriority={pos === 0 ? "high" : undefined} />
+                      </div>
+                    );
+                  })
+                // Same 3 positions, filled with a shimmer placeholder instead
+                // of an <img> — first paint shouldn't wait on usePandits()/
+                // useHomeHero() any more than the rest of this hero does.
+                : [0, 1, 2].map((pos) => (
+                    <div key={pos} className={`hero-astro__circle pos-${pos}`} aria-hidden="true">
+                      <div className="ds-skeleton" style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                    </div>
+                  ))}
             </div>
           </div>
           
