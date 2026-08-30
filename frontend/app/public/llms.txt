@@ -1,0 +1,27 @@
+# PanditSuggest
+
+> PanditSuggest connects people with verified, independent pandits (Hindu priests) across India for pujas, weddings, griha pravesh, and other ceremonies. Browsing and contact are free — visitors call, message, or WhatsApp a pandit directly, with no commission and no middleman.
+
+PanditSuggest is a directory, not a booking agency: every pandit profile lists real credentials (experience, gotra, tradition, Vedic education), languages, the services they perform, and direct contact details. Listings also cover temples across India (history, timings, significance) and the services/ceremonies pandits offer, each with the samagri (ritual items) required.
+
+## Core pages
+
+- [Home](https://www.panditsuggest.com/): overview, featured pandits, and platform stats.
+- [Find a Pandit](https://www.panditsuggest.com/pandits): searchable, filterable directory of verified pandit profiles (city, language, service, rating).
+- [Services](https://www.panditsuggest.com/services): ceremony/puja catalogue (weddings, griha pravesh, satyanarayan katha, and more), each with samagri lists and process details.
+- [Temples](https://www.panditsuggest.com/temples): temple directory with history, significance, and darshan timings.
+- [Temple Map](https://www.panditsuggest.com/temple-map): temples plotted geographically.
+- [AI Pooja Guide](https://www.panditsuggest.com/ai-recommender): describe a problem or occasion, get matched to the right puja/service and eligible pandits.
+- [Blog](https://www.panditsuggest.com/blog): guides on rituals, muhurat timing, and choosing a pandit.
+- [About](https://www.panditsuggest.com/about): what PanditSuggest is and how the no-commission model works.
+- [How It Works](https://www.panditsuggest.com/how-it-works): the process for finding and contacting a pandit.
+- [Contact](https://www.panditsuggest.com/contact): support and general inquiries.
+
+## Policies
+
+- [Privacy Policy](https://www.panditsuggest.com/privacy)
+- [Terms of Service](https://www.panditsuggest.com/terms)
+
+## Optional
+
+- [Sitemap](https://www.panditsuggest.com/sitemap.xml): full machine-readable URL list, including every individual pandit, temple, and service detail page.
