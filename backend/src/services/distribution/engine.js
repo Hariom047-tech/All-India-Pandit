@@ -18,7 +18,8 @@
 
 const { rankPool, eligibilityFailure, positionWeight, DEFAULTS } = require('./fairness');
 const {
-  selectBucket, sessionSeed, rotationSeed, clampRefreshGeneration, selectPage, DEFAULT_ALLOCATION, POOL_MODE,
+  selectBucket, sessionSeed, rotationSeed, clampRefreshGeneration, selectOrder, selectPage,
+  DEFAULT_ALLOCATION, POOL_MODE, computeBlockQuotas, interleaveByQuota,
 } = require('./rotation');
 const repo = require('../../repositories/distribution.repository');
 
@@ -169,51 +170,108 @@ async function distribute({
     return { pandits: [], pool: null, market: counterMarket, eligible: 0, total: candidates.length };
   }
 
-  // Which plan bucket serves this request.
+  // Which plan bucket(s) serve this request.
   const availableByPlan = {};
   for (const p of eligible) {
     const plan = TIER_TO_PLAN[p.tier];
     if (plan) availableByPlan[plan] = (availableByPlan[plan] || 0) + 1;
   }
   const seed = sessionSeed({ sessionKey, templeId, serviceId, now });
-  const bucket = selectBucket({
-    market: counterMarket,
-    availableByPlan,
-    sessionSeed: seed,
-    allocation,
-    mode: dbConfig.pool_mode ?? POOL_MODE.WEIGHTED,
-    priorities: toPriorities(entitlements),
-  });
+  const generation = clampRefreshGeneration(refreshGeneration);
+  const rotSeed = rotationSeed({ sessionKey, templeId, serviceId, now, refreshGeneration: generation });
+  const rotationDepth = dbConfig.rotation_depth || 3;
+  const mode = Number(dbConfig.pool_mode ?? POOL_MODE.WEIGHTED);
+  // Generation 0 (a first load) keeps the existing anti-starvation guarantee —
+  // the single most under-served candidate is genuinely first. Later
+  // generations let that candidate rotate too, same as everyone else in the
+  // band, which is what produces the slot-1 diversity a refresh is meant to
+  // add without ever taking away the guarantee generation 0 gave.
+  const pinTop = generation === 0;
 
-  // Fairness is computed INSIDE the bucket — comparing a ₹5k pandit's share
-  // against a ₹15k pandit's would be meaningless, they are sold different
-  // things.
-  const pool = bucket
-    ? eligible.filter((p) => TIER_TO_PLAN[p.tier] === bucket)
-    : eligible;
-  if (!pool.length) {
+  let bucket;
+  let pool;
+  let ranked; // full ranked/rotated order this page is sliced from
+  let blend;  // { plan: weight } — set only in BLENDED mode, for meta
+
+  if (mode === POOL_MODE.BLENDED) {
+    /*
+     * Mix the entitled plans WITHIN one page instead of picking one bucket
+     * for the whole visitor session. Each plan is still ranked and rotated
+     * on its own (fairness stays comparable-pool-only, same reasoning as the
+     * single-bucket path below) — BLENDED only changes how those per-plan
+     * orders are merged into one sequence, in blocks sized by allocation_weight
+     * and ordered by priority_order (see rotation.js's interleaveByQuota).
+     */
+    bucket = null;
+    pool = eligible;
+    const weights = allocation[counterMarket] || {};
+    blend = weights;
+    // Quotas are computed on a small ROUND, not the whole page/pool — the
+    // block size interleaveByQuota actually repeats at. A quota sized to the
+    // full page (e.g. 40) would hand every plan ONE block each — gold's whole
+    // share first, then silver's — which reads exactly like the old
+    // one-bucket-per-session behavior on a single page and defeats the point
+    // of blending. Repeating a small round throughout the page/pool is what
+    // makes every plan visible without scrolling past a wall of the other one.
+    const ROUND_SIZE = Math.min(10, dbConfig.page_size || pageSize);
+    const quotas = computeBlockQuotas(weights, ROUND_SIZE);
+    const priorities = toPriorities(entitlements);
+    const tierOrders = {};
+    for (const plan of Object.keys(availableByPlan)) {
+      if (!(weights[plan] > 0)) continue; // weight 0 → never shown, same as WEIGHTED's bucket never drawing it
+      const planPool = eligible.filter((p) => TIER_TO_PLAN[p.tier] === plan);
+      if (!planPool.length) continue;
+      const planWithCaps = attachDailyCaps(planPool, entitlements, counterMarket);
+      const planRanked = rankPool(planWithCaps, { market: counterMarket, sessionKey, templeId, now }, config);
+      // Each plan's FULL rotated order, not just one round's worth — the
+      // round-robin in interleaveByQuota below draws ROUND_SIZE-shaped
+      // chunks from it across as many rounds as it takes to cover pageSize.
+      tierOrders[plan] = selectOrder(planRanked, {
+        pageSize,
+        rotationDepth,
+        seed: rotSeed,
+        pinTop,
+      });
+    }
+    ranked = interleaveByQuota(tierOrders, quotas, priorities);
+  } else {
+    bucket = selectBucket({
+      market: counterMarket,
+      availableByPlan,
+      sessionSeed: seed,
+      allocation,
+      mode,
+      priorities: toPriorities(entitlements),
+    });
+
+    // Fairness is computed INSIDE the bucket — comparing a ₹5k pandit's share
+    // against a ₹15k pandit's would be meaningless, they are sold different
+    // things.
+    pool = bucket
+      ? eligible.filter((p) => TIER_TO_PLAN[p.tier] === bucket)
+      : eligible;
+    if (!pool.length) {
+      return { pandits: [], pool: bucket, market: counterMarket, eligible: eligible.length, total: candidates.length };
+    }
+    const withCaps = attachDailyCaps(pool, entitlements, counterMarket);
+    ranked = rankPool(withCaps, { market: counterMarket, sessionKey, templeId, now }, config);
+  }
+
+  if (!pool.length || !ranked.length) {
     return { pandits: [], pool: bucket, market: counterMarket, eligible: eligible.length, total: candidates.length };
   }
 
-  const withCaps = attachDailyCaps(pool, entitlements, counterMarket);
-  const ranked = rankPool(withCaps, { market: counterMarket, sessionKey, templeId, now }, config);
-  const generation = clampRefreshGeneration(refreshGeneration);
-  const rotSeed = rotationSeed({ sessionKey, templeId, serviceId, now, refreshGeneration: generation });
-  const slots = selectPage(ranked, {
-    pageSize,
-    rotationDepth: dbConfig.rotation_depth || 3,
-    seed: rotSeed,
-    page,
-    // Generation 0 (a first load) keeps the existing anti-starvation
-    // guarantee — the single most under-served candidate is genuinely first.
-    // Later generations let that candidate rotate too, same as everyone else
-    // in the band, which is what produces the slot-1 diversity a refresh is
-    // meant to add without ever taking away the guarantee generation 0 gave.
-    pinTop: generation === 0,
-  });
   // Position is GLOBAL, not per-page. A card at the top of page 2 is slot 21,
   // and must be credited slot-21 exposure weight — not slot 1's.
   const offset = (Math.max(1, page) - 1) * pageSize;
+
+  // BLENDED already produced the final merged, rotated order above — slicing
+  // it again through selectPage would re-shuffle across plans and destroy the
+  // block ordering. The single-bucket path still needs selectPage to do its
+  // own rotation-band selection before slicing.
+  const slots = mode === POOL_MODE.BLENDED
+    ? ranked.slice(offset, offset + pageSize)
+    : selectPage(ranked, { pageSize, rotationDepth, seed: rotSeed, page, pinTop });
 
   const byId = new Map(pool.map((p) => [p.id, p]));
   const pandits = slots.map((slot, i) => {
@@ -248,16 +306,20 @@ async function distribute({
   return {
     pandits,
     pool: bucket,
+    // Which plans and shares BLENDED mixed this page from — undefined in the
+    // other modes, where "pool" (the single bucket) already says it all.
+    ...(blend ? { blend } : {}),
     market: counterMarket,
     marketWasUnknown: isUnknown,
     eligible: eligible.length,
     total: candidates.length,
     // Size of the ranked pool this page was cut from — the honest total for
-    // pagination, which is the bucket, not every candidate the query returned.
+    // pagination, which is the bucket (or the blended merge) not every
+    // candidate the query returned.
     poolSize: ranked.length,
     page: Math.max(1, page),
-    poolMode: Number(dbConfig.pool_mode ?? POOL_MODE.WEIGHTED) === POOL_MODE.PRIORITY
-      ? 'priority' : 'weighted',
+    poolMode: mode === POOL_MODE.PRIORITY
+      ? 'priority' : mode === POOL_MODE.BLENDED ? 'blended' : 'weighted',
     refreshGeneration: generation,
   };
 }

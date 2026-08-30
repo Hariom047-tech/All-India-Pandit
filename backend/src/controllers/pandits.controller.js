@@ -147,6 +147,8 @@ async function distributed(req, res) {
       // do not know, instead of silently guessing on the devotee's behalf.
       marketSource: browsing.source,
       pool: result.pool,
+      poolMode: result.poolMode,
+      ...(result.blend ? { blend: result.blend } : {}),
       eligible: result.eligible,
       total: result.poolSize || 0,
       page: paging.page,
@@ -199,6 +201,8 @@ async function distributionOrder(req, res) {
     market: result.market,
     marketSource: browsing.source,
     pool: result.pool,
+    poolMode: result.poolMode,
+    ...(result.blend ? { blend: result.blend } : {}),
     refreshGeneration: result.refreshGeneration,
     order: result.pandits.map((p) => ({ slug: p.slug, tier: p.tier, position: p.position })),
   });

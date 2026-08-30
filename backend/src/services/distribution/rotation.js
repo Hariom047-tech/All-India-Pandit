@@ -99,7 +99,136 @@ function pickPriorityBucket(market, availableByPlan, priorities = {}, allocation
 }
 
 /** Pool selection modes, as stored in distribution_config.pool_mode. */
-const POOL_MODE = { WEIGHTED: 0, PRIORITY: 1 };
+const POOL_MODE = { WEIGHTED: 0, PRIORITY: 1, BLENDED: 2 };
+
+/* ── blended mode ─────────────────────────────────────────────────────── */
+
+/**
+ * Split one block of `blockSize` slots between the live plans, proportional to
+ * their weight.
+ *
+ * Largest-remainder rounding: take the floor of each plan's exact share, then
+ * hand the leftover slots (blockSize minus the sum of floors) one at a time to
+ * whichever plans had the largest fractional remainder. This is the standard
+ * seat-apportionment method — it is what guarantees the integers actually sum
+ * to blockSize, which naive per-plan rounding does not.
+ *
+ * Plans with zero weight or zero live candidates get quota 0 — same as
+ * WEIGHTED mode's bucket never being drawn for them.
+ */
+function computeBlockQuotas(weights = {}, blockSize = 20) {
+  const live = Object.entries(weights).filter(([, w]) => w > 0);
+  const out = {};
+  for (const plan of Object.keys(weights)) out[plan] = 0;
+  if (!live.length || blockSize <= 0) return out;
+
+  const total = live.reduce((a, [, w]) => a + w, 0);
+  if (total <= 0) return out;
+
+  const exact = live.map(([plan, w]) => {
+    const share = (w / total) * blockSize;
+    return { plan, floor: Math.floor(share), remainder: share - Math.floor(share) };
+  });
+
+  let allocated = exact.reduce((a, e) => a + e.floor, 0);
+  for (const e of exact) out[e.plan] = e.floor;
+
+  let leftover = blockSize - allocated;
+  const byRemainder = [...exact].sort((a, b) => b.remainder - a.remainder);
+  for (let i = 0; leftover > 0 && i < byRemainder.length; i += 1, leftover -= 1) {
+    out[byRemainder[i].plan] += 1;
+  }
+  return out;
+}
+
+/**
+ * Merge each plan's own (already ranked + rotated) full order into one
+ * sequence, in rounds of `quotas`.
+ *
+ * Each round takes `quota[plan]` candidates off the front of that plan's
+ * queue, appended in ascending-priority order (lower priority number first —
+ * same convention as pickPriorityBucket) so a page reads "best-priority
+ * plan's block, then the next plan's block". If a plan's queue is shorter
+ * than its quota for this round — it is running out — the shortfall is handed
+ * to the other still-live plans in the SAME round, proportional to their own
+ * weight, so a page is never short just because one plan is nearly exhausted.
+ * A plan whose queue is empty is dropped from all further rounds.
+ *
+ * @param {Record<string, object[]>} tierOrders  plan → full rotated candidate order
+ * @param {Record<string, number>} quotas        plan → slots per round (from computeBlockQuotas)
+ * @param {Record<string, number>} priorities    plan → order, lower first
+ */
+function interleaveByQuota(tierOrders = {}, quotas = {}, priorities = {}) {
+  const queues = {};
+  for (const [plan, order] of Object.entries(tierOrders)) {
+    if (order?.length) queues[plan] = [...order];
+  }
+
+  const priorityRank = (plan) => priorities[plan] ?? Number.MAX_SAFE_INTEGER;
+  const byPriority = (a, b) => priorityRank(a) - priorityRank(b) || a.localeCompare(b);
+
+  const out = [];
+  while (Object.keys(queues).length) {
+    const live = Object.keys(queues);
+    const roundQuota = {};
+    let poolSize = 0;
+    for (const plan of live) {
+      roundQuota[plan] = quotas[plan] || 0;
+      poolSize += roundQuota[plan];
+    }
+
+    // Nobody in this round has a positive quota (e.g. every live plan's
+    // weight rounded to 0 against a lopsided block size) — fall back to
+    // draining whatever is left, largest queue first, so candidates are
+    // never silently dropped.
+    if (poolSize <= 0) {
+      for (const plan of live.sort(byPriority)) {
+        out.push(...queues[plan]);
+        delete queues[plan];
+      }
+      break;
+    }
+
+    // Redistribute shortfall from plans whose queue is shorter than their
+    // round quota, proportional to the other live plans' own weight share.
+    let shortfall = 0;
+    for (const plan of live) {
+      const short = Math.max(0, roundQuota[plan] - queues[plan].length);
+      if (short > 0) { shortfall += short; roundQuota[plan] -= short; }
+    }
+    if (shortfall > 0) {
+      const receivers = live.filter((p) => roundQuota[p] < queues[p].length);
+      const receiverTotal = receivers.reduce((a, p) => a + (quotas[p] || 0), 0);
+      if (receiverTotal > 0) {
+        let remaining = shortfall;
+        for (const plan of receivers) {
+          if (remaining <= 0) break;
+          const room = queues[plan].length - roundQuota[plan];
+          const extra = Math.min(room, Math.round((shortfall * (quotas[plan] || 0)) / receiverTotal));
+          const grant = Math.min(room, extra, remaining);
+          roundQuota[plan] += grant;
+          remaining -= grant;
+        }
+        // Rounding may leave a slot or two unassigned — hand them out in
+        // priority order to whoever still has room.
+        for (const plan of receivers.sort(byPriority)) {
+          if (remaining <= 0) break;
+          const room = queues[plan].length - roundQuota[plan];
+          const grant = Math.min(room, remaining);
+          roundQuota[plan] += grant;
+          remaining -= grant;
+        }
+      }
+    }
+
+    for (const plan of live.sort(byPriority)) {
+      const take = Math.min(roundQuota[plan], queues[plan].length);
+      if (take > 0) out.push(...queues[plan].splice(0, take));
+      if (!queues[plan].length) delete queues[plan];
+    }
+  }
+  return out;
+}
 
 /**
  * Choose a bucket using whichever mode the admin has configured.
@@ -282,4 +411,6 @@ module.exports = {
   POOL_MODE,
   selectOrder,
   selectPage,
+  computeBlockQuotas,
+  interleaveByQuota,
 };

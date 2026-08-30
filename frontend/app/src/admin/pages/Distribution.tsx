@@ -20,7 +20,7 @@ import { Icon } from "../../lib/icons";
  * locked.
  */
 
-type Mode = 0 | 1;
+type Mode = 0 | 1 | 2;
 
 interface ConfigKnob {
   key: string; value: number; label: string; description: string | null;
@@ -99,7 +99,10 @@ export default function Distribution() {
 
   useEffect(() => { void load(); }, [load]);
 
-  const mode = (Number(config.pool_mode) === 1 ? 1 : 0) as Mode;
+  const mode = (() => {
+    const n = Number(config.pool_mode);
+    return (n === 1 || n === 2 ? n : 0) as Mode;
+  })();
 
   /* Re-project on every edit, debounced. Server-side, because a projection that
      disagreed with the engine would be worse than showing none. */
@@ -312,6 +315,11 @@ export default function Distribution() {
             <span className="dst-mode__tick">{mode === 1 && <Icon name="check" />}</span>
             <strong>Strict priority</strong>
             <p>The top-priority plan with anyone available takes every visitor. Lower plans get nothing until it runs out.</p>
+          </button>
+          <button type="button" className={`dst-mode ${mode === 2 ? "is-on" : ""}`} onClick={() => setKnob("pool_mode", 2)}>
+            <span className="dst-mode__tick">{mode === 2 && <Icon name="check" />}</span>
+            <strong>Blended</strong>
+            <p>Every plan appears together on the same page, in blocks sized by the percentages below — nobody waits a whole session for their turn.</p>
           </button>
         </div>
         {mode === 1 && (

@@ -146,7 +146,15 @@ function project({ entitlements = {}, seats = {}, volumes = {}, mode = POOL_MODE
 
   plans.sort((a, b) => (b.priceInr || 0) - (a.priceInr || 0));
 
-  return { mode: Number(mode) === POOL_MODE.PRIORITY ? 'priority' : 'weighted', plans, perMarket, warnings: warningsFor(plans) };
+  // BLENDED's leads-per-seat maths is identical to WEIGHTED's — both allocate
+  // volume proportional to weight ÷ seats, they only differ in HOW that share
+  // is composed per visit (see rotation.js's interleaveByQuota). Only the
+  // label differs, so the panel's mode chip reads correctly.
+  const modeLabel = Number(mode) === POOL_MODE.PRIORITY
+    ? 'priority'
+    : Number(mode) === POOL_MODE.BLENDED ? 'blended' : 'weighted';
+
+  return { mode: modeLabel, plans, perMarket, warnings: warningsFor(plans) };
 }
 
 /**
