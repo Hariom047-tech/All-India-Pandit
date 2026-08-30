@@ -186,12 +186,17 @@ export default function ServiceDetail() {
         {/* ======================== SPLIT HERO ======================== */}
         <section className="sd-hero">
           <div className="shell">
-            <div className="sd-hero__grid">
+            {/* No admin-uploaded image (services.image_url) -> no hardcoded
+                stand-in photo. Single-column (info card only) instead of the
+                usual two-column grid, same collapse already used on mobile. */}
+            <div className="sd-hero__grid" style={heroImg ? undefined : { gridTemplateColumns: "1fr", maxWidth: 640, margin: "0 auto" }}>
               {/* Left: Image */}
-              <div className="sd-hero__img-wrap">
-                <img src={heroImg} alt={s.name} className="sd-hero__img" fetchPriority="high" />
-                <div className="sd-hero__img-overlay" />
-              </div>
+              {heroImg && (
+                <div className="sd-hero__img-wrap">
+                  <img src={heroImg} alt={s.name} className="sd-hero__img" fetchPriority="high" />
+                  <div className="sd-hero__img-overlay" />
+                </div>
+              )}
 
               {/* Right: Info Card */}
               <div className="sd-hero__info">
