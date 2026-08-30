@@ -170,7 +170,7 @@ export default function Pandits() {
               </div>
             </div>
             <div className="sp-hero__img-wrap">
-              <img src="/assets/img/services/pandit-hero.jpg" alt="Verified Pandit" className="sp-hero__img" />
+              <img src="https://media.panditsuggest.com/static/pandit-hero.webp" alt="Verified Pandit" className="sp-hero__img" />
               <div className="sp-hero__glow" />
             </div>
           </div>

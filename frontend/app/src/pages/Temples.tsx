@@ -109,7 +109,7 @@ export default function Temples() {
               </div>
             </div>
             <div className="sp-hero__img-wrap">
-              <img src="/assets/img/temples/temple-hero.jpg" alt="Sacred Temple" className="sp-hero__img" />
+              <img src="https://media.panditsuggest.com/static/temple-hero.webp" alt="Sacred Temple" className="sp-hero__img" />
               <div className="sp-hero__glow" />
             </div>
           </div>

@@ -272,11 +272,11 @@ export default function Search() {
                               src={s.img.replace('.jpg', '_new.jpg')} // use new generated images if available
                               alt={s.name}
                               className="search-card__img search-card__img--rounded"
-                              onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'; }}
+                              onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? 'https://media.panditsuggest.com/static/havan-new.webp' : 'https://media.panditsuggest.com/static/puja-new.webp'; }}
                             />
                           ) : (
                             <img
-                              src={s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'}
+                              src={s.name.toLowerCase().includes('havan') ? 'https://media.panditsuggest.com/static/havan-new.webp' : 'https://media.panditsuggest.com/static/puja-new.webp'}
                               alt={s.name}
                               className="search-card__img search-card__img--rounded"
                             />

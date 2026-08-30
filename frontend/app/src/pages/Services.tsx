@@ -32,17 +32,17 @@ export default function Services() {
       return apiCategories.map((c) => ({
         cat: c.slug,
         label: c.name,
-        img: c.image_url || `/assets/img/services/cat-${c.slug}.jpg`,
+        img: c.image_url || `https://media.panditsuggest.com/static/cat-${c.slug}.webp`,
         pandits: c.pandit_count,
         services: c.service_count,
         tagline: c.tagline,
       }));
     }
     return [
-      { cat: "life", label: t("services.catLife"), img: "/assets/img/services/cat-life.jpg", pandits: 0, services: 0, tagline: null },
-      { cat: "daily", label: t("services.catDaily"), img: "/assets/img/services/cat-daily.jpg", pandits: 0, services: 0, tagline: null },
-      { cat: "festival", label: t("services.catFestival"), img: "/assets/img/services/cat-festival.jpg", pandits: 0, services: 0, tagline: null },
-      { cat: "shanti", label: t("services.catShanti"), img: "/assets/img/services/cat-shanti.jpg", pandits: 0, services: 0, tagline: null },
+      { cat: "life", label: t("services.catLife"), img: "https://media.panditsuggest.com/static/cat-life.webp", pandits: 0, services: 0, tagline: null },
+      { cat: "daily", label: t("services.catDaily"), img: "https://media.panditsuggest.com/static/cat-daily.webp", pandits: 0, services: 0, tagline: null },
+      { cat: "festival", label: t("services.catFestival"), img: "https://media.panditsuggest.com/static/cat-festival.webp", pandits: 0, services: 0, tagline: null },
+      { cat: "shanti", label: t("services.catShanti"), img: "https://media.panditsuggest.com/static/cat-shanti.webp", pandits: 0, services: 0, tagline: null },
     ];
   }, [apiCategories, t]);
   const [query] = useState("");
@@ -109,7 +109,7 @@ export default function Services() {
                 </div>
               </div>
               <div className="sp-hero__img-wrap">
-                <img src="/assets/img/services/pandit-hero.jpg" alt="Pandit performing puja" className="sp-hero__img" />
+                <img src="https://media.panditsuggest.com/static/pandit-hero.webp" alt="Pandit performing puja" className="sp-hero__img" />
                 <div className="sp-hero__glow" />
               </div>
             </div>
@@ -199,11 +199,11 @@ export default function Services() {
                     key={s.id}
                   >
                     <img
-                      src={s.img ? s.img.replace('.jpg', '_new.jpg') : (s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg')}
+                      src={s.img ? s.img.replace('.jpg', '_new.jpg') : (s.name.toLowerCase().includes('havan') ? 'https://media.panditsuggest.com/static/havan-new.webp' : 'https://media.panditsuggest.com/static/puja-new.webp')}
                       alt={s.name}
                       className="sp-all-card__img"
                       loading="lazy"
-                      onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? '/assets/img/services/tiles/havan_new.jpg' : '/assets/img/services/tiles/puja_new.jpg'; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = s.name.toLowerCase().includes('havan') ? 'https://media.panditsuggest.com/static/havan-new.webp' : 'https://media.panditsuggest.com/static/puja-new.webp'; }}
                     />
                     <div className="sp-all-card__overlay" />
                     {s.onlineAvailable && <span className="sp-online-badge">🌐 Online</span>}

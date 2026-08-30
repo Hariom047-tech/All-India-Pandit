@@ -35,7 +35,7 @@ const DEFAULT_FAQ = [
 
 const META: Record<string, Partial<ServiceMeta>> = {
   "griha-pravesh": {
-    heroImg: "/assets/img/services/griha-pravesh-hero.jpg",
+    heroImg: "https://media.panditsuggest.com/static/griha-pravesh-hero.webp",
     tagline: "Begin your new journey with divine blessings — invoke Lord Ganesh & Vastu Purush for peace and prosperity in your new home",
     benefits: [
       { icon: "🙏", title: "Peace & Harmony" },
@@ -86,7 +86,7 @@ const META: Record<string, Partial<ServiceMeta>> = {
 export function getServiceMeta(serviceId: string): ServiceMeta {
   const m = META[serviceId] || {};
   return {
-    heroImg: m.heroImg || "/assets/img/services/griha-pravesh-hero.jpg",
+    heroImg: m.heroImg || "https://media.panditsuggest.com/static/griha-pravesh-hero.webp",
     tagline: m.tagline || "Experience the divine power of this sacred ritual performed by verified Vedic pandits",
     benefits: m.benefits || DEFAULT_BENEFITS,
     process: m.process || DEFAULT_PROCESS,
